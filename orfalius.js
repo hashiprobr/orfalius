@@ -23,7 +23,7 @@ module.exports = function(templatePath) {
       htmlTree.slice(1).forEach(function(element) {
         if(element[0] == 'h3') {
           element.push(['a', {href: ''}, 'continuar']);
-          element.push(' ');
+          element.push(' ou ');
           element.push(['a', {href: ''}, 'terminar']);
           element.push(['small', 'não tenha pressa, pense na resposta com calma']);
         }
