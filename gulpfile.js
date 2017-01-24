@@ -7,4 +7,8 @@ gulp.task('orfalius', function() {
     .pipe(gulp.dest('site'));
 });
 
-gulp.task('default', ['orfalius']);
+gulp.task('watch', function() {
+  gulp.watch('src/**/*.md', ['orfalius'])
+});
+
+gulp.task('default', ['watch']);
