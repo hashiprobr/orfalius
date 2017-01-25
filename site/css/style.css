@@ -45,17 +45,24 @@ h1, h2 {
   font-weight: bold;
 }
 
-p, ul, pre {
+p, ol, ul, pre {
   margin-bottom: 1rem;
 }
 
-p:last-child, ul:last-child, pre:last-child {
+p:last-child, ol:last-child, ul:last-child, pre:last-child {
   margin-bottom: 0;
+}
+
+ol, ul {
+  padding-left: 2rem;  
+}
+
+ol {
+  list-style: decimal outside;
 }
 
 ul {
   list-style: disc outside;
-  padding-left: 2rem;
 }
 
 li {
