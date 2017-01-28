@@ -25,7 +25,27 @@ module.exports = function(templatePath) {
           element.push(['a', {href: ''}, 'continuar']);
           element.push(' ou ');
           element.push(['a', {href: ''}, 'terminar']);
-          element.push(['small', 'não tenha pressa, pense na resposta com calma']);
+
+          if(element[1] == 'pergunta') {
+            element.push(['small', 'não tenha pressa, pense na resposta com calma']);
+          }
+          else if(element[1] == 'atividade') {
+            element.push(['small', 'não tenha pressa, faça a atividade com calma']);
+          }
+
+          element.splice(1, 1);
+        }
+        else if(element[0] == 'p') {
+          var subelement = element[1];
+
+          if(subelement.indexOf('@') == 0) {
+            element[0] = 'a';
+            element[1] = {name: subelement.slice(1)};
+          }
+          else if(subelement[0] == 'img') {
+            element.splice(1, 0, {class: 'image'});
+            subelement[1].src = 'img/'  + subelement[1].src;
+          }
         }
         else if(element[0] == 'pre') {
           element[1].splice(1, 0, {class: 'prettyprint'});
