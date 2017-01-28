@@ -53,8 +53,17 @@ p:last-child, ol:last-child, ul:last-child, pre:last-child {
   margin-bottom: 0;
 }
 
+.image {
+  text-align: center;
+}
+
+img {
+  border: 1px solid #bcbec0;
+  max-width: 100%;
+}
+
 ol, ul {
-  padding-left: 2rem;  
+  padding-left: 2rem;
 }
 
 ol {
@@ -123,6 +132,10 @@ small {
 @media print {
   body, pre {
     background-color: #ffffff;
+  }
+
+  img {
+    border-color: #000000;
   }
 
   pre {
