@@ -14,8 +14,9 @@ html, body {
 
 .container {
   background-color: #ffffff;
+  border-radius: 1rem;
   color: #000000;
-  margin: auto;
+  margin: 1rem auto 0.25rem;
   max-width: 46rem;
   min-height: 100%;
   padding: 2rem;
@@ -57,7 +58,7 @@ p:last-child, ol:last-child, ul:last-child, pre:last-child {
   text-align: center;
 }
 
-img {
+.container img {
   border: 1px solid #bcbec0;
   max-width: 100%;
 }
@@ -129,12 +130,24 @@ small {
   }
 }
 
+.copyright {
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.copyright img {
+  vertical-align: sub;
+}
+
 @media print {
   body, pre {
     background-color: #ffffff;
   }
 
-  img {
+  .container img {
     border-color: #000000;
   }
 
