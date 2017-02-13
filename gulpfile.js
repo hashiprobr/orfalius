@@ -1,11 +1,6 @@
 var gulp = require('gulp');
 var orfalius = require('./orfalius');
 
-gulp.task('copy', function() {
-  return gulp.src('src/**/img/*')
-    .pipe(gulp.dest('site'));
-});
-
 gulp.task('orfalius', function() {
   return gulp.src('src/**/*.md')
     .pipe(orfalius('src/template.html'))
@@ -13,7 +8,6 @@ gulp.task('orfalius', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('src/**/img/*', ['copy']);
   gulp.watch('src/**/*.md', ['orfalius']);
 });
 

@@ -59,8 +59,11 @@ p:last-child, ol:last-child, ul:last-child, pre:last-child {
 }
 
 .container img {
-  border: 1px solid #bcbec0;
   max-width: 100%;
+}
+
+.raster {
+  border: 1px solid #bcbec0;
 }
 
 ol, ul {
@@ -124,14 +127,6 @@ small {
   margin-top: 1rem;
 }
 
-@media (max-width: 50rem) {
-  .container {
-    border-radius: 0;
-    margin-top: 0;
-    padding: 1rem;
-  }
-}
-
 .copyright {
   color: #FFFFFF;
   font-size: 0.75rem;
@@ -144,17 +139,38 @@ small {
   vertical-align: sub;
 }
 
+@media (max-width: 50rem) {
+  .container {
+    border-radius: 0;
+    margin-top: 0;
+    padding: 1rem;
+  }
+}
+
 @media print {
+  html {
+    font-size: 12px;
+  }
+
   body, pre {
     background-color: #ffffff;
   }
 
+  .container {
+    max-width: 100%;
+  }
+
   .container img {
+    max-height: 250px;
+  }
+
+  .raster {
     border-color: #000000;
   }
 
   pre {
     border: 1px solid #000000;
+    page-break-inside: avoid;
   }
 
   /* override code-prettify */

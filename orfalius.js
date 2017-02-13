@@ -44,7 +44,12 @@ module.exports = function(templatePath) {
           }
           else if(subelement[0] == 'img') {
             element.splice(1, 0, {class: 'image'});
-            subelement[1].src = 'img/'  + subelement[1].src;
+            src = subelement[1].src;
+            subelement[1].src = 'img/'  + src;
+
+            if(src.slice(-3) != 'svg') {
+              subelement[1].class = 'raster';
+            }
           }
         }
         else if(element[0] == 'pre') {
