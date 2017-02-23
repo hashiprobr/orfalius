@@ -20,6 +20,8 @@ module.exports = function(templatePath) {
       var mdTree = markdown.parse(source);
       var htmlTree = markdown.toHTMLTree(mdTree);
 
+      var anotacoes = 1;
+
       htmlTree.slice(1).forEach(function(element) {
         if(element[0] == 'h3') {
           element.push(['a', {href: ''}, 'continuar']);
@@ -31,6 +33,13 @@ module.exports = function(templatePath) {
           }
           else if(element[1] == 'atividade') {
             element.push(['small', 'não tenha pressa, faça a atividade com calma']);
+          }
+          else if(element[1] == 'espera') {
+            element.push(['small', 'espere a turma alinhar']);
+          }
+          else if(element[1] == 'anotacoes') {
+            element.push(['small', 'faça anotações no espaço ' + anotacoes]);
+            anotacoes++;
           }
 
           element.splice(1, 1);
