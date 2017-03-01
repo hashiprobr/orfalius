@@ -6,6 +6,18 @@ var markdown = require('markdown').markdown;
 
 const PLUGIN_NAME = 'orfalius';
 
+var addTarget = function(element) {
+  if(element instanceof Array) {
+    if(element[0] == 'a') {
+      attributes = element[1];
+      if('href' in attributes && attributes.href.indexOf('#') != 0) {
+        attributes.target = '_blank';
+      }
+    }
+    element.forEach(addTarget);
+  }
+}
+
 module.exports = function(templatePath) {
   var source = fs.readFileSync(templatePath).toString();
   var template = Handlebars.compile(source);
@@ -65,6 +77,8 @@ module.exports = function(templatePath) {
           element[1].splice(1, 0, {class: 'prettyprint'});
         }
       });
+
+      addTarget(htmlTree);
 
       var title = htmlTree[1][1];
       var contents = markdown.renderJsonML(htmlTree);
