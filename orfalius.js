@@ -121,7 +121,7 @@ module.exports = function(templatePath, darkMode = false) {
       var depth = -1;
 
       for(var c of path.relative('.', file.path)) {
-        if(c == '/') {
+        if(c == '/' || c == '\\') {
           depth += 1;
         }
       }
