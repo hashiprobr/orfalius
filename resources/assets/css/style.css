@@ -193,7 +193,7 @@ img {
     color: #000000;
   }
 
-  pre {
+  .prettybox, .nostalbox {
     border: 1px solid #bcbec0;
   }
 
@@ -210,7 +210,7 @@ img {
     page-break-inside: avoid;
   }
 
-  body, pre, blockquote {
+  body, .prettybox, .nostalbox, blockquote {
     background-color: #ffffff;
   }
 
