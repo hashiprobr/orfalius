@@ -46,12 +46,7 @@ module.exports = function(templatePath, darkMode = false) {
 
             var src = subElement[1].src;
 
-            if(src.startsWith('/')) {
-              subElement[1].src = '/img'  + src;
-            }
-            else {
-              subElement[1].src = 'img/'  + src;
-            }
+            subElement[1].src = src.startsWith('/') ? '/img'  + src : 'img/'  + src;
 
             if(src.slice(-3) != 'svg') {
               subElement[1].class = 'raster';
