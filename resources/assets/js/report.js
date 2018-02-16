@@ -54,7 +54,7 @@ var medianAtLeastC = {
   check: function(grades) {
     var median = medianFromLetters(grades);
 
-    return [median, !(median == 'I' || median == 'D')];
+    return [median, median != 'I' && median != 'D'];
   },
 };
 
