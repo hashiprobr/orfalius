@@ -29,6 +29,12 @@ var meanFromLetters = function(grades) {
   return sum / grades.length;
 };
 
+var medianFromLetters = function(grades) {
+  var sorted = grades.sort().reverse();
+
+  return sorted[Math.floor(grades.length / 2)];
+};
+
 
 var meanAtLeast45 = {
   name: 'Média',
@@ -36,6 +42,15 @@ var meanAtLeast45 = {
     var mean = meanFromLetters(grades);
 
     return [mean, mean >= 45];
+  },
+};
+
+var medianAtLeastC = {
+  name: 'Mediana',
+  check: function(grades) {
+    var median = medianFromLetters(grades);
+
+    return [median, !(median == 'I' || median == 'D')];
   },
 };
 
@@ -52,6 +67,9 @@ var build_report = function(schema, raw) {
 
   var subtags;
   var tags = ['<h2>Situação em cada objetivo</h2><p>Se uma linha estiver vermelha, o objetivo não foi atingido. Para aprovação nesta disciplina, <strong>nenhuma linha pode estar vermelha no final do semestre</strong>.</p>'];
+
+  var failed_locals = false;
+  var failed_global = false;
 
   for(var code in schema.goals) {
     var goal = schema.goals[code];
@@ -78,16 +96,24 @@ var build_report = function(schema, raw) {
 
     subtags.push('<li class="' + className + '">' + schema.condition.name + ': ' + result[0] + '</li>');
     tags.push('<ul>' + subtags.join('') + '</ul>');
+
+    if(!result[1]) {
+      failed_locals = true;
+    }
   }
 
   tags.push('<h2>Situação no conjunto de objetivos</h2><p>Se a linha estiver vermelha, o desempenho mínimo não foi atingido. Para aprovação nesta disciplina, <strong>a linha não pode estar vermelha no final do semestre</strong>.</p>');
 
-  result = sum / num;
-  className = result >= 45 ? 'positive' : 'negative';
+  var partial_mean = sum / num;
 
-  tags.push('<ul><li class="' + className + '">Média Parcial: ' + result + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="matriz.pdf">baixar a matriz</a>.</p>');
+  result = partial_mean >= 45;
+  className = result ? 'positive' : 'negative';
 
-  var partial_mean = result;
+  tags.push('<ul><li class="' + className + '">Média Parcial: ' + partial_mean + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="matriz.pdf">baixar a matriz</a>.</p>');
+
+  if(!result) {
+    failed_global = true;
+  }
 
   tags.push('<h2>Bônus em caso de aprovação</h2><p>Os conceitos e médias abaixo são ignorados se alguma linha acima estiver vermelha.</p>');
 
@@ -120,10 +146,17 @@ var build_report = function(schema, raw) {
 
   tags.push('<h2>Nota que será registrada no Blackboard</h2><p>Se alguma linha acima estiver vermelha, o bônus é ignorado e a Média Final é o menor valor dentre 4.0 e a Média Parcial. Caso contrário, a Média Final é o maior valor dentre 5.0 e uma média ponderada da Média Parcial (peso 90%) e do bônus (pesos acima).</p>');
 
-  var weight = 90;
+  if(failed_locals || failed_globals) {
+    result = Math.min(4, partial_mean);
+  }
+  else {
+    var weight = 90;
 
-  sum += partial_mean * weight;
-  num += weight;
+    sum += partial_mean * weight;
+    num += weight;
+
+    result = Math.max(5, sum / num);
+  }
 
   tags.push('<ul><li class="highlight">Média Final: ' + result + '</li></ul>');
 
