@@ -1,19 +1,23 @@
+var round_place = function(mean) {
+  return Math.round(10 * mean) / 10;
+};
+
 var convert = function(grade) {
   switch(grade) {
     case 'A+':
-      return 100;
+      return 10;
     case 'A':
-      return 90;
+      return 9;
     case 'B+':
-      return 80;
+      return 8;
     case 'B':
-      return 70;
+      return 7;
     case 'C+':
-      return 60;
+      return 6;
     case 'C':
-      return 50;
+      return 5;
     case 'D':
-      return 25;
+      return 2.5;
     case 'I':
       return 0;
   }
@@ -26,7 +30,7 @@ var meanFromLetters = function(grades) {
     sum += convert(grade);
   }
 
-  return sum / grades.length;
+  return round_place(sum / grades.length);
 };
 
 var medianFromLetters = function(grades) {
@@ -41,7 +45,7 @@ var meanAtLeast45 = {
   check: function(grades) {
     var mean = meanFromLetters(grades);
 
-    return [mean, mean >= 45];
+    return [mean, mean >= 4.5];
   },
 };
 
@@ -104,9 +108,9 @@ var build_report = function(schema, raw) {
 
   tags.push('<h2>Situação no conjunto de objetivos</h2><p>Se a linha estiver vermelha, o desempenho mínimo não foi atingido. Para aprovação nesta disciplina, <strong>a linha não pode estar vermelha no final do semestre</strong>.</p>');
 
-  var partial_mean = sum / num;
+  var partial_mean = round_place(sum / num);
 
-  result = partial_mean >= 45;
+  result = partial_mean >= 4.5;
   className = result ? 'positive' : 'negative';
 
   tags.push('<ul><li class="' + className + '">Média Parcial: ' + partial_mean + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="matriz.pdf">baixar a matriz</a>.</p>');
@@ -155,7 +159,7 @@ var build_report = function(schema, raw) {
     sum += partial_mean * weight;
     num += weight;
 
-    result = Math.max(5, sum / num);
+    result = Math.max(5, round_place(sum / num));
   }
 
   tags.push('<ul><li class="highlight">Média Final: ' + result + '</li></ul>');
