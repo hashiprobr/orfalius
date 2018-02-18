@@ -89,7 +89,7 @@ var build_report = function(schema, raw) {
       grade = raw[instrument][code];
       grades.push(grade);
 
-      sum += convert(grade) * weight;
+      sum += weight * convert(grade);
       num += weight;
 
       subtags.push('<li>' + instrument + ': ' + grade + '</li>');
@@ -144,7 +144,7 @@ var build_report = function(schema, raw) {
 
     result = meanFromLetters(grades);
 
-    sum += result * weight;
+    sum += weight * result;
     num += weight;
 
     subtags.push('<li class="highlight">Média: ' + result + ' (peso ' + weight + '%)</li>');
@@ -159,7 +159,7 @@ var build_report = function(schema, raw) {
   else {
     var weight = 90;
 
-    sum += partial_mean * weight;
+    sum += weight * partial_mean;
     num += weight;
 
     result = Math.max(5, roundPlace(sum / num));
