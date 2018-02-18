@@ -95,13 +95,16 @@ var build_report = function(schema, raw) {
       subtags.push('<li>' + instrument + ': ' + grade + '</li>');
     }
 
-    result = schema.condition.check(grades);
-    className = result[1] ? 'positive' : 'negative';
+    var recovered = raw['Recuperados'].includes(code);
+    var suffix = recovered ? ' (RECUPERADO)' : '';
 
-    subtags.push('<li class="' + className + '">' + schema.condition.name + ': ' + result[0] + '</li>');
+    result = schema.condition.check(grades);
+    className = recovered ? 'highlight' : (result[1] ? 'positive' : 'negative');
+
+    subtags.push('<li class="' + className + '">' + schema.condition.name + ': ' + result[0] + suffix + '</li>');
     tags.push('<ul>' + subtags.join('') + '</ul>');
 
-    if(!result[1]) {
+    if(!recovered && !result[1]) {
       failed_locals = true;
     }
   }
