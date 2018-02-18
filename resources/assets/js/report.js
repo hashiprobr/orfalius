@@ -1,4 +1,4 @@
-var round_place = function(mean) {
+var roundPlace = function(mean) {
   return Math.round(10 * mean) / 10;
 };
 
@@ -30,7 +30,7 @@ var meanFromLetters = function(grades) {
     sum += convert(grade);
   }
 
-  return round_place(sum / grades.length);
+  return roundPlace(sum / grades.length);
 };
 
 var medianFromLetters = function(grades) {
@@ -111,7 +111,7 @@ var build_report = function(schema, raw) {
 
   tags.push('<h2>Situação no conjunto de objetivos</h2><p>Se a linha estiver vermelha, o desempenho mínimo não foi atingido. Para aprovação nesta disciplina, <strong>a linha não pode estar vermelha no final do semestre</strong>.</p>');
 
-  var partial_mean = round_place(sum / num);
+  var partial_mean = roundPlace(sum / num);
 
   result = partial_mean >= 4.5;
   className = result ? 'positive' : 'negative';
@@ -162,7 +162,7 @@ var build_report = function(schema, raw) {
     sum += partial_mean * weight;
     num += weight;
 
-    result = Math.max(5, round_place(sum / num));
+    result = Math.max(5, roundPlace(sum / num));
   }
 
   tags.push('<ul><li class="highlight">Média Final: ' + result + '</li></ul>');
