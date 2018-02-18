@@ -150,7 +150,7 @@ var build_report = function(schema, raw) {
 
   tags.push('<h2>Nota que será registrada no Blackboard</h2><p>Se alguma linha acima estiver vermelha, o bônus é ignorado e a Média Final é o menor valor dentre 4.0 e a Média Parcial. Caso contrário, a Média Final é o maior valor dentre 5.0 e uma média ponderada da Média Parcial (peso 90%) e do bônus (pesos acima).</p>');
 
-  if(failed_locals || failed_globals) {
+  if(failed_locals || failed_global) {
     result = Math.min(4, partial_mean);
   }
   else {
