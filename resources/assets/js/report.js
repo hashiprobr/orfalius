@@ -116,7 +116,7 @@ var build_report = function(schema, raw) {
   result = partial_mean >= 4.5;
   className = result ? 'positive' : 'negative';
 
-  tags.push('<ul><li class="' + className + '">Média Parcial: ' + partial_mean + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="matriz.pdf">baixar a matriz</a>.</p>');
+  tags.push('<ul><li class="' + className + '">Média Parcial: ' + partial_mean + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="raw/matriz.pdf">baixar a matriz</a>.</p>');
 
   if(!result) {
     failed_global = true;
