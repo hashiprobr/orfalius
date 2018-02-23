@@ -8,6 +8,38 @@ var path = require('path');
 const PLUGIN_NAME = 'orfalius';
 
 
+var processText = function(element) {
+  element.slice(1).forEach(function(subElement) {
+    if(subElement instanceof Array) {
+
+      // link
+
+      if(subElement[0] == 'a') {
+        if(subElement[1].href.startsWith('http')) {
+          subElement[1].target = '_blank';
+        }
+      }
+
+      // code
+
+      if(subElement[0] == 'code') {
+        var subSubElement = subElement[1];
+
+        var subClassName = 'prettybox prettyprint';
+
+        if(subSubElement.startsWith('>')) {
+          subElement[1] = subSubElement.slice(1);
+
+          subClassName = 'nostalbox nostalprint';
+        }
+
+        subElement.splice(1, 0, {class: subClassName});
+      }
+    }
+  });
+};
+
+
 module.exports = function(templatePath, darkMode = false) {
   var templateSource = fs.readFileSync(templatePath).toString();
   var template = Handlebars.compile(templateSource);
@@ -56,35 +88,21 @@ module.exports = function(templatePath, darkMode = false) {
           // text
 
           else {
-            element.slice(1).forEach(function(subElement) {
-              if(subElement instanceof Array) {
-
-                // link
-
-                if(subElement[0] == 'a') {
-                  if(subElement[1].href.startsWith('http')) {
-                    subElement[1].target = '_blank';
-                  }
-                }
-
-                // code
-
-                if(subElement[0] == 'code') {
-                  var subSubElement = subElement[1];
-
-                  var subClassName = 'prettybox prettyprint';
-
-                  if(subSubElement.startsWith('>')) {
-                    subElement[1] = subSubElement.slice(1);
-
-                    subClassName = 'nostalbox nostalprint';
-                  }
-
-                  subElement.splice(1, 0, {class: subClassName});
-                }
-              }
-            });
+            processText(element);
           }
+        }
+
+        /* list */
+
+        else if(element[0] == 'ul' || element[0] == 'ol') {
+          element.slice(1).forEach(function(subElement) {
+            if(subElement[1][0] == 'p') {
+              processText(subElement[1]);
+            }
+            else {
+              processText(subElement);
+            }
+          });
         }
 
         /* preformatted */
