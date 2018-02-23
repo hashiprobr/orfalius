@@ -96,7 +96,7 @@ module.exports = function(templatePath, darkMode = false) {
 
         else if(element[0] == 'ul' || element[0] == 'ol') {
           element.slice(1).forEach(function(subElement) {
-            if(subElement[1][0] == 'p') {
+            if(subElement[1] instanceof Array && subElement[1][0] == 'p') {
               processText(subElement[1]);
             }
             else {
