@@ -30,7 +30,9 @@ var processText = function(element) {
         if(subSubElement.startsWith('>')) {
           subElement[1] = subSubElement.slice(1);
 
-          subClassName = 'nostalbox nostalprint';
+          if(!subSubElement.startsWith('>>')) {
+            subClassName = 'nostalbox nostalprint';
+          }
         }
 
         subElement.splice(1, 0, {class: subClassName});
@@ -122,8 +124,10 @@ module.exports = function(templatePath, darkMode = false) {
           if(subSubElement.startsWith('>')) {
             subElement[1] = subSubElement.slice(1);
 
-            className = 'nostalbox';
-            subClassName = 'nostalprint';
+            if(!subSubElement.startsWith('>>')) {
+              className = 'nostalbox';
+              subClassName = 'nostalprint';
+            }
           }
 
           element.splice(1, 0, {class: className});
