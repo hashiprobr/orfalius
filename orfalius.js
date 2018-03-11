@@ -43,7 +43,6 @@ var processText = function(element) {
 
 
 var replaceMath = function(match, length) {
-  console.log(match);
   return match.substring(length, match.length - length).replace(/<\/?em>/g, '_');
 };
 
