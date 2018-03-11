@@ -42,6 +42,19 @@ var processText = function(element) {
 };
 
 
+var replaceMath = function(match, length) {
+  return match.substring(length, match.length - length).replace(/<\/?em>/g, '_');
+};
+
+var replaceDisplayMath = function(contents) {
+  return contents.replace(/\$\$\$.*\$\$\$/g, function(match) { return '\\[' + replaceMath(match, 3) + '\\]'; });
+};
+
+var replaceInlineMath = function(contents) {
+  return contents.replace(/\$\$.*\$\$/g, function(match) { return '\\(' + replaceMath(match, 2) + '\\)'; });
+};
+
+
 module.exports = function(templatePath, darkMode = false) {
   var templateSource = fs.readFileSync(templatePath).toString();
   var template = Handlebars.compile(templateSource);
@@ -146,7 +159,11 @@ module.exports = function(templatePath, darkMode = false) {
       var prefix = '../'.repeat(depth);
 
       var title = htmlTree[1][1];
+
       var contents = markdown.renderJsonML(htmlTree);
+      contents = replaceDisplayMath(contents);
+      contents = replaceInlineMath(contents);
+
       var html = template({title: title, prefix: prefix, contents: contents});
 
       file.contents = new Buffer(html);

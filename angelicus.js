@@ -13,8 +13,6 @@ module.exports = function(templatePath) {
 
   return through.obj(function(file, encoding, callback) {
     if(file.isBuffer()) {
-      var contents = file.contents.toString();
-
       var depth = -1;
 
       for(var c of path.relative('.', file.path)) {
@@ -25,9 +23,12 @@ module.exports = function(templatePath) {
 
       var prefix = '../'.repeat(depth);
 
+      var contents = file.contents.toString();
+
       var openIndex = contents.indexOf('<h1>') + 4;
       var closeIndex = contents.indexOf('</h1>', openIndex);
       var title = contents.substring(openIndex, closeIndex);
+
       var html = template({title: title, prefix: prefix, contents: contents});
 
       file.contents = new Buffer(html);
