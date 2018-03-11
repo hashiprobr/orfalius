@@ -43,15 +43,16 @@ var processText = function(element) {
 
 
 var replaceMath = function(match, length) {
+  console.log(match);
   return match.substring(length, match.length - length).replace(/<\/?em>/g, '_');
 };
 
 var replaceDisplayMath = function(contents) {
-  return contents.replace(/\$\$\$.*\$\$\$/g, function(match) { return '\\[' + replaceMath(match, 3) + '\\]'; });
+  return contents.replace(/\$\$\$[^$]*\$\$\$/g, function(match) { return '\\[' + replaceMath(match, 3) + '\\]'; });
 };
 
 var replaceInlineMath = function(contents) {
-  return contents.replace(/\$\$.*\$\$/g, function(match) { return '\\(' + replaceMath(match, 2) + '\\)'; });
+  return contents.replace(/\$\$[^$]*\$\$/g, function(match) { return '\\(' + replaceMath(match, 2) + '\\)'; });
 };
 
 
