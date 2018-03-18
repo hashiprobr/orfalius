@@ -27,10 +27,10 @@ var processText = function(element) {
 
         var subClassName = 'prettybox prettyprint';
 
-        if(subSubElement.startsWith('>')) {
+        if(subSubElement.startsWith('\\>') || subSubElement.startsWith('>')) {
           subElement[1] = subSubElement.slice(1);
 
-          if(!subSubElement.startsWith('>>')) {
+          if(subSubElement.startsWith('>')) {
             subClassName = 'nostalbox nostalprint';
           }
         }
@@ -134,10 +134,10 @@ module.exports = function(templatePath, darkMode = false) {
           var className = 'prettybox';
           var subClassName = 'prettyprint';
 
-          if(subSubElement.startsWith('>')) {
+          if(subSubElement.startsWith('\\>') || subSubElement.startsWith('>')) {
             subElement[1] = subSubElement.slice(1);
 
-            if(!subSubElement.startsWith('>>')) {
+            if(subSubElement.startsWith('>')) {
               className = 'nostalbox';
               subClassName = 'nostalprint';
             }
