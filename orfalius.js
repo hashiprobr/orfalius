@@ -148,15 +148,22 @@ module.exports = function(templatePath, darkMode = false) {
         }
       });
 
-      var depth = -1;
+      var prefix;
 
-      for(var c of path.relative('.', file.path)) {
-        if(c == '/' || c == '\\') {
-          depth += 1;
-        }
+      if(path.basename(path.dirname(file.path)) == 'error') {
+        prefix = '/';
       }
+      else {
+        var depth = -1;
 
-      var prefix = '../'.repeat(depth);
+        for(var c of path.relative('.', file.path)) {
+          if(c == '/' || c == '\\') {
+            depth += 1;
+          }
+        }
+
+        prefix = '../'.repeat(depth);
+      }
 
       var title = htmlTree[1][1];
 
