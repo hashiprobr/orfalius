@@ -16,7 +16,7 @@ module.exports = function(templatePath) {
       var depth = -1;
 
       for(var c of path.relative('.', file.path)) {
-        if(c == '/' || c == '\\') {
+        if(path.sep) {
           depth += 1;
         }
       }
