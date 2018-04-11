@@ -59,7 +59,7 @@ var medianAtLeastC = {
 };
 
 
-var build_report = function(schema, raw) {
+var buildReport = function(schema, raw) {
   var grade;
   var grades;
 
@@ -72,8 +72,8 @@ var build_report = function(schema, raw) {
   var subtags;
   var tags = ['<h2>Situação em cada objetivo</h2><p>Se uma linha estiver vermelha, o objetivo não foi atingido. Para aprovação nesta disciplina, <strong>nenhuma linha pode estar vermelha no final do semestre</strong>.</p>'];
 
-  var failed_locals = false;
-  var failed_global = false;
+  var failedLocals = false;
+  var failedGlobal = false;
 
   for(var code in schema.goals) {
     var goal = schema.goals[code];
@@ -105,21 +105,21 @@ var build_report = function(schema, raw) {
     tags.push('<ul>' + subtags.join('') + '</ul>');
 
     if(!recovered && !result[1]) {
-      failed_locals = true;
+      failedLocals = true;
     }
   }
 
   tags.push('<h2>Situação no conjunto de objetivos</h2><p>Se a linha estiver vermelha, o desempenho mínimo não foi atingido. Para aprovação nesta disciplina, <strong>a linha não pode estar vermelha no final do semestre</strong>.</p>');
 
-  var partial_mean = roundPlace(sum / num);
+  var partialMean = roundPlace(sum / num);
 
-  result = partial_mean >= 4.5;
+  result = partialMean >= 4.5;
   className = result ? 'positive' : 'negative';
 
-  tags.push('<ul><li class="' + className + '">Média Parcial: ' + partial_mean + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="raw/matriz.pdf">baixar a matriz</a>.</p>');
+  tags.push('<ul><li class="' + className + '">Média Parcial: ' + partialMean + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="raw/matriz.pdf">baixar a matriz</a>.</p>');
 
   if(!result) {
-    failed_global = true;
+    failedGlobal = true;
   }
 
   tags.push('<h2>Bônus em caso de aprovação</h2><p>Os conceitos e médias abaixo são ignorados se alguma linha acima estiver vermelha.</p>');
@@ -153,13 +153,13 @@ var build_report = function(schema, raw) {
 
   tags.push('<h2>Nota que será registrada no Blackboard</h2><p>Se alguma linha acima estiver vermelha, o bônus é ignorado e a Média Final é o menor valor dentre 4.0 e a Média Parcial. Caso contrário, a Média Final é o maior valor dentre 5.0 e uma média ponderada da Média Parcial (peso 90%) e do bônus (pesos acima).</p>');
 
-  if(failed_locals || failed_global) {
-    result = Math.min(4, partial_mean);
+  if(failedLocals || failedGlobal) {
+    result = Math.min(4, partialMean);
   }
   else {
     var weight = 90;
 
-    sum += weight * partial_mean;
+    sum += weight * partialMean;
     num += weight;
 
     result = Math.max(5, roundPlace(sum / num));
@@ -171,7 +171,7 @@ var build_report = function(schema, raw) {
 };
 
 
-var print_report = function(schema) {
+var printReport = function(schema) {
   $('input[type=file]').change(function(event) {
     var files = event.target.files;
 
@@ -186,7 +186,7 @@ var print_report = function(schema) {
         try {
           var raw = JSON.parse(reader.result);
 
-          html = build_report(schema, raw);
+          html = buildReport(schema, raw);
         }
         catch(error) {
           html = '<p class="negative">' + error + '</p>';
