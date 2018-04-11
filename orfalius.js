@@ -61,6 +61,23 @@ module.exports = function(templatePath, darkMode = false) {
 
   return through.obj(function(file, encoding, callback) {
     if(file.isBuffer()) {
+      var prefix;
+
+      if(path.basename(path.dirname(file.path)) == 'error') {
+        prefix = '/';
+      }
+      else {
+        var depth = -1;
+
+        for(var c of path.relative('.', file.path)) {
+          if(c == path.sep) {
+            depth += 1;
+          }
+        }
+
+        prefix = '../'.repeat(depth);
+      }
+
       var markdownSource = file.contents.toString();
       var markdownTree = markdown.parse(markdownSource);
       var htmlTree = markdown.toHTMLTree(markdownTree);
@@ -93,7 +110,11 @@ module.exports = function(templatePath, darkMode = false) {
 
             var src = subElement[1].src;
 
-            subElement[1].src = src.startsWith('/') ? '/img'  + src : 'img/'  + src;
+            subElement[1].src = 'img/' + src;
+
+            if(prefix == '/') {
+              subElement[1].src = '/' + subElement[1].src;
+            }
 
             if(src.slice(-3) != 'svg') {
               subElement[1].class = 'raster';
@@ -147,23 +168,6 @@ module.exports = function(templatePath, darkMode = false) {
           subElement.splice(1, 0, {class: subClassName});
         }
       });
-
-      var prefix;
-
-      if(path.basename(path.dirname(file.path)) == 'error') {
-        prefix = '/';
-      }
-      else {
-        var depth = -1;
-
-        for(var c of path.relative('.', file.path)) {
-          if(c == path.sep) {
-            depth += 1;
-          }
-        }
-
-        prefix = '../'.repeat(depth);
-      }
 
       var title = htmlTree[1][1];
 
