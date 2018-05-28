@@ -162,7 +162,7 @@ var buildReport = function(schema, raw) {
     sum += weight * partialMean;
     num += weight;
 
-    result = Math.max(5, roundPlace(sum / num));
+    result = Math.max(5, partialMean, roundPlace(sum / num));
   }
 
   tags.push('<ul><li class="highlight">Média Final: ' + result + '</li></ul>');
