@@ -33,6 +33,18 @@ var meanFromLetters = function(grades) {
   return roundPlace(sum / grades.length);
 };
 
+var bestMeanFromLetters = function(grades) {
+  var sorted = grades.sort().reverse().slice(1);
+
+  var sum = 0;
+
+  for(var grade of sorted) {
+    sum += convert(grade);
+  }
+
+  return roundPlace(sum / sorted.length);
+};
+
 var medianFromLetters = function(grades) {
   var sorted = grades.sort().reverse();
 
@@ -142,7 +154,12 @@ var buildReport = function(schema, raw) {
       subtags.push('<li>' + piece + ': ' + grade + '</li>');
     }
 
-    result = meanFromLetters(grades);
+    if(grades.length == 1) {
+      result = meanFromLetters(grades);
+    }
+    else {
+      result = bestMeanFromLetters(grades);
+    }
 
     sum += weight * result;
     num += weight;
