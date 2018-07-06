@@ -144,6 +144,10 @@ em {
   font-style: italic;
 }
 
+video {
+  width: 100%;
+}
+
 img {
   max-width: 100%;
 }

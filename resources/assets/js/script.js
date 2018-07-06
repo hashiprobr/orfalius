@@ -15,6 +15,15 @@ var hide = function($curr, callback) {
 
 
 $(document).ready(function() {
+  $('video').hover(
+    function() {
+      $(this).attr('controls', 'true');
+    },
+    function() {
+      $(this).removeAttr('controls');
+    }
+  );
+
   if(window.location.hash) {
     return;
   }

@@ -5,7 +5,7 @@ var angelicus = require('./angelicus');
 var orfalius = require('./orfalius');
 
 const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
-const STATIC = ['src/**/img/*', 'src/**/raw/*'];
+const STATIC = ['src/**/vid/*', 'src/**/img/*', 'src/**/raw/*'];
 const CORES = ['src/**/*.html'];
 const SOURCES = ['src/**/*.md'];
 const DARK_SOURCES = ['dark-src/**/*.md'];

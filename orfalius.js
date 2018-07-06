@@ -101,6 +101,12 @@ module.exports = function(templatePath, darkMode = false) {
             element.splice(0, element.length, 'a', {id: subElement.slice(1)});
           }
 
+          // video
+
+          else if(typeof subElement == 'string' && subElement.startsWith('&')) {
+            element.splice(1, element.length - 1, {class: 'figure'}, ['video', {'src': 'vid/' + subElement.slice(1)}]);
+          }
+
           // image
 
           else if(subElement instanceof Array && subElement[0] == 'img') {
