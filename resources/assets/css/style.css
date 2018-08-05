@@ -85,6 +85,10 @@ ol {
   list-style: decimal outside;
 }
 
+li {
+  margin-bottom: 1rem;
+}
+
 ul, ol {
   padding-left: 2rem;
 }
@@ -145,6 +149,7 @@ em {
 }
 
 video {
+  border: 1px solid #bcbec0;
   width: 100%;
 }
 
