@@ -183,7 +183,7 @@ module.exports = function(templatePath, darkMode = false) {
 
       var html = template({title: title, prefix: prefix, contents: contents});
 
-      file.contents = new Buffer(html);
+      file.contents = new Buffer.from(html);
       file.path = file.path.slice(0, -2) + 'html';
     }
 

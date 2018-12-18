@@ -61,6 +61,15 @@ var meanAtLeast45 = {
   },
 };
 
+var meanAtLeast48 = {
+  name: 'Média',
+  check: function(grades) {
+    var mean = meanFromLetters(grades);
+
+    return [mean, mean >= 4.8];
+  },
+};
+
 var medianAtLeastC = {
   name: 'Mediana',
   check: function(grades) {
@@ -125,7 +134,7 @@ var buildReport = function(schema, raw) {
 
   var partialMean = roundPlace(sum / num);
 
-  result = partialMean >= 4.5;
+  result = partialMean >= 4.8;
   className = result ? 'positive' : 'negative';
 
   tags.push('<ul><li class="' + className + '">Média Parcial: ' + partialMean + '</li></ul><p>A Média Parcial é uma média ponderada de todos os instrumentos. Para saber qual é o peso de cada um, basta <a href="raw/matriz.pdf">baixar a matriz</a>.</p>');
@@ -168,10 +177,10 @@ var buildReport = function(schema, raw) {
     tags.push('<ul>' + subtags.join('') + '</ul>');
   }
 
-  tags.push('<h2>Nota que será registrada no Blackboard</h2><p>Se alguma linha acima estiver vermelha, o bônus é ignorado e a Média Final é o menor valor dentre 4.0 e a Média Parcial. Caso contrário, a Média Final é o maior valor dentre 5.0 e uma média ponderada da Média Parcial (peso 90%) e do bônus (pesos acima).</p>');
+  tags.push('<h2>Nota que será registrada no Blackboard</h2><p>Se alguma linha acima estiver vermelha, o bônus é ignorado e a Média Final é o menor valor dentre 4.5 e a Média Parcial. Caso contrário, a Média Final é o maior valor dentre 5.0 e uma média ponderada da Média Parcial (peso 90%) e do bônus (pesos acima).</p>');
 
   if(failedLocals || failedGlobal) {
-    result = Math.min(4, partialMean);
+    result = Math.min(4.5, partialMean);
   }
   else {
     var weight = 90;

@@ -11,51 +11,52 @@ const SOURCES = ['src/**/*.md'];
 const DARK_SOURCES = ['dark-src/**/*.md'];
 const TEMPLATE = 'resources/template.html';
 
-gulp.task('clean', function() {
+clean = function() {
   return del(['site/*', 'bb/*']);
-});
+};
 
-gulp.task('copy-assets', function() {
+copyAssets = function() {
   return gulp.src(ASSETS)
     .pipe(cache('copying'))
     .pipe(gulp.dest('site'))
     .pipe(gulp.dest('bb'));
-});
+};
 
-gulp.task('copy-static', function() {
+copyStatic = function() {
   return gulp.src(STATIC)
     .pipe(cache('copying'))
     .pipe(gulp.dest('site'));
-});
+};
 
-gulp.task('angelicus', function() {
+runAngelicus = function() {
   return gulp.src(CORES)
     .pipe(cache('angelicusing'))
     .pipe(angelicus(TEMPLATE))
     .pipe(gulp.dest('site'));
-});
+};
 
-gulp.task('orfalius', function() {
+runOrfalius = function() {
   return gulp.src(SOURCES)
     .pipe(cache('orfaliusing'))
     .pipe(orfalius(TEMPLATE))
     .pipe(gulp.dest('site'));
-});
+};
 
-gulp.task('dark-orfalius', function() {
+runDarkOrfalius = function() {
   return gulp.src(DARK_SOURCES)
     .pipe(cache('orfaliusing'))
     .pipe(orfalius(TEMPLATE, true))
     .pipe(gulp.dest('bb'));
-});
+};
 
-gulp.task('watch', ['copy-assets', 'copy-static', 'angelicus', 'orfalius', 'dark-orfalius'], function() {
-  gulp.watch(ASSETS, ['copy-assets']);
-  gulp.watch(STATIC, ['copy-static']);
-  gulp.watch(CORES, ['angelicus']);
-  gulp.watch(SOURCES, ['orfalius']);
-  gulp.watch(DARK_SOURCES, ['dark-orfalius']);
-  gulp.watch(TEMPLATE, ['angelicus', 'orfalius', 'dark-orfalius']);
-});
+watch = function() {
+  gulp.watch(ASSETS, copyAssets);
+  gulp.watch(STATIC, copyStatic);
+  gulp.watch(CORES, runAngelicus);
+  gulp.watch(SOURCES, runOrfalius);
+  gulp.watch(DARK_SOURCES, runDarkOrfalius);
+  gulp.watch(TEMPLATE, gulp.parallel(runAngelicus, runOrfalius, runDarkOrfalius));
+};
 
-gulp.task('default', ['watch']);
+gulp.task('clean', clean)
+gulp.task('default', gulp.series(gulp.parallel(copyAssets, copyStatic, runAngelicus, runOrfalius, runDarkOrfalius), watch));
