@@ -202,6 +202,7 @@ h3 a:hover {
   }
 
   .container {
+    height: auto;
     width: 100%;
   }
 
