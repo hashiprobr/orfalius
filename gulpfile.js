@@ -1,3 +1,4 @@
+var fs = require('fs');
 var del = require('del');
 var gulp = require('gulp');
 var cache = require('gulp-cached');
@@ -5,11 +6,16 @@ var angelicus = require('./angelicus');
 var orfalius = require('./orfalius');
 
 const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
-const STATIC = ['src/**/vid/*', 'src/**/img/*', 'src/**/raw/*'];
+const STATIC = ['src/**/*', '!src/**/*.html', '!src/**/*.md'];
 const CORES = ['src/**/*.html'];
 const SOURCES = ['src/**/*.md'];
 const DARK_SOURCES = ['dark-src/**/*.md'];
 const TEMPLATE = 'resources/template.html';
+
+parseNegatives = function(filename) {
+  var ignored = fs.readFileSync(filename).toString();
+  return ignored.trim().split(/\s+/).map(word => '!src/' + word);
+};
 
 clean = function() {
   return del(['site/*', 'bb/*']);
@@ -23,7 +29,7 @@ copyAssets = function() {
 };
 
 copyStatic = function() {
-  return gulp.src(STATIC)
+  return gulp.src(STATIC.concat(parseNegatives('.staignore')))
     .pipe(cache('copying'))
     .pipe(gulp.dest('site'));
 };
@@ -36,7 +42,7 @@ runAngelicus = function() {
 };
 
 runOrfalius = function() {
-  return gulp.src(SOURCES)
+  return gulp.src(SOURCES.concat(parseNegatives('.orfignore')))
     .pipe(cache('orfaliusing'))
     .pipe(orfalius(TEMPLATE))
     .pipe(gulp.dest('site'));
