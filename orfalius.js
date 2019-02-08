@@ -104,7 +104,9 @@ module.exports = function(templatePath) {
           // video
 
           else if(typeof subElement == 'string' && subElement.startsWith('&')) {
-            element.splice(1, element.length - 1, {class: 'figure'}, ['video', {'src': 'vid/' + subElement.slice(1), 'controls': 'true'}]);
+            words = subElement.split('&');
+
+            element.splice(1, element.length - 1, {class: 'figure'}, ['video', {'src': 'vid/' + words[1], 'poster': 'img/' + words[2], 'controls': 'true'}]);
           }
 
           // image
