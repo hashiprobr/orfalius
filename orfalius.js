@@ -55,7 +55,7 @@ var replaceInlineMath = function(contents) {
 };
 
 
-module.exports = function(templatePath, darkMode = false) {
+module.exports = function(templatePath) {
   var templateSource = fs.readFileSync(templatePath).toString();
   var template = Handlebars.compile(templateSource);
 
@@ -151,10 +151,6 @@ module.exports = function(templatePath, darkMode = false) {
 
         else if(element[0] == 'pre') {
           var subElement = element[1];
-
-          if(darkMode) {
-            subElement[1] = subElement[1].replace(/\n/g, '\n>');
-          }
 
           var subSubElement = subElement[1];
 

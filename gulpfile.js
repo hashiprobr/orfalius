@@ -51,7 +51,7 @@ runOrfalius = function() {
 runDarkOrfalius = function() {
   return gulp.src(DARK_SOURCES)
     .pipe(cache('orfaliusing'))
-    .pipe(orfalius(TEMPLATE, true))
+    .pipe(orfalius(TEMPLATE))
     .pipe(gulp.dest('bb'));
 };
 
