@@ -6,8 +6,8 @@ var angelicus = require('./angelicus');
 var orfalius = require('./orfalius');
 
 const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
-const STATIC = ['src/**/*', '!src/**/*.html', '!src/**/*.md'];
-const CORES = ['src/**/*.html'];
+const STATIC = ['src/**/*', '!src/**/*.core', '!src/**/*.md'];
+const CORES = ['src/**/*.core'];
 const SOURCES = ['src/**/*.md'];
 const DARK_SOURCES = ['dark-src/**/*.md'];
 const TEMPLATE = 'resources/template.html';

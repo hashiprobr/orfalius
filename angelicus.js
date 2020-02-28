@@ -32,6 +32,7 @@ module.exports = function(templatePath) {
       var html = template({title: title, prefix: prefix, contents: contents});
 
       file.contents = new Buffer.from(html);
+      file.path = file.path.slice(0, -4) + 'html';
     }
 
     return callback(null, file);
