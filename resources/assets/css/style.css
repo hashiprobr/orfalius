@@ -270,3 +270,18 @@ h3 a:hover {
     border-color: #000000;
   }
 }
+
+
+/* codepen */
+
+.cp_embed_wrapper {
+  height: 400px;
+  margin-bottom: 1rem;
+  padding-bottom: 10px;
+  overflow: hidden;
+  resize: both;
+}
+
+.cp_embed_wrapper iframe {
+  height: 100% !important;
+}

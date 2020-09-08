@@ -109,6 +109,14 @@ module.exports = function(templatePath) {
             element.splice(1, element.length - 1, {class: 'figure'}, ['video', {'src': 'vid/' + words[1], 'poster': 'img/' + words[2], 'controls': 'true'}]);
           }
 
+          // codepen
+
+          else if(typeof subElement == 'string' && subElement.startsWith('%')) {
+            words = subElement.split('%');
+
+            element.splice(1, element.length - 1, {class: 'codepen', 'data-theme-id': 'dark', 'data-user': words[1], 'data-slug-hash': words[2], 'data-default-tab': words[3]});
+          }
+
           // image
 
           else if(subElement instanceof Array && subElement[0] == 'img') {
