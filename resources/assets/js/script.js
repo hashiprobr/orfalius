@@ -159,6 +159,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             });
+
+            lecture.addEventListener('ended', function () {
+                hide(lecture);
+                hide(pauseButton);
+                playButton.style.display = 'inline';
+                hide(slides[index].element);
+                index = 0;
+                updateReader(slides, index, lecture, prevButton, nextButton);
+            });
         } else {
             hide(playButton);
 
