@@ -160,6 +160,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+            lecture.addEventListener('seeked', function () {
+                let i;
+                for (i = 0; i < slides.length && slides[i].time < lecture.currentTime; i++);
+                if (i < slides.length) {
+                    hide(slides[index].element);
+                    index = i;
+                    updateReader(slides, index, lecture, prevButton, nextButton);
+                }
+            });
+
+            lecture.addEventListener('pause', function () {
+                if (!lecture.seeking) {
+                    hide(lecture);
+                    hide(pauseButton);
+                    playButton.style.display = 'inline';
+                }
+            });
+
             lecture.addEventListener('ended', function () {
                 hide(lecture);
                 hide(pauseButton);
@@ -167,6 +185,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 hide(slides[index].element);
                 index = 0;
                 updateReader(slides, index, lecture, prevButton, nextButton);
+            });
+
+            document.addEventListener('keydown', function (event) {
+                switch (event.key) {
+                    case 'ArrowLeft':
+                        prevButton.click();
+                        break;
+                    case 'ArrowRight':
+                        nextButton.click();
+                        break;
+                    default:
+                }
             });
         } else {
             hide(playButton);
