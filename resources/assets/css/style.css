@@ -359,10 +359,7 @@ mjx-container:focus {
     height: 24rem;
     overflow: hidden;
     resize: both;
-    margin-bottom: 1rem;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-    background-color: #efefef;
+    padding-bottom: 1rem;
 }
 
 .cp_embed_wrapper iframe {
