@@ -211,8 +211,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case 'ArrowRight':
                         if (date) {
-                            console.log((Date.now() - date) / 1000);
                             nextButton.click();
+                            console.log((Date.now() - date) / 1000);
                         } else {
                             date = Date.now();
                             console.log('play');
