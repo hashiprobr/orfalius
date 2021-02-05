@@ -1,68 +1,79 @@
-var fs = require('fs');
-var del = require('del');
-var gulp = require('gulp');
-var cache = require('gulp-cached');
-var angelicus = require('./angelicus');
-var orfalius = require('./orfalius');
+const fs = require('fs');
+const del = require('del');
+const gulp = require('gulp');
+const cache = require('gulp-cached');
+const orfalius = require('./orfalius');
+
 
 const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
-const STATIC = ['src/**/*', '!src/**/*.core', '!src/**/*.md'];
-const CORES = ['src/**/*.core'];
-const SOURCES = ['src/**/*.md'];
-const DARK_SOURCES = ['dark-src/**/*.md'];
+const STATIC = ['src/**/*', '!src/**/*.md'];
+const STATIC_PRIVATE = ['src_private/**/*', '!src_private/**/*.md'];
+const SOURCE = ['src/**/*.md'];
+const SOURCE_PRIVATE = ['src_private/**/*.md'];
 const TEMPLATE = 'resources/template.html';
 
-parseNegatives = function(filename) {
-  var ignored = fs.readFileSync(filename).toString();
-  return ignored.trim().split(/\s+/).map(word => '!src/' + word);
-};
 
-clean = function() {
-  return del(['site/*', 'bb/*']);
-};
+function parse(filename) {
+    let ignore = fs.readFileSync(filename).toString();
+    return ignore.trim().split(/\s+/).map(word => '!src/' + word);
+}
 
-copyAssets = function() {
-  return gulp.src(ASSETS)
-    .pipe(cache('copying'))
-    .pipe(gulp.dest('site'))
-    .pipe(gulp.dest('bb'));
-};
+function clean() {
+    return del(['site/*', 'site_private/*']);
+}
 
-copyStatic = function() {
-  return gulp.src(STATIC.concat(parseNegatives('.staignore')))
-    .pipe(cache('copying'))
-    .pipe(gulp.dest('site'));
-};
 
-runAngelicus = function() {
-  return gulp.src(CORES)
-    .pipe(cache('angelicusing'))
-    .pipe(angelicus(TEMPLATE))
-    .pipe(gulp.dest('site'));
-};
+function copyAssets() {
+    return gulp.src(ASSETS).
+        pipe(cache('copy')).
+        pipe(gulp.dest('site')).
+        pipe(gulp.dest('site_private'));
+}
 
-runOrfalius = function() {
-  return gulp.src(SOURCES.concat(parseNegatives('.orfignore')))
-    .pipe(cache('orfaliusing'))
-    .pipe(orfalius(TEMPLATE))
-    .pipe(gulp.dest('site'));
-};
+function copyStatic() {
+    return gulp.src(STATIC.concat(parse('.staignore'))).
+        pipe(cache('copy')).
+        pipe(gulp.dest('site'));
+}
 
-runDarkOrfalius = function() {
-  return gulp.src(DARK_SOURCES)
-    .pipe(cache('orfaliusing'))
-    .pipe(orfalius(TEMPLATE))
-    .pipe(gulp.dest('bb'));
-};
+function copyStaticPrivate() {
+    return gulp.src(STATIC_PRIVATE).
+        pipe(cache('copy')).
+        pipe(gulp.dest('site_private'));
+}
 
-watch = function() {
-  gulp.watch(ASSETS, copyAssets);
-  gulp.watch(STATIC, copyStatic);
-  gulp.watch(CORES, runAngelicus);
-  gulp.watch(SOURCES, runOrfalius);
-  gulp.watch(DARK_SOURCES, runDarkOrfalius);
-  gulp.watch(TEMPLATE, gulp.parallel(runAngelicus, runOrfalius, runDarkOrfalius));
-};
+function compile() {
+    return gulp.src(SOURCE.concat(parse('.orfignore'))).
+        pipe(cache('compile')).
+        pipe(orfalius(TEMPLATE)).
+        pipe(gulp.dest('site'));
+}
 
-gulp.task('clean', clean)
-gulp.task('default', gulp.series(gulp.parallel(copyAssets, copyStatic, runAngelicus, runOrfalius, runDarkOrfalius), watch));
+function compilePrivate() {
+    return gulp.src(SOURCE_PRIVATE).
+        pipe(cache('compile')).
+        pipe(orfalius(TEMPLATE)).
+        pipe(gulp.dest('site_private'));
+}
+
+function watch() {
+    gulp.watch(ASSETS, copyAssets);
+    gulp.watch(STATIC, copyStatic);
+    gulp.watch(STATIC_PRIVATE, copyStaticPrivate);
+    gulp.watch(SOURCE, compile);
+    gulp.watch(SOURCE_PRIVATE, compilePrivate);
+    gulp.watch(TEMPLATE, gulp.parallel(compile, compilePrivate));
+}
+
+
+gulp.task('clean', clean);
+
+gulp.task('default', gulp.series(
+    gulp.parallel(
+        copyAssets,
+        copyStatic,
+        copyStaticPrivate,
+        compile,
+        compilePrivate),
+    watch
+));
