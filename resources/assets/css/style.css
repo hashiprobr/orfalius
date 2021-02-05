@@ -92,7 +92,7 @@ tbody > tr:nth-child(odd) {
     background-color: #ffffff;
 }
 th, td {
-    padding: .5rem 1rem;
+    padding: .5em 1em;
 }
 th {
     font-weight: bold;
@@ -282,7 +282,7 @@ code.terminal {
 }
 
 kbd {
-    border-width: .05em;
+    border-width: .05rem;
     border-style: solid;
     border-color: #efefef #666666 #666666 #efefef;
     border-radius: .25em;
