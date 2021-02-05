@@ -31,6 +31,7 @@ function updateTime(slides, index, lecture) {
     if (lecture) {
         let time = slides[index].time;
         if (!isNaN(time)) {
+            lecture.setAttribute('automatic', '');
             lecture.currentTime = time;
         }
     }
@@ -150,23 +151,31 @@ document.addEventListener('DOMContentLoaded', function () {
             details.appendChild(lecture);
 
             lecture.addEventListener('timeupdate', function () {
-                if (index < slides.length - 1) {
-                    let nextTime = slides[index + 1].time;
-                    if (!isNaN(nextTime) && lecture.currentTime >= nextTime) {
-                        hide(slides[index].element);
-                        index++;
-                        updateReader(slides, index, lecture, prevButton, nextButton);
+                if (!lecture.seeking) {
+                    if (index < slides.length - 1) {
+                        let nextTime = slides[index + 1].time;
+                        if (!isNaN(nextTime) && lecture.currentTime >= nextTime) {
+                            hide(slides[index].element);
+                            index++;
+                            updateReader(slides, index, lecture, prevButton, nextButton);
+                        }
                     }
                 }
             });
 
             lecture.addEventListener('seeked', function () {
-                let i;
-                for (i = 0; i < slides.length && slides[i].time < lecture.currentTime; i++);
-                if (i < slides.length) {
-                    hide(slides[index].element);
-                    index = i;
-                    updateReader(slides, index, lecture, prevButton, nextButton);
+                if (lecture.hasAttribute('automatic')) {
+                    lecture.removeAttribute('automatic');
+                } else {
+                    if (!lecture.seeking) {
+                        let i;
+                        for (i = 0; i < slides.length && slides[i].time > lecture.currentTime; i++);
+                        if (i < slides.length) {
+                            hide(slides[index].element);
+                            index = i;
+                            updateReader(slides, index, lecture, prevButton, nextButton);
+                        }
+                    }
                 }
             });
 
@@ -179,12 +188,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             lecture.addEventListener('ended', function () {
-                hide(lecture);
-                hide(pauseButton);
-                playButton.style.display = 'inline';
-                hide(slides[index].element);
-                index = 0;
-                updateReader(slides, index, lecture, prevButton, nextButton);
+                if (!lecture.seeking) {
+                    hide(lecture);
+                    hide(pauseButton);
+                    playButton.style.display = 'inline';
+                    hide(slides[index].element);
+                    index = 0;
+                    updateReader(slides, index, lecture, prevButton, nextButton);
+                }
             });
 
             document.addEventListener('keydown', function (event) {
