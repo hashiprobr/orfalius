@@ -118,66 +118,69 @@ function processImage(element, prefix) {
 }
 
 function processChildren(document, element, prefix, dirName, name) {
-    if (!element.children) {
-        return;
-    }
-    for (let child of element.children) {
-        switch (child.tagName) {
-            case 'P':
-                processParagraph(document, child, prefix, dirName, name);
-                break;
-            case 'UL':
-            case 'OL':
-                for (let grandChild of child.children) {
-                    processChildren(document, grandChild, prefix, dirName, name);
-                }
-                break;
-            case 'TABLE':
-                let figure = document.createElement('figure');
-                replace(child, figure);
-                figure.setAttribute('class', 'table');
-                figure.appendChild(child);
-                break;
-            case 'BLOCKQUOTE':
-            case 'DETAILS':
-            case 'DIV':
-                processChildren(document, child, prefix, dirName, name);
-                break;
-            case 'PRE':
-                let code = child.querySelector('code');
-                if (!code.hasAttribute('class')) {
-                    code.setAttribute('class', 'terminal nohighlight');
-                }
-                break;
-            case 'CODE':
-                let className = 'terminal nohighlight';
-                let innerHTML = child.innerHTML;
-                if (innerHTML.startsWith('!')) {
-                    let index = innerHTML.search(/\s/);
-                    if (index > 1) {
-                        className = 'language-' + innerHTML.slice(1, index);
-                        child.innerHTML = innerHTML.slice(index + 1);
+    let removable = [];
+    if (element.children) {
+        for (let child of element.children) {
+            switch (child.tagName) {
+                case 'P':
+                    removable.push(...processParagraph(document, child, prefix, dirName, name));
+                    break;
+                case 'UL':
+                case 'OL':
+                    for (let grandChild of child.children) {
+                        removable.push(...processChildren(document, grandChild, prefix, dirName, name));
                     }
-                } else if (innerHTML.startsWith('\\!')) {
-                    child.innerHTML = innerHTML.slice(1);
-                }
-                child.setAttribute('class', className);
-                break;
-            case 'A':
-                if (child.href.startsWith('http')) {
-                    child.setAttribute('target', '_blank');
-                }
-                break;
-            case 'IMG':
-                processImage(child, prefix);
-                break;
-            default:
+                    break;
+                case 'TABLE':
+                    let figure = document.createElement('figure');
+                    replace(child, figure);
+                    figure.setAttribute('class', 'table');
+                    figure.appendChild(child);
+                    break;
+                case 'BLOCKQUOTE':
+                case 'DETAILS':
+                case 'DIV':
+                    removable.push(...processChildren(document, child, prefix, dirName, name));
+                    break;
+                case 'PRE':
+                    let code = child.querySelector('code');
+                    if (!code.hasAttribute('class')) {
+                        code.setAttribute('class', 'terminal nohighlight');
+                    }
+                    break;
+                case 'CODE':
+                    let className = 'terminal nohighlight';
+                    let innerHTML = child.innerHTML;
+                    if (innerHTML.startsWith('!')) {
+                        let index = innerHTML.search(/\s/);
+                        if (index > 1) {
+                            className = 'language-' + innerHTML.slice(1, index);
+                            child.innerHTML = innerHTML.slice(index + 1);
+                        }
+                    } else if (innerHTML.startsWith('\\!')) {
+                        child.innerHTML = innerHTML.slice(1);
+                    }
+                    child.setAttribute('class', className);
+                    break;
+                case 'A':
+                    if (child.href.startsWith('http')) {
+                        child.setAttribute('target', '_blank');
+                    }
+                    break;
+                case 'IMG':
+                    processImage(child, prefix);
+                    break;
+                default:
+            }
         }
     }
+    return removable;
 }
 
 
 function processParagraph(document, element, prefix, dirName, name) {
+    let removable = [];
+
     let innerHTML = element.innerHTML;
 
     if (innerHTML.startsWith('.')) {
@@ -185,7 +188,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         let src = name + innerHTML.trim();
         let lecture = document.querySelector('video.reader-lecture');
         if (lecture) {
-            element.parentElement.removeChild(element);
+            removable.push(element);
         } else {
             lecture = document.createElement('video');
             lecture.setAttribute('class', 'reader-lecture');
@@ -201,10 +204,10 @@ function processParagraph(document, element, prefix, dirName, name) {
         if (tail) {
             let folder = 'img/' + tail;
             let imgs = [];
-            for (let fileName of fs.readdirSync(dirName + '/' + folder)) {
+            for (let [i, fileName] of fs.readdirSync(dirName + '/' + folder).entries()) {
                 let img = document.createElement('img');
-                img.setAttribute('src', folder + '/' + fileName);
-                img.setAttribute('alt', fileName);
+                img.setAttribute('src', tail + '/' + fileName);
+                img.setAttribute('alt', i + 1);
                 imgs.push(img);
             }
             if (imgs.length > 0) {
@@ -212,6 +215,7 @@ function processParagraph(document, element, prefix, dirName, name) {
                 animation.setAttribute('class', 'animation');
                 for (let img of imgs) {
                     animation.appendChild(img);
+                    processImage(img, prefix);
                 }
                 replace(element, animation);
             }
@@ -265,9 +269,11 @@ function processParagraph(document, element, prefix, dirName, name) {
                 innerHTML.startsWith('\\&amp;')) {
                 element.innerHTML = innerHTML.slice(1);
             }
-            processChildren(document, element, prefix, dirName, name);
+            removable.push(...processChildren(document, element, prefix, dirName, name));
         }
     }
+
+    return removable;
 }
 
 
@@ -319,7 +325,9 @@ function orfalius(templatePath) {
                 prefix = '../'.repeat(paths.length - 2);
             }
 
-            processChildren(document, body, prefix, dirName, name);
+            for (let element of processChildren(document, body, prefix, dirName, name)) {
+                element.remove();
+            }
 
             let contents = body.innerHTML;
 
