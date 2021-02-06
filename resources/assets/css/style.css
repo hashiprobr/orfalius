@@ -258,6 +258,19 @@ div.animation-controls > span {
     vertical-align: .25rem;
 }
 
+div.item {
+    position: relative;
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+span.item-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: "Oxygen Mono", monospace;
+    font-weight: bold;
+}
+
 pre {
     overflow-x: auto;
     margin-bottom: 1rem;
@@ -312,12 +325,6 @@ a.button:hover {
 a.button.disabled {
     pointer-events: none;
     color: #666666;
-}
-
-span.item {
-    margin-right: 1em;
-    font-family: "Oxygen Mono", monospace;
-    font-weight: bold;
 }
 
 em {

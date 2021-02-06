@@ -95,6 +95,22 @@ const slideOptions = {
     marker: '+',
 };
 
+const itemOptions = {
+    validate: function (params) {
+        return params.trim();
+    },
+    render: function (tokens, idx) {
+        let tail = tokens[idx].info.trim();
+        let title = tail.split(/\s+/).join(' ');
+        if (tokens[idx].nesting === 1) {
+            return '<div class="item">\n<span class="item-marker">' + title + '</span>\n';
+        } else {
+            return '</div>\n';
+        }
+    },
+    marker: '|',
+};
+
 
 function replace(reference, element) {
     let parent = reference.parentElement;
@@ -221,17 +237,6 @@ function processParagraph(document, element, prefix, dirName, name) {
             }
         }
 
-    } else if (innerHTML.startsWith('|')) {
-        // ITEM
-        let index = innerHTML.search(/\s/);
-        if (index > 1) {
-            element.innerHTML = innerHTML.slice(index + 1);
-            let span = document.createElement('span');
-            span.setAttribute('class', 'item');
-            span.innerHTML = innerHTML.slice(1, index);
-            element.prepend(span);
-        }
-
     } else if (innerHTML.startsWith('@')) {
         // ANCHOR
         let id = innerHTML.slice(1);
@@ -275,7 +280,6 @@ function processParagraph(document, element, prefix, dirName, name) {
             // P
             if (innerHTML.startsWith('\\.') ||
                 innerHTML.startsWith('\\,') ||
-                innerHTML.startsWith('\\|') ||
                 innerHTML.startsWith('\\@') ||
                 innerHTML.startsWith('\\%') ||
                 innerHTML.startsWith('\\&amp;')) {
@@ -306,6 +310,7 @@ function orfalius(templatePath) {
                 use(container, 'answer', answerOptions).
                 use(container, 'section', sectionOptions).
                 use(container, 'slide', slideOptions).
+                use(container, 'item', itemOptions).
                 use(kbd);
 
             let htmlString = md.render(file.contents.toString());
