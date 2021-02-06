@@ -106,6 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    let page = (new URLSearchParams(window.location.search)).get('open');
+
     let slides = [];
     let index = 0;
     let lecture = document.querySelector('video.reader-lecture');
@@ -145,6 +147,12 @@ document.addEventListener('DOMContentLoaded', function () {
         for (let slide of slides) {
             parent.removeChild(slide.element);
             display.appendChild(slide.element);
+        }
+
+        let shift = parseInt(page);
+
+        if (!isNaN(shift) && shift > 0 && shift <= slides.length) {
+            index = shift - 1;
         }
 
         if (lecture) {
@@ -313,6 +321,10 @@ document.addEventListener('DOMContentLoaded', function () {
             index++;
             updateAnimation(imgs, index, leftButton, text, rightButton);
         });
+    }
+
+    if (page || window.location.hash) {
+        a.click();
     }
 
     for (let block of document.querySelectorAll('code')) {
