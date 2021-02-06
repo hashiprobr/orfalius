@@ -111,9 +111,9 @@ function wrapFigure(document, element, className) {
 
 function createVideo(document, src, poster) {
     let video = document.createElement('video');
-    video.setAttribute('src', 'vid/' + src);
+    video.setAttribute('src', src);
     if (poster) {
-        video.setAttribute('poster', 'vid/' + poster);
+        video.setAttribute('poster', poster);
     }
     return video;
 }
@@ -225,11 +225,12 @@ function processParagraph(document, element, prefix, dirName, name) {
     } else if (innerHTML.startsWith('%')) {
         // VIDEO
         let words = innerHTML.trim().slice(1).split('%');
+        let src = 'vid/' + words[0];
         let video;
         if (words.length < 2) {
-            video = createVideo(document, words[0]);
+            video = createVideo(document, src);
         } else {
-            video = createVideo(document, words[0], words[1]);
+            video = createVideo(document, src, 'vid/' + words[1]);
         }
         video.setAttribute('controls', '');
         let figure = wrapFigure(document, video, 'video');
