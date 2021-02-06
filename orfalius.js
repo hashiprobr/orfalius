@@ -126,9 +126,17 @@ function wrapFigure(document, element, className) {
 }
 
 function processImage(element, prefix) {
-    let src = '/' + element.src;
-    if (prefix !== '/') {
-        src = 'img' + src;
+    let src = element.src;
+    let re = /(?<!%7C)(\%7C\%7C)*(\%7C)(?!%7C)/g;
+    let match = re.exec(src);
+    if (match && !re.exec(src)) {
+        element.setAttribute('style', 'max-height: ' + src.slice(match.index + 3) + 'em;');
+        src = src.slice(0, match.index);
+    }
+    if (prefix === '/') {
+        src = '/' + src;
+    } else {
+        src = 'img/' + src;
     }
     element.setAttribute('src', src);
 }
@@ -219,10 +227,12 @@ function processParagraph(document, element, prefix, dirName, name) {
         let tail = innerHTML.trim().slice(1);
         if (tail) {
             let folder = 'img/' + tail;
+            let fileNames = fs.readdirSync(dirName + '/' + folder);
+            fileNames.sort();
             let imgs = [];
-            for (let [i, fileName] of fs.readdirSync(dirName + '/' + folder).entries()) {
+            for (let [i, fileName] of fileNames.entries()) {
                 let img = document.createElement('img');
-                img.setAttribute('src', tail + '/' + fileName);
+                img.setAttribute('src', tail + '/' + encodeURI(fileName.replace(/\|/g, '||')));
                 img.setAttribute('alt', i + 1);
                 imgs.push(img);
             }
