@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
         hide(pauseButton);
+        updateTime(slides, index, lecture);
         updateReader(slides, index, lecture, prevButton, nextButton);
 
         window.addEventListener('resize', function () {
