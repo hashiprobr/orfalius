@@ -167,13 +167,13 @@ function processChildren(document, element, prefix, dirName, name) {
                 case 'CODE':
                     let className = 'terminal nohighlight';
                     let innerHTML = child.innerHTML;
-                    if (innerHTML.startsWith('!')) {
+                    if (innerHTML.startsWith('.')) {
                         let index = innerHTML.search(/\s/);
                         if (index > 1) {
                             className = 'language-' + innerHTML.slice(1, index);
                             child.innerHTML = innerHTML.slice(index + 1);
                         }
-                    } else if (innerHTML.startsWith('\\!')) {
+                    } else if (innerHTML.startsWith('\\.')) {
                         child.innerHTML = innerHTML.slice(1);
                     }
                     child.setAttribute('class', className);
