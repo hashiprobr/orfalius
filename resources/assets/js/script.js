@@ -52,14 +52,14 @@ function updateReader(slides, index, lecture, prevButton, nextButton) {
     }
 }
 
-function updateAnimation(imgs, index, leftButton, text, rightButton) {
+function updateAnimation(imgs, index, leftButton, span, rightButton) {
     imgs[index].style.display = 'inline';
     if (index === 0) {
         disable(leftButton);
     } else {
         enable(leftButton);
     }
-    text.innerHTML = (index + 1) + '/' + imgs.length;
+    span.innerHTML = (index + 1) + '/' + imgs.length;
     if (index === imgs.length - 1) {
         disable(rightButton);
     } else {
@@ -71,7 +71,7 @@ function updateAnimation(imgs, index, leftButton, text, rightButton) {
 class Slide {
     constructor(element) {
         this.element = element;
-        this.time = parseFloat(element.querySelector('span.slide-timestamp').innerHTML);
+        this.time = parseFloat(element.querySelector('span.slide-time').innerHTML);
         this.content = element.querySelector('div.slide-container');
         this.width = null;
     }
@@ -97,6 +97,12 @@ class Slide {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    let page = (new URLSearchParams(window.location.search)).get('open');
+
+    for (let code of document.querySelectorAll('code')) {
+        hljs.highlightBlock(code);
+    }
+
     let a = document.querySelector('header > a');
 
     a.addEventListener('click', function (event) {
@@ -105,8 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
             details.setAttribute('open', '');
         }
     });
-
-    let page = (new URLSearchParams(window.location.search)).get('open');
 
     let slides = [];
     let index = 0;
@@ -303,32 +307,28 @@ document.addEventListener('DOMContentLoaded', function () {
         animation.appendChild(controls);
 
         let leftButton = createButton(controls, '🡄');
-        let text = document.createElement('span');
-        controls.appendChild(text);
+        let span = document.createElement('span');
+        controls.appendChild(span);
         let rightButton = createButton(controls, '🡆');
 
-        updateAnimation(imgs, index, leftButton, text, rightButton);
+        updateAnimation(imgs, index, leftButton, span, rightButton);
 
         leftButton.addEventListener('click', function (event) {
             event.preventDefault();
             hide(imgs[index]);
             index--;
-            updateAnimation(imgs, index, leftButton, text, rightButton);
+            updateAnimation(imgs, index, leftButton, span, rightButton);
         });
 
         rightButton.addEventListener('click', function (event) {
             event.preventDefault();
             hide(imgs[index]);
             index++;
-            updateAnimation(imgs, index, leftButton, text, rightButton);
+            updateAnimation(imgs, index, leftButton, span, rightButton);
         });
     }
 
     if (page || window.location.hash) {
         a.click();
-    }
-
-    for (let block of document.querySelectorAll('code')) {
-        hljs.highlightBlock(block);
     }
 });

@@ -84,10 +84,10 @@ const slideOptions = {
     },
     render: function (tokens, idx) {
         let words = tokens[idx].info.trim().split(/\s+/);
-        let timestamp = words[0];
+        let time = words[0];
         let title = words.slice(1).join(' ');
         if (tokens[idx].nesting === 1) {
-            return '<div class="slide">\n<span class="slide-timestamp">' + timestamp + '</span>\n<div class="slide-container">\n<div class="slide-header">\n' + title + '\n</div>\n<div class="slide-main">\n';
+            return '<div class="slide">\n<span class="slide-time">' + time + '</span>\n<div class="slide-container">\n<div class="slide-header">\n' + title + '\n</div>\n<div class="slide-main">\n';
         } else {
             return '</div>\n</div>\n</div>\n';
         }
@@ -107,15 +107,6 @@ function wrapFigure(document, element, className) {
     figure.setAttribute('class', className);
     figure.appendChild(element);
     return figure;
-}
-
-function createVideo(document, src, poster) {
-    let video = document.createElement('video');
-    video.setAttribute('src', src);
-    if (poster) {
-        video.setAttribute('poster', poster);
-    }
-    return video;
 }
 
 function processImage(element, prefix) {
@@ -192,9 +183,18 @@ function processParagraph(document, element, prefix, dirName, name) {
     if (innerHTML.startsWith('.')) {
         // LECTURE
         let src = name + innerHTML.trim();
-        let video = createVideo(document, src);
-        video.setAttribute('class', 'reader-lecture');
-        replace(element, video);
+        let lecture = document.querySelector('video.reader-lecture');
+        if (lecture) {
+            element.parentElement.removeChild(element);
+        } else {
+            lecture = document.createElement('video');
+            lecture.setAttribute('class', 'reader-lecture');
+            replace(element, lecture);
+        }
+        let source = document.createElement('source');
+        source.setAttribute('src', src);
+        lecture.appendChild(source);
+
     } else if (innerHTML.startsWith(',')) {
         // ANIMATION
         let tail = innerHTML.trim().slice(1);
@@ -216,21 +216,21 @@ function processParagraph(document, element, prefix, dirName, name) {
                 replace(element, animation);
             }
         }
+
     } else if (innerHTML.startsWith('@')) {
         // ANCHOR
+        let id = innerHTML.slice(1);
         let a = document.createElement('a');
-        a.setAttribute('id', innerHTML.slice(1));
+        a.setAttribute('id', id);
         replace(element, a);
 
     } else if (innerHTML.startsWith('%')) {
         // VIDEO
         let words = innerHTML.trim().slice(1).split('%');
-        let src = 'vid/' + words[0];
-        let video;
-        if (words.length < 2) {
-            video = createVideo(document, src);
-        } else {
-            video = createVideo(document, src, 'vid/' + words[1]);
+        let video = document.createElement('video');
+        video.setAttribute('src', 'vid/' + words[0]);
+        if (words.length > 1) {
+            video.setAttribute('poster', 'vid/' + words[1]);
         }
         video.setAttribute('controls', '');
         let figure = wrapFigure(document, video, 'video');
