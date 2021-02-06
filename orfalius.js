@@ -327,7 +327,9 @@ function orfalius(templatePath) {
             let document = (new JSDOM(htmlString)).window.document;
             let body = document.querySelector('body');
 
-            if (body.querySelectorAll('h1').length !== 1) {
+            let h1s = body.querySelectorAll('h1');
+
+            if (h1s.length !== 1) {
                 throw new SyntaxError('Must have exactly one H1!');
             }
 
@@ -339,7 +341,7 @@ function orfalius(templatePath) {
                 }
             }
 
-            let title = body.querySelector('h1').innerHTML;
+            let title = h1s[0].innerHTML;
 
             let dirName = path.dirname(file.path);
             let name = path.basename(file.path).slice(0, -3);
