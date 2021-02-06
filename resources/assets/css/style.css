@@ -57,7 +57,7 @@ p {
 
 ul, ol {
     margin-bottom: 1rem;
-    padding-left: 2rem;
+    padding-left: 2em;
 }
 ul {
     list-style-type: disc;
@@ -234,7 +234,8 @@ div.slide-main {
     padding-bottom: 1rem;
 }
 div.slide-main > * {
-    margin: 0 2rem 2rem;
+    margin-right: 2rem;
+    margin-left: 2rem;
 }
 
 div.animation {
@@ -261,7 +262,7 @@ div.animation-controls > span {
 div.item {
     position: relative;
     margin-bottom: 1rem;
-    padding-left: 2rem;
+    padding-left: 2em;
 }
 span.item-marker {
     position: absolute;
@@ -408,8 +409,12 @@ mjx-container:focus {
     h2,
     details.section > summary,
     details.reader > summary,
-    div.reader-controls {
+    div.reader-controls,
+    div.animation-controls {
         font-size: 1.25rem;
+    }
+    div.animation-controls > span {
+        font-size: .75rem;
     }
 
     a.button {
