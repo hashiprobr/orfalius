@@ -294,6 +294,18 @@ function orfalius(templatePath) {
             let document = (new JSDOM(htmlString)).window.document;
             let body = document.querySelector('body');
 
+            if (body.querySelectorAll('h1').length !== 1) {
+                throw new SyntaxError('Must have exactly one H1!');
+            }
+
+            let first = body.firstChild;
+
+            if (first.tagName !== 'H1') {
+                if (first.tagName !== 'P' || first.nextElementSibling.tagName !== 'H1') {
+                    throw new SyntaxError('Must start with H1 or P followed by H1!');
+                }
+            }
+
             let title = body.querySelector('h1').innerHTML;
 
             let dirName = path.dirname(file.path);
