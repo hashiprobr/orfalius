@@ -229,7 +229,7 @@ div.slide-header {
 }
 
 div.slide-main {
-    min-width: 560px;
+    min-width: 512px;
     padding-top: 2rem;
     padding-bottom: 1rem;
 }
