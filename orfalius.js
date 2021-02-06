@@ -317,7 +317,7 @@ function orfalius(templatePath) {
                 contents: contents,
             });
 
-            file.contents = new Buffer.from(fileString);
+            file.contents = Buffer.from(fileString);
             file.path = file.path.slice(0, -2) + 'html';
         }
 
