@@ -314,6 +314,12 @@ a.button.disabled {
     color: #666666;
 }
 
+span.item {
+    margin-right: 1em;
+    font-family: "Oxygen Mono", monospace;
+    font-weight: bold;
+}
+
 em {
     font-style: italic;
 }

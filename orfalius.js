@@ -105,7 +105,7 @@ function replace(reference, element) {
 function wrapFigure(document, element, className) {
     let figure = document.createElement('figure');
     figure.setAttribute('class', className);
-    figure.appendChild(element);
+    figure.append(element);
     return figure;
 }
 
@@ -135,7 +135,7 @@ function processChildren(document, element, prefix, dirName, name) {
                     let figure = document.createElement('figure');
                     replace(child, figure);
                     figure.setAttribute('class', 'table');
-                    figure.appendChild(child);
+                    figure.append(child);
                     break;
                 case 'BLOCKQUOTE':
                 case 'DETAILS':
@@ -196,7 +196,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         }
         let source = document.createElement('source');
         source.setAttribute('src', src);
-        lecture.appendChild(source);
+        lecture.append(source);
 
     } else if (innerHTML.startsWith(',')) {
         // ANIMATION
@@ -214,11 +214,22 @@ function processParagraph(document, element, prefix, dirName, name) {
                 let animation = document.createElement('div');
                 animation.setAttribute('class', 'animation');
                 for (let img of imgs) {
-                    animation.appendChild(img);
+                    animation.append(img);
                     processImage(img, prefix);
                 }
                 replace(element, animation);
             }
+        }
+
+    } else if (innerHTML.startsWith('|')) {
+        // ITEM
+        let index = innerHTML.search(/\s/);
+        if (index > 1) {
+            element.innerHTML = innerHTML.slice(index + 1);
+            let span = document.createElement('span');
+            span.setAttribute('class', 'item');
+            span.innerHTML = innerHTML.slice(1, index);
+            element.prepend(span);
         }
 
     } else if (innerHTML.startsWith('@')) {
@@ -251,7 +262,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         element.innerHTML = '';
 
     } else {
-        let child = element.firstChild;
+        let child = element.firstElementChild;
 
         if (element.children.length === 1 && child.tagName === 'IMG') {
             // IMAGE
@@ -264,6 +275,7 @@ function processParagraph(document, element, prefix, dirName, name) {
             // P
             if (innerHTML.startsWith('\\.') ||
                 innerHTML.startsWith('\\,') ||
+                innerHTML.startsWith('\\|') ||
                 innerHTML.startsWith('\\@') ||
                 innerHTML.startsWith('\\%') ||
                 innerHTML.startsWith('\\&amp;')) {
@@ -304,7 +316,7 @@ function orfalius(templatePath) {
                 throw new SyntaxError('Must have exactly one H1!');
             }
 
-            let first = body.firstChild;
+            let first = body.firstElementChild;
 
             if (first.tagName !== 'H1') {
                 if (first.tagName !== 'P' || first.nextElementSibling.tagName !== 'H1') {

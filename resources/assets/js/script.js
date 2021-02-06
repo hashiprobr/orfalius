@@ -19,7 +19,7 @@ function createButton(controls, symbol) {
     button.setAttribute('class', 'button');
     button.href = '';
     button.innerHTML = symbol;
-    controls.appendChild(button);
+    controls.append(button);
     return button;
 }
 
@@ -133,11 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (lecture) {
             summary.innerHTML += '/Vídeo';
         }
-        details.appendChild(summary);
+        details.append(summary);
 
         let controls = document.createElement('div');
         controls.setAttribute('class', 'reader-controls');
-        details.appendChild(controls);
+        details.append(controls);
 
         let prevButton = createButton(controls, '⏮');
         let playButton = createButton(controls, '▶');
@@ -146,11 +146,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let display = document.createElement('div');
         display.setAttribute('class', 'reader-display');
-        details.appendChild(display);
+        details.append(display);
 
         for (let slide of slides) {
             parent.removeChild(slide.element);
-            display.appendChild(slide.element);
+            display.append(slide.element);
         }
 
         let shift = parseInt(page);
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (lecture) {
-            details.appendChild(lecture);
+            details.append(lecture);
 
             lecture.addEventListener('timeupdate', function () {
                 if (!lecture.seeking) {
@@ -304,11 +304,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let controls = document.createElement('div');
         controls.setAttribute('class', 'animation-controls');
-        animation.appendChild(controls);
+        animation.append(controls);
 
         let leftButton = createButton(controls, '🡄');
         let span = document.createElement('span');
-        controls.appendChild(span);
+        controls.append(span);
         let rightButton = createButton(controls, '🡆');
 
         updateAnimation(imgs, index, leftButton, span, rightButton);
