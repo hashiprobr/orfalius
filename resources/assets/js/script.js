@@ -122,11 +122,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (slides.length > 0) {
         let h1 = document.querySelector('h1');
-        let parent = h1.parentElement;
 
         let details = document.createElement('details');
         details.setAttribute('class', 'reader');
-        parent.insertBefore(details, h1.nextElementSibling);
+        h1.parentElement.insertBefore(details, h1.nextElementSibling);
 
         let summary = document.createElement('summary');
         summary.innerHTML = 'Slides';
@@ -150,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
         details.append(display);
 
         for (let slide of slides) {
-            parent.removeChild(slide.element);
+            slide.element.remove();
             display.append(slide.element);
         }
 
