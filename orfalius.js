@@ -247,6 +247,11 @@ function processParagraph(document, element, prefix, dirName, name) {
             }
         }
 
+    } else if (innerHTML.startsWith('|')) {
+        let small = document.createElement('small');
+        small.innerHTML = innerHTML.slice(1);
+        element.innerHTML = small.outerHTML;
+
     } else if (innerHTML.startsWith('@')) {
         // ANCHOR
         let id = innerHTML.slice(1);
@@ -290,6 +295,7 @@ function processParagraph(document, element, prefix, dirName, name) {
             // P
             if (innerHTML.startsWith('\\.') ||
                 innerHTML.startsWith('\\,') ||
+                innerHTML.startsWith('\\|') ||
                 innerHTML.startsWith('\\@') ||
                 innerHTML.startsWith('\\%') ||
                 innerHTML.startsWith('\\&amp;')) {

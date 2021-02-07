@@ -332,6 +332,10 @@ a.button.disabled {
     color: #666666;
 }
 
+small {
+    font-size: .75em;
+}
+
 em {
     font-style: italic;
 }
