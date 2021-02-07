@@ -302,14 +302,12 @@ code.terminal {
 }
 
 kbd {
-    border-width: .05rem;
-    border-style: solid;
-    border-color: #efefef #666666 #666666 #efefef;
     border-radius: .25em;
-    padding: .15em .15em;
+    padding: .25em .25em;
     font-size: .75em;
     font-family: "Oxygen Mono", monospace;
     color: #666666;
+    box-shadow: 0 0 .125rem #666666;
 }
 
 a {
