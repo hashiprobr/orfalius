@@ -239,6 +239,10 @@ div.slide-main > * {
     margin-right: 2rem;
     margin-left: 2rem;
 }
+div.slide-main pre > code {
+    font-size: .5em;
+    line-height: 1.5;
+}
 
 div.animation {
     display: flex;
