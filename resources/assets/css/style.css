@@ -36,7 +36,7 @@ main > p:first-child {
 }
 
 h1 {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     border-bottom: .05rem solid #000000;
     padding-bottom: 1rem;
     font-size: 3rem;
@@ -157,6 +157,7 @@ details.section {
 
 details.reader{
     position: relative;
+    margin-top: 2rem;
 }
 
 summary {
