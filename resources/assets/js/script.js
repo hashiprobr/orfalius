@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let playButton = createButton(controls, '▶');
         let pauseButton = createButton(controls, '⏸');
         let nextButton = createButton(controls, '⏭');
+        let fullButton = createButton(controls, '⛶');
 
         let display = document.createElement('div');
         display.setAttribute('class', 'reader-display');
@@ -160,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (lecture) {
-            details.append(lecture);
+            display.append(lecture);
 
             lecture.addEventListener('timeupdate', function () {
                 if (!lecture.seeking) {
@@ -294,6 +295,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 index++;
                 updateTime(slides, index, lecture);
                 updateReader(slides, index, lecture, prevButton, nextButton);
+            }
+        });
+
+        fullButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (display.requestFullscreen) {
+                display.requestFullscreen();
+            } else if (display.mozRequestFullScreen) {
+                display.mozRequestFullScreen();
+            } else if (display.webkitRequestFullScreen) {
+                display.webkitRequestFullScreen();
+            } else if (display.msRequestFullscreen) {
+                display.msRequestFullscreen();
             }
         });
     }

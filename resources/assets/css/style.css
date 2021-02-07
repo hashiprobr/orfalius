@@ -186,6 +186,7 @@ div.reader-controls {
 div.reader-display {
     position: relative;
     padding-bottom: 56.25%;
+    background-color: #ffffff;
 }
 
 video.reader-lecture {
