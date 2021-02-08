@@ -288,12 +288,14 @@ code {
     padding: .25em .25em !important;
     font-size: .75em;
     font-family: "Oxygen Mono", monospace;
+    white-space: nowrap;
     background-color: #efefef !important;
 }
 
 pre > code {
     display: block !important;
     padding: 1em !important;
+    white-space: pre;
 }
 
 code.terminal {
