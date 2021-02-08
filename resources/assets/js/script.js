@@ -37,7 +37,7 @@ function updateTime(slides, index, lecture) {
     }
 }
 
-function updateReader(slides, index, lecture, prevButton, nextButton) {
+function updateReader(slides, index, lecture, prevButton, nextButton, footer) {
     slides[index].element.style.display = 'block';
     updateScale(slides, index, lecture);
     if (index === 0) {
@@ -50,6 +50,7 @@ function updateReader(slides, index, lecture, prevButton, nextButton) {
     } else {
         enable(nextButton);
     }
+    footer.innerHTML = (index + 1) + '/' + slides.length;
 }
 
 function updateAnimation(imgs, index, leftButton, span, rightButton) {
@@ -144,6 +145,10 @@ document.addEventListener('DOMContentLoaded', function () {
         let nextButton = createButton(controls, '⏭');
         let fullButton = createButton(controls, '⛶');
 
+        let footer = document.createElement('span');
+        footer.setAttribute('class', 'reader-footer');
+        controls.append(footer);
+
         let display = document.createElement('div');
         display.setAttribute('class', 'reader-display');
         details.append(display);
@@ -153,10 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
             display.append(slide.element);
         }
 
-        let shift = parseInt(page);
+        let value = parseInt(page);
 
-        if (!isNaN(shift) && shift > 0 && shift <= slides.length) {
-            index = shift - 1;
+        if (!isNaN(value) && value > 0 && value <= slides.length) {
+            index = value - 1;
         }
 
         if (lecture) {
@@ -169,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (!isNaN(nextTime) && lecture.currentTime >= nextTime) {
                             hide(slides[index].element);
                             index++;
-                            updateReader(slides, index, lecture, prevButton, nextButton);
+                            updateReader(slides, index, lecture, prevButton, nextButton, footer);
                         }
                     }
                 }
@@ -185,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (i < slides.length) {
                             hide(slides[index].element);
                             index = i;
-                            updateReader(slides, index, lecture, prevButton, nextButton);
+                            updateReader(slides, index, lecture, prevButton, nextButton, footer);
                         }
                     }
                 }
@@ -206,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     playButton.style.display = 'inline';
                     hide(slides[index].element);
                     index = 0;
-                    updateReader(slides, index, lecture, prevButton, nextButton);
+                    updateReader(slides, index, lecture, prevButton, nextButton, footer);
                 }
             });
 
@@ -265,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         hide(pauseButton);
         updateTime(slides, index, lecture);
-        updateReader(slides, index, lecture, prevButton, nextButton);
+        updateReader(slides, index, lecture, prevButton, nextButton, footer);
 
         window.addEventListener('resize', function () {
             updateScale(slides, index, lecture);
@@ -301,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 hide(slides[index].element);
                 index--;
                 updateTime(slides, index, lecture);
-                updateReader(slides, index, lecture, prevButton, nextButton);
+                updateReader(slides, index, lecture, prevButton, nextButton, footer);
             }
         });
 
@@ -311,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 hide(slides[index].element);
                 index++;
                 updateTime(slides, index, lecture);
-                updateReader(slides, index, lecture, prevButton, nextButton);
+                updateReader(slides, index, lecture, prevButton, nextButton, footer);
             }
         });
 

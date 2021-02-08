@@ -199,6 +199,11 @@ video.reader-lecture {
     transform-origin: 0 100% 0;
 }
 
+span.reader-footer {
+    margin-left: 1rem;
+    font-size: 1rem;
+}
+
 div.slide {
     display: none;
     position: absolute;
@@ -425,6 +430,10 @@ mjx-container:focus {
     }
     div.animation-controls > span {
         font-size: .75rem;
+    }
+
+    span.reader-footer {
+        margin-left: .75rem;
     }
 
     a.button {
