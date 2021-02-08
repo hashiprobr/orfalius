@@ -202,6 +202,8 @@ video.reader-lecture {
 span.reader-footer {
     margin-left: 1rem;
     font-size: 1rem;
+    font-family: "Open Sans", sans-serif;
+    font-weight: lighter;
 }
 
 div.slide {
@@ -428,16 +430,18 @@ mjx-container:focus {
     div.animation-controls {
         font-size: 1.25rem;
     }
+
+    span.reader-footer,
     div.animation-controls > span {
         font-size: .75rem;
     }
 
-    span.reader-footer {
+    span.reader-footer,
+    a.button {
         margin-left: .75rem;
     }
 
     a.button {
         margin-right: .75rem;
-        margin-left: .75rem;
     }
 }
