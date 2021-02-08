@@ -216,7 +216,7 @@ div.slide {
     font-size: 1.875rem;
     font-family: "Poppins", sans-serif;
     font-weight: lighter;
-    line-height: 1;
+    line-height: 1.125;
     box-shadow: 0 0 .125rem #666666;
 }
 
