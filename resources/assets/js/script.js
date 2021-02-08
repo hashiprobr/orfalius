@@ -224,27 +224,45 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             hide(playButton);
 
-            let date = null;
+            let start = Date.now();
+            let shift = 0;
+            let times = [0];
 
             document.addEventListener('keydown', function (event) {
                 switch (event.key) {
                     case 'ArrowLeft':
-                        date = null;
-                        console.log('stop');
+                        prevButton.click();
+                        if (times.length > 1) {
+                            start = Date.now();
+                            shift = times[times.length - 2];
+                            times.pop();
+                        }
                         break;
                     case 'ArrowRight':
-                        if (date) {
-                            nextButton.click();
-                            console.log((Date.now() - date) / 1000);
+                        nextButton.click();
+                        if (times.length === slides.length) {
+                            console.log('end');
+                            for (let time of times) {
+                                console.log(time);
+                            }
                         } else {
-                            date = Date.now();
-                            console.log('play');
+                            let time = shift + (Date.now() - start) / 1000;
+                            times.push(time);
+                            console.log(time);
+                        }
+                        break;
+                    case 'r':
+                        if (times.length < slides.length) {
+                            start = Date.now();
+                            shift = times[times.length - 1];
+                            console.log('retry');
                         }
                         break;
                     default:
                 }
             });
         }
+
         hide(pauseButton);
         updateTime(slides, index, lecture);
         updateReader(slides, index, lecture, prevButton, nextButton);
