@@ -105,11 +105,11 @@ blockquote {
 
 blockquote.warning {
     padding: 1rem 0 .25rem;
-    line-height: 1;
+    line-height: normal;
     background-color: #fff2cc;
     background-image: url("../icons/warning.svg");
     background-size: 3rem 3rem;
-    background-position: 1rem 1rem;
+    background-position: 1rem 1.25rem;
     background-repeat: no-repeat;
 }
 blockquote.warning > * {
