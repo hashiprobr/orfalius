@@ -256,6 +256,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         // ANCHOR
         let id = innerHTML.slice(1);
         let a = document.createElement('a');
+        a.setAttribute('class', 'anchor');
         a.setAttribute('id', id);
         replace(element, a);
 
