@@ -109,7 +109,7 @@ blockquote.warning {
     background-color: #fff2cc;
     background-image: url("../icons/warning.svg");
     background-size: 3rem 3rem;
-    background-position: 1rem 1.25rem;
+    background-position: 1rem 1.375rem;
     background-repeat: no-repeat;
 }
 blockquote.warning > * {
