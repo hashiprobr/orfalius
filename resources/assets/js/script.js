@@ -73,7 +73,7 @@ class Slide {
     constructor(element) {
         this.element = element;
         this.time = parseFloat(element.querySelector('span.slide-time').innerHTML);
-        this.content = element.querySelector('div.slide-container');
+        this.container = element.querySelector('div.slide-container');
         this.width = null;
     }
 
@@ -87,7 +87,7 @@ class Slide {
             this.width = rect.width;
             let scale = Math.min(rect.width / SLIDE_WIDTH, rect.height / SLIDE_HEIGHT);
             if (scale > 0) {
-                this.transform(this.content, scale);
+                this.transform(this.container, scale);
                 if (lecture) {
                     this.transform(lecture, scale);
                 }

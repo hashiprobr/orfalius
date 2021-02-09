@@ -175,14 +175,14 @@ function processChildren(document, element, prefix, dirName, name) {
                 case 'CODE':
                     let className = 'terminal nohighlight';
                     let innerHTML = child.innerHTML;
-                    if (innerHTML.startsWith('.')) {
+                    if (innerHTML.startsWith('&gt;')) {
+                        child.innerHTML = innerHTML = innerHTML.slice(4);
+                    } else {
                         let index = innerHTML.search(/\s/);
-                        if (index > 1) {
-                            className = 'language-' + innerHTML.slice(1, index);
+                        if (index > 0) {
+                            className = 'language-' + innerHTML.slice(0, index);
                             child.innerHTML = innerHTML.slice(index + 1);
                         }
-                    } else if (innerHTML.startsWith('\\.')) {
-                        child.innerHTML = innerHTML.slice(1);
                     }
                     child.setAttribute('class', className);
                     break;
@@ -207,7 +207,13 @@ function processParagraph(document, element, prefix, dirName, name) {
 
     let innerHTML = element.innerHTML;
 
-    if (innerHTML.startsWith('.')) {
+    if (innerHTML.startsWith('^')) {
+        let small = document.createElement('small');
+        small.innerHTML = innerHTML.slice(1);
+        element.innerHTML = small.outerHTML;
+        removable.push(...processChildren(document, element.firstElementChild, prefix, dirName, name));
+
+    } else if (innerHTML.startsWith('.')) {
         // LECTURE
         let src = name + innerHTML.trim();
         let lecture = document.querySelector('video.reader-lecture');
@@ -246,11 +252,6 @@ function processParagraph(document, element, prefix, dirName, name) {
                 replace(element, animation);
             }
         }
-
-    } else if (innerHTML.startsWith('|')) {
-        let small = document.createElement('small');
-        small.innerHTML = innerHTML.slice(1);
-        element.innerHTML = small.outerHTML;
 
     } else if (innerHTML.startsWith('@')) {
         // ANCHOR
@@ -294,12 +295,12 @@ function processParagraph(document, element, prefix, dirName, name) {
 
         } else {
             // P
-            if (innerHTML.startsWith('\\.') ||
-                innerHTML.startsWith('\\,') ||
-                innerHTML.startsWith('\\|') ||
-                innerHTML.startsWith('\\@') ||
-                innerHTML.startsWith('\\%') ||
-                innerHTML.startsWith('\\&amp;')) {
+            if (innerHTML.startsWith('~^') ||
+                innerHTML.startsWith('~,') ||
+                innerHTML.startsWith('~.') ||
+                innerHTML.startsWith('~@') ||
+                innerHTML.startsWith('~%') ||
+                innerHTML.startsWith('~&amp;')) {
                 element.innerHTML = innerHTML.slice(1);
             }
             removable.push(...processChildren(document, element, prefix, dirName, name));
