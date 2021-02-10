@@ -92,7 +92,7 @@ const slideOptions = {
             return '</div>\n</div>\n</div>\n';
         }
     },
-    marker: '+',
+    marker: '++++++++++++++',
 };
 
 const itemOptions = {
@@ -152,7 +152,7 @@ function processChildren(document, element, prefix, dirName, name) {
                 case 'UL':
                 case 'OL':
                     for (let grandChild of child.children) {
-                        removable.push(...processChildren(document, grandChild, prefix, dirName, name));
+                        removable.push(...processParagraph(document, grandChild, prefix, dirName, name));
                     }
                     break;
                 case 'TABLE':

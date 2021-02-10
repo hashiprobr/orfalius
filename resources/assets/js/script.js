@@ -98,7 +98,7 @@ class Slide {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    let page = (new URLSearchParams(window.location.search)).get('open');
+    let page = (new URLSearchParams(window.location.search)).get('slide');
 
     for (let code of document.querySelectorAll('code')) {
         hljs.highlightBlock(code);
@@ -324,10 +324,10 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
             if (display.requestFullscreen) {
                 display.requestFullscreen();
-            } else if (display.mozRequestFullScreen) {
-                display.mozRequestFullScreen();
             } else if (display.webkitRequestFullScreen) {
                 display.webkitRequestFullScreen();
+            } else if (display.mozRequestFullScreen) {
+                display.mozRequestFullScreen();
             } else if (display.msRequestFullscreen) {
                 display.msRequestFullscreen();
             }

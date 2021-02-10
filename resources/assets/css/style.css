@@ -10,6 +10,10 @@ body {
     align-items: stretch;
     height: 100%;
     line-height: 1.5;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
     background-color: #efefef;
     color: #000000;
 }
@@ -223,6 +227,10 @@ div.slide {
     font-family: "Poppins", sans-serif;
     font-weight: lighter;
     line-height: 1.125;
+    text-align: left;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
     box-shadow: 0 0 .125rem #666666;
 }
 
