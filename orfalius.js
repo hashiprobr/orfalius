@@ -149,17 +149,17 @@ function processChildren(document, element, prefix, dirName, name) {
                 case 'P':
                     removable.push(...processParagraph(document, child, prefix, dirName, name));
                     break;
-                case 'UL':
-                case 'OL':
-                    for (let grandChild of child.children) {
-                        removable.push(...processParagraph(document, grandChild, prefix, dirName, name));
-                    }
-                    break;
                 case 'TABLE':
                     let figure = document.createElement('figure');
                     replace(child, figure);
                     figure.setAttribute('class', 'table');
                     figure.append(child);
+                case 'TR':
+                case 'UL':
+                case 'OL':
+                    for (let grandChild of child.children) {
+                        removable.push(...processParagraph(document, grandChild, prefix, dirName, name));
+                    }
                     break;
                 case 'BLOCKQUOTE':
                 case 'DETAILS':
