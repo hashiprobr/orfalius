@@ -215,7 +215,7 @@ function processParagraph(document, element, prefix, dirName, name) {
 
     } else if (innerHTML.startsWith(':')) {
         // LECTURE
-        let src = name + innerHTML.trim();
+        let src = name + '.' + innerHTML.trim().slice(1);
         let lecture = document.querySelector('video.reader-lecture');
         if (lecture) {
             removable.push(element);
