@@ -213,7 +213,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         element.innerHTML = small.outerHTML;
         removable.push(...processChildren(document, element.firstElementChild, prefix, dirName, name));
 
-    } else if (innerHTML.startsWith('.')) {
+    } else if (innerHTML.startsWith(':')) {
         // LECTURE
         let src = name + innerHTML.trim();
         let lecture = document.querySelector('video.reader-lecture');
@@ -228,7 +228,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         source.setAttribute('src', src);
         lecture.append(source);
 
-    } else if (innerHTML.startsWith(',')) {
+    } else if (innerHTML.startsWith(';')) {
         // ANIMATION
         let tail = innerHTML.trim().slice(1);
         if (tail) {
@@ -296,8 +296,8 @@ function processParagraph(document, element, prefix, dirName, name) {
         } else {
             // P
             if (innerHTML.startsWith('~^') ||
-                innerHTML.startsWith('~,') ||
-                innerHTML.startsWith('~.') ||
+                innerHTML.startsWith('~:') ||
+                innerHTML.startsWith('~;') ||
                 innerHTML.startsWith('~@') ||
                 innerHTML.startsWith('~%') ||
                 innerHTML.startsWith('~&amp;')) {

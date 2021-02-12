@@ -202,16 +202,6 @@ div.reader-display {
     background-color: #ffffff;
 }
 
-video.reader-lecture {
-    display: none;
-    width: 224px;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    z-index: 1;
-    transform-origin: 0 100% 0;
-}
-
 span.reader-footer {
     margin-left: 1rem;
     font-size: 1rem;
@@ -243,19 +233,23 @@ span.slide-time {
 
 div.slide-container {
     display: flex;
-    width: 0;
-    height: 0;
+    width: 704px;
+    height: 396px;
+    transform-origin: 0 0 0;
 }
 
 div.slide-header {
-    min-width: 144px;
+    width: 144px;
+    height: 284px;
     padding: 4rem 1rem 3rem 2rem;
     font-size: .5em;
     color: #666666;
 }
 
 div.slide-main {
-    min-width: 512px;
+    width: 512px;
+    height: 348px;
+    overflow-y: auto;
     padding-top: 2rem;
     padding-bottom: 1rem;
 }
@@ -263,9 +257,22 @@ div.slide-main > * {
     margin-right: 2rem;
     margin-left: 2rem;
 }
+div.slide-main table {
+    font-size: .5em;
+}
 div.slide-main pre > code {
     font-size: .5em;
     line-height: 1.5;
+}
+
+video.reader-lecture {
+    display: none;
+    width: 224px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    transform-origin: 0 100% 0;
 }
 
 div.animation {
@@ -322,7 +329,8 @@ pre > code {
     white-space: pre;
 }
 
-td code {
+table code {
+    font-size: 1em;
     background-color: transparent !important;
 }
 
