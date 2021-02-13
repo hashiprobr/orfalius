@@ -306,6 +306,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                 times.push(shift);
                                 start = now;
                                 subtimes.push(shift);
+                                if (times.length === slides.length) {
+                                    counter.style.color = '#ff0000';
+                                }
                             } else {
                                 times.push(NaN);
                                 createOverlay(slides, display, times, timeline);
