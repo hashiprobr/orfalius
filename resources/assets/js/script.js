@@ -23,23 +23,39 @@ function createButton(controls, symbol) {
     return button;
 }
 
+function createOverlay(slides, display, times, timeline) {
+    if (timeline.length > 0 && times.length === slides.length) {
+        let overlay = document.createElement('pre');
+        overlay.setAttribute('class', 'reader-overlay');
+        let data = {
+            'times': times,
+            'timeline': timeline,
+        };
+        overlay.innerHTML = JSON.stringify(data, null, 4);
+        display.append(overlay);
+    }
+}
+
 function updateScale(slides, index, lecture) {
     slides[index].updateScale(lecture);
 }
 
-function updateTime(slides, index, lecture) {
-    if (lecture) {
-        let time = slides[index].time;
-        if (!isNaN(time)) {
-            lecture.setAttribute('automatic', '');
-            lecture.currentTime = time;
-        }
-    }
+function updateTime(lecture, time) {
+    lecture.setAttribute('automatic', '');
+    lecture.currentTime = time;
 }
 
-function updateReader(slides, index, lecture, prevButton, nextButton, footer) {
+function updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter) {
     slides[index].element.style.display = 'block';
     updateScale(slides, index, lecture);
+    if (isNaN(slides[index].time)) {
+        if (lecture) {
+            lecture.pause();
+        }
+        disable(playButton);
+    } else {
+        enable(playButton);
+    }
     if (index === 0) {
         disable(prevButton);
     } else {
@@ -50,22 +66,22 @@ function updateReader(slides, index, lecture, prevButton, nextButton, footer) {
     } else {
         enable(nextButton);
     }
-    footer.innerHTML = (index + 1) + '/' + slides.length;
+    counter.innerHTML = (index + 1) + '/' + slides.length;
 }
 
-function updateAnimation(imgs, index, leftButton, span, rightButton) {
+function updateAnimation(imgs, index, leftButton, rightButton, counter) {
     imgs[index].style.display = 'inline';
     if (index === 0) {
         disable(leftButton);
     } else {
         enable(leftButton);
     }
-    span.innerHTML = (index + 1) + '/' + imgs.length;
     if (index === imgs.length - 1) {
         disable(rightButton);
     } else {
         enable(rightButton);
     }
+    counter.innerHTML = (index + 1) + '/' + imgs.length;
 }
 
 
@@ -139,15 +155,20 @@ document.addEventListener('DOMContentLoaded', function () {
         controls.setAttribute('class', 'reader-controls');
         details.append(controls);
 
+        let recIndicator = document.createElement('span');
+        recIndicator.setAttribute('class', 'indicator');
+        recIndicator.innerHTML = '⏺';
+        controls.append(recIndicator);
+
         let prevButton = createButton(controls, '⏮');
         let playButton = createButton(controls, '▶');
         let pauseButton = createButton(controls, '⏸');
         let nextButton = createButton(controls, '⏭');
         let fullButton = createButton(controls, '⛶');
 
-        let footer = document.createElement('span');
-        footer.setAttribute('class', 'reader-footer');
-        controls.append(footer);
+        let counter = document.createElement('span');
+        counter.setAttribute('class', 'reader-counter');
+        controls.append(counter);
 
         let display = document.createElement('div');
         display.setAttribute('class', 'reader-display');
@@ -167,14 +188,46 @@ document.addEventListener('DOMContentLoaded', function () {
         if (lecture) {
             display.append(lecture);
 
+            lecture.addEventListener('play', function () {
+                hide(playButton);
+                pauseButton.style.display = 'inline';
+                lecture.style.display = 'block';
+            });
+
+            lecture.addEventListener('pause', function () {
+                hide(lecture);
+                hide(pauseButton);
+                playButton.style.display = 'inline';
+            });
+
             lecture.addEventListener('timeupdate', function () {
                 if (!lecture.seeking) {
-                    if (index < slides.length - 1) {
-                        let nextTime = slides[index + 1].time;
-                        if (!isNaN(nextTime) && lecture.currentTime >= nextTime) {
-                            hide(slides[index].element);
-                            index++;
-                            updateReader(slides, index, lecture, prevButton, nextButton, footer);
+                    let time = slides[index].time;
+                    if (isNaN(time)) {
+                        lecture.pause();
+                        let i = index - 1;
+                        while (i > -1) {
+                            time = slides[i].time;
+                            if (!isNaN(time)) {
+                                break;
+                            }
+                            i--;
+                        }
+                        if (i === -1) {
+                            updateTime(lecture, 0);
+                        } else {
+                            updateTime(lecture, time);
+                        }
+                    } else {
+                        if (lecture.currentTime >= time) {
+                            if (index === slides.length - 1) {
+                                lecture.pause();
+                                updateTime(lecture, time);
+                            } else {
+                                hide(slides[index].element);
+                                index++;
+                                updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
+                            }
                         }
                     }
                 }
@@ -185,33 +238,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     lecture.removeAttribute('automatic');
                 } else {
                     if (!lecture.seeking) {
-                        let i;
-                        for (i = 0; i < slides.length && slides[i].time > lecture.currentTime; i++);
-                        if (i < slides.length) {
+                        let i = 0;
+                        let last = 0;
+                        while (i < slides.length) {
+                            let time = slides[i].time;
+                            if (!isNaN(time)) {
+                                last = time;
+                                if (time > lecture.currentTime) {
+                                    break;
+                                }
+                            }
+                            i++;
+                        }
+                        if (i === slides.length) {
+                            if (!lecture.paused) {
+                                lecture.pause();
+                            }
+                            updateTime(lecture, last);
+                        } else {
                             hide(slides[index].element);
                             index = i;
-                            updateReader(slides, index, lecture, prevButton, nextButton, footer);
+                            updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
                         }
                     }
-                }
-            });
-
-            lecture.addEventListener('pause', function () {
-                if (!lecture.seeking) {
-                    hide(lecture);
-                    hide(pauseButton);
-                    playButton.style.display = 'inline';
-                }
-            });
-
-            lecture.addEventListener('ended', function () {
-                if (!lecture.seeking) {
-                    hide(lecture);
-                    hide(pauseButton);
-                    playButton.style.display = 'inline';
-                    hide(slides[index].element);
-                    index = 0;
-                    updateReader(slides, index, lecture, prevButton, nextButton, footer);
                 }
             });
 
@@ -229,38 +278,51 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             hide(playButton);
 
-            let start = Date.now();
             let shift = 0;
-            let times = [0];
+            let times = [];
+            let start = null;
+
+            let subtimes;
+            let timeline = [];
 
             document.addEventListener('keydown', function (event) {
                 switch (event.key) {
                     case 'ArrowLeft':
-                        prevButton.click();
-                        if (times.length > 1) {
-                            start = Date.now();
-                            shift = times[times.length - 2];
-                            times.pop();
+                        let length = times.length;
+                        if (length > 0) {
+                            if (!start && isNaN(times[length - 1])) {
+                                times.pop();
+                            } else {
+                                break;
+                            }
                         }
+                        prevButton.click();
                         break;
                     case 'ArrowRight':
-                        nextButton.click();
-                        if (times.length === slides.length) {
-                            console.log('end');
-                            for (let time of times) {
-                                console.log(time);
-                            }
-                        } else {
-                            let time = shift + (Date.now() - start) / 1000;
-                            times.push(time);
-                            console.log(time);
-                        }
-                        break;
-                    case 'r':
                         if (times.length < slides.length) {
+                            if (start) {
+                                let now = Date.now();
+                                shift += (now - start) / 1000;
+                                times.push(shift);
+                                start = now;
+                                subtimes.push(shift);
+                            } else {
+                                times.push(NaN);
+                                createOverlay(slides, display, times, timeline);
+                            }
+                        }
+                        nextButton.click();
+                        break;
+                    case 'R':
+                        if (start) {
+                            hide(recIndicator);
+                            timeline.push(subtimes);
+                            start = null;
+                            createOverlay(slides, display, times, timeline);
+                        } else {
                             start = Date.now();
-                            shift = times[times.length - 1];
-                            console.log('retry');
+                            subtimes = [];
+                            recIndicator.style.display = 'inline';
                         }
                         break;
                     default:
@@ -269,8 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         hide(pauseButton);
-        updateTime(slides, index, lecture);
-        updateReader(slides, index, lecture, prevButton, nextButton, footer);
+        updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
 
         window.addEventListener('resize', function () {
             updateScale(slides, index, lecture);
@@ -282,10 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         playButton.addEventListener('click', function (event) {
             event.preventDefault();
-            hide(playButton);
-            pauseButton.style.display = 'inline';
             if (lecture) {
-                lecture.style.display = 'block';
                 lecture.play();
             }
         });
@@ -294,29 +352,46 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
             if (lecture) {
                 lecture.pause();
-                hide(lecture);
             }
-            hide(pauseButton);
-            playButton.style.display = 'inline';
         });
 
         prevButton.addEventListener('click', function (event) {
             event.preventDefault();
             if (index > 0) {
+                if (lecture) {
+                    let i = index - 2;
+                    let time;
+                    while (i > -1) {
+                        time = slides[i].time;
+                        if (!isNaN(time)) {
+                            break;
+                        }
+                        i--;
+                    }
+                    if (i === -1) {
+                        updateTime(lecture, 0);
+                    } else {
+                        updateTime(lecture, time);
+                    }
+                }
                 hide(slides[index].element);
                 index--;
-                updateTime(slides, index, lecture);
-                updateReader(slides, index, lecture, prevButton, nextButton, footer);
+                updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
             }
         });
 
         nextButton.addEventListener('click', function (event) {
             event.preventDefault();
             if (index < slides.length - 1) {
+                if (lecture) {
+                    let time = slides[index].time;
+                    if (!isNaN(time)) {
+                        updateTime(lecture, time);
+                    }
+                }
                 hide(slides[index].element);
                 index++;
-                updateTime(slides, index, lecture);
-                updateReader(slides, index, lecture, prevButton, nextButton, footer);
+                updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
             }
         });
 
@@ -335,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     for (let animation of document.querySelectorAll('div.animation')) {
-        let imgs = animation.querySelectorAll('img');
+        let imgs = animation.querySelectorAll('img.frame');
         let index = 0;
 
         let controls = document.createElement('div');
@@ -343,24 +418,29 @@ document.addEventListener('DOMContentLoaded', function () {
         animation.append(controls);
 
         let leftButton = createButton(controls, '🡄');
-        let span = document.createElement('span');
-        controls.append(span);
+        let counter = document.createElement('span');
+        counter.setAttribute('class', 'animation-counter');
+        controls.append(counter);
         let rightButton = createButton(controls, '🡆');
 
-        updateAnimation(imgs, index, leftButton, span, rightButton);
+        updateAnimation(imgs, index, leftButton, rightButton, counter);
 
         leftButton.addEventListener('click', function (event) {
             event.preventDefault();
-            hide(imgs[index]);
-            index--;
-            updateAnimation(imgs, index, leftButton, span, rightButton);
+            if (index > 0) {
+                hide(imgs[index]);
+                index--;
+                updateAnimation(imgs, index, leftButton, rightButton, counter);
+            }
         });
 
         rightButton.addEventListener('click', function (event) {
             event.preventDefault();
-            hide(imgs[index]);
-            index++;
-            updateAnimation(imgs, index, leftButton, span, rightButton);
+            if (index < imgs.length - 1) {
+                hide(imgs[index]);
+                index++;
+                updateAnimation(imgs, index, leftButton, rightButton, counter);
+            }
         });
     }
 

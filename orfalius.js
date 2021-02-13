@@ -238,6 +238,7 @@ function processParagraph(document, element, prefix, dirName, name) {
             let imgs = [];
             for (let [i, fileName] of fileNames.entries()) {
                 let img = document.createElement('img');
+                img.setAttribute('class', 'frame');
                 img.setAttribute('src', tail + '/' + encodeURI(fileName.replace(/\|/g, '||')));
                 img.setAttribute('alt', i + 1);
                 imgs.push(img);

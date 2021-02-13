@@ -13,6 +13,7 @@ body {
     text-align: justify;
     hyphens: auto;
     -webkit-hyphens: auto;
+    -moz-hyphens: auto;
     -ms-hyphens: auto;
     background-color: #efefef;
     color: #000000;
@@ -196,17 +197,17 @@ div.reader-controls {
     font-size: 1.5rem;
 }
 
-div.reader-display {
-    position: relative;
-    padding-bottom: 56.25%;
-    background-color: #ffffff;
-}
-
-span.reader-footer {
+span.reader-counter {
     margin-left: 1rem;
     font-size: 1rem;
     font-family: "Open Sans", sans-serif;
     font-weight: lighter;
+}
+
+div.reader-display {
+    position: relative;
+    padding-bottom: 56.25%;
+    background-color: #ffffff;
 }
 
 div.slide {
@@ -223,6 +224,7 @@ div.slide {
     text-align: left;
     hyphens: none;
     -webkit-hyphens: none;
+    -moz-hyphens: none;
     -ms-hyphens: none;
     box-shadow: 0 0 .125rem #666666;
 }
@@ -269,10 +271,25 @@ video.reader-lecture {
     display: none;
     width: 224px;
     position: absolute;
-    left: 0;
     bottom: 0;
+    left: 0;
     z-index: 1;
     transform-origin: 0 100% 0;
+}
+
+pre.reader-overlay {
+    overflow-y: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    margin-bottom: 0;
+    padding: 1rem;
+    font-family: "Oxygen Mono", monospace;
+    background-color: #000000;
+    color: #00ff00;
 }
 
 div.animation {
@@ -281,7 +298,8 @@ div.animation {
     align-items: center;
     margin-bottom: 1rem;
 }
-div.animation > img {
+
+img.frame {
     display: none;
     margin-bottom: .25rem;
 }
@@ -289,7 +307,8 @@ div.animation > img {
 div.animation-controls {
     font-size: 1.5rem;
 }
-div.animation-controls > span {
+
+span.animation-counter {
     font-size: 1rem;
     font-family: "Open Sans", sans-serif;
     font-weight: lighter;
@@ -382,6 +401,12 @@ em {
     font-style: italic;
 }
 
+span.indicator {
+    display: none;
+    margin-right: 1rem;
+    color: #ff0000;
+}
+
 strong {
     font-weight: bold;
 }
@@ -464,17 +489,18 @@ mjx-container:focus {
         font-size: 1.25rem;
     }
 
-    span.reader-footer,
-    div.animation-controls > span {
+    span.reader-counter,
+    span.animation-counter {
         font-size: .75rem;
     }
 
-    span.reader-footer,
+    span.reader-counter,
     a.button {
         margin-left: .75rem;
     }
 
-    a.button {
+    a.button,
+    span.indicator {
         margin-right: .75rem;
     }
 }
