@@ -71,7 +71,7 @@ function updateReader(slides, index, stamp, lecture, playButton, prevButton, nex
     } else {
         enable(nextButton);
     }
-    counter.innerHTML = (index + 1) + '/' + slides.length;
+    counter.innerHTML = `${index + 1}/${slides.length}`;
 }
 
 function updateAnimation(imgs, index, leftButton, rightButton, counter) {
@@ -86,7 +86,7 @@ function updateAnimation(imgs, index, leftButton, rightButton, counter) {
     } else {
         enable(rightButton);
     }
-    counter.innerHTML = (index + 1) + '/' + imgs.length;
+    counter.innerHTML = `${index + 1}/${imgs.length}`;
 }
 
 
@@ -99,7 +99,7 @@ class Slide {
     }
 
     transform(element, scale) {
-        element.style.transform = 'scale(' + scale + ')';
+        element.style.transform = `scale(${scale})`;
     }
 
     updateScale(stamp, lecture) {

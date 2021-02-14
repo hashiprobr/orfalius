@@ -22,7 +22,7 @@ const warningOptions = {
         let tail = tokens[idx].info.trim();
         let title = tail ? tail.split(/\s+/).join(' ') : 'Aviso';
         if (tokens[idx].nesting === 1) {
-            return '<blockquote class="warning">\n<p>' + title + '</p>\n';
+            return `<blockquote class="warning">\n<p>${title}</p>\n`;
         } else {
             return '</blockquote>\n';
         }
@@ -38,7 +38,7 @@ const questionOptions = {
         let tail = tokens[idx].info.trim();
         let title = tail ? tail.split(/\s+/).join(' ') : 'Pergunta';
         if (tokens[idx].nesting === 1) {
-            return '<blockquote class="question">\n<p>' + title + '</p>\n';
+            return `<blockquote class="question">\n<p>${title}</p>\n`;
         } else {
             return '</blockquote>\n';
         }
@@ -54,7 +54,7 @@ const answerOptions = {
         let tail = tokens[idx].info.trim();
         let title = tail ? tail.split(/\s+/).join(' ') : 'Resposta';
         if (tokens[idx].nesting === 1) {
-            return '<details class="answer">\n<summary>' + title + '</summary>\n';
+            return `<details class="answer">\n<summary>${title}</summary>\n`;
         } else {
             return '</details>\n';
         }
@@ -70,7 +70,7 @@ const sectionOptions = {
         let tail = tokens[idx].info.trim();
         let title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
-            return '<details class="section">\n<summary>' + title + '</summary>\n';
+            return `<details class="section">\n<summary>${title}</summary>\n`;
         } else {
             return '</details>\n';
         }
@@ -86,7 +86,7 @@ const itemOptions = {
         let tail = tokens[idx].info.trim();
         let title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
-            return '<div class="item">\n<span class="item-marker">' + title + '</span>\n';
+            return `<div class="item">\n<span class="item-marker">${title}</span>\n`;
         } else {
             return '</div>\n';
         }
@@ -102,7 +102,7 @@ const slideOptions = {
         let tail = tokens[idx].info.trim();
         let title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
-            return '<div class="slide">\n<div class="slide-container">\n<div class="slide-header">\n' + title + '\n</div>\n<div class="slide-main">\n';
+            return `<div class="slide">\n<div class="slide-container">\n<div class="slide-header">\n${title}\n</div>\n<div class="slide-main">\n`;
         } else {
             return '</div>\n</div>\n</div>\n';
         }
@@ -143,7 +143,7 @@ function processImage(element, prefix) {
     let re = /(?<!%7C)(\%7C\%7C)*(\%7C)(?!%7C)/g;
     let match = re.exec(src);
     if (match && !re.exec(src)) {
-        element.setAttribute('style', 'max-height: ' + src.slice(match.index + 3) + 'em;');
+        element.setAttribute('style', `max-height: ${src.slice(match.index + 3)}em;`);
         src = src.slice(0, match.index);
     }
     if (prefix === '/') {
@@ -183,7 +183,7 @@ function processChildren(document, element, prefix, dirName, name) {
                     if (child.classList.contains('times')) {
                         let grandChild = child.firstElementChild;
                         child.removeChild(grandChild);
-                        child.innerHTML = '\n' + grandChild.innerHTML + '\n';
+                        child.innerHTML = `\n${grandChild.innerHTML}\n`;
                     } else {
                         let code = child.querySelector('code');
                         if (!code.hasAttribute('class')) {
@@ -234,7 +234,7 @@ function processParagraph(document, element, prefix, dirName, name) {
 
     } else if (innerHTML.startsWith(':')) {
         // LECTURE
-        let src = name + '.' + innerHTML.trim().slice(1);
+        let src = `${name}.${innerHTML.trim().slice(1)}`;
         let lecture = document.querySelector('video.reader-lecture');
         if (lecture) {
             removable.push(element);
@@ -252,13 +252,13 @@ function processParagraph(document, element, prefix, dirName, name) {
         let tail = innerHTML.trim().slice(1);
         if (tail) {
             let folder = 'img/' + tail;
-            let fileNames = fs.readdirSync(dirName + '/' + folder);
+            let fileNames = fs.readdirSync(`${dirName}/${folder}`);
             fileNames.sort();
             let imgs = [];
             for (let [i, fileName] of fileNames.entries()) {
                 let img = document.createElement('img');
                 img.setAttribute('class', 'frame');
-                img.setAttribute('src', tail + '/' + encodeURI(fileName.replace(/\|/g, '||')));
+                img.setAttribute('src', `${tail}/${encodeURI(fileName.replace(/\|/g, '||'))}`);
                 img.setAttribute('alt', i + 1);
                 imgs.push(img);
             }
