@@ -78,23 +78,6 @@ const sectionOptions = {
     marker: ';',
 };
 
-const slideOptions = {
-    validate: function (params) {
-        return params.trim();
-    },
-    render: function (tokens, idx) {
-        let words = tokens[idx].info.trim().split(/\s+/);
-        let time = words[0];
-        let title = words.slice(1).join(' ');
-        if (tokens[idx].nesting === 1) {
-            return '<div class="slide">\n<span class="slide-time">' + time + '</span>\n<div class="slide-container">\n<div class="slide-header">\n' + title + '\n</div>\n<div class="slide-main">\n';
-        } else {
-            return '</div>\n</div>\n</div>\n';
-        }
-    },
-    marker: '++++++++++++++',
-};
-
 const itemOptions = {
     validate: function (params) {
         return params.trim();
@@ -109,6 +92,36 @@ const itemOptions = {
         }
     },
     marker: '|',
+};
+
+const slideOptions = {
+    validate: function (params) {
+        return true;
+    },
+    render: function (tokens, idx) {
+        let tail = tokens[idx].info.trim();
+        let title = tail.split(/\s+/).join(' ');
+        if (tokens[idx].nesting === 1) {
+            return '<div class="slide">\n<div class="slide-container">\n<div class="slide-header">\n' + title + '\n</div>\n<div class="slide-main">\n';
+        } else {
+            return '</div>\n</div>\n</div>\n';
+        }
+    },
+    marker: '++++++++++++++',
+};
+
+const timesOptions = {
+    validate: function (params) {
+        return true;
+    },
+    render: function (tokens, idx) {
+        if (tokens[idx].nesting === 1) {
+            return '<pre class="times">\n';
+        } else {
+            return '</pre>\n';
+        }
+    },
+    marker: '//////////////',
 };
 
 
@@ -167,9 +180,15 @@ function processChildren(document, element, prefix, dirName, name) {
                     removable.push(...processChildren(document, child, prefix, dirName, name));
                     break;
                 case 'PRE':
-                    let code = child.querySelector('code');
-                    if (!code.hasAttribute('class')) {
-                        code.setAttribute('class', 'terminal nohighlight');
+                    if (child.classList.contains('times')) {
+                        let grandChild = child.firstElementChild;
+                        child.removeChild(grandChild);
+                        child.innerHTML = '\n' + grandChild.innerHTML + '\n';
+                    } else {
+                        let code = child.querySelector('code');
+                        if (!code.hasAttribute('class')) {
+                            code.setAttribute('class', 'terminal nohighlight');
+                        }
                     }
                     break;
                 case 'CODE':
@@ -328,8 +347,9 @@ function orfalius(templatePath) {
                 use(container, 'question', questionOptions).
                 use(container, 'answer', answerOptions).
                 use(container, 'section', sectionOptions).
-                use(container, 'slide', slideOptions).
                 use(container, 'item', itemOptions).
+                use(container, 'slide', slideOptions).
+                use(container, 'times', timesOptions).
                 use(kbd);
 
             let htmlString = md.render(file.contents.toString());

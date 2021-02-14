@@ -23,21 +23,22 @@ function createButton(controls, symbol) {
     return button;
 }
 
-function createOverlay(slides, display, times, timeline) {
+function createJSON(slides, times, timeline) {
     if (timeline.length > 0 && times.length === slides.length) {
-        let overlay = document.createElement('pre');
-        overlay.setAttribute('class', 'reader-overlay');
         let data = {
             'times': times,
             'timeline': timeline,
         };
-        overlay.innerHTML = JSON.stringify(data, null, 4);
-        display.append(overlay);
+        data = encodeURI(JSON.stringify(data, null, 4));
+        let a = document.createElement('a');
+        a.setAttribute('href', 'data:application/json,' + data);
+        a.setAttribute('download', 'edit.json');
+        a.click();
     }
 }
 
-function updateScale(slides, index, lecture) {
-    slides[index].updateScale(lecture);
+function updateScale(slides, index, stamp, lecture) {
+    slides[index].updateScale(stamp, lecture);
 }
 
 function updateTime(lecture, time) {
@@ -45,15 +46,19 @@ function updateTime(lecture, time) {
     lecture.currentTime = time;
 }
 
-function updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter) {
+function updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter) {
     slides[index].element.style.display = 'block';
-    updateScale(slides, index, lecture);
+    updateScale(slides, index, stamp, lecture);
     if (isNaN(slides[index].time)) {
         if (lecture) {
+            stamp.style.display = 'block';
             lecture.pause();
         }
         disable(playButton);
     } else {
+        if (lecture) {
+            hide(stamp);
+        }
         enable(playButton);
     }
     if (index === 0) {
@@ -88,7 +93,7 @@ function updateAnimation(imgs, index, leftButton, rightButton, counter) {
 class Slide {
     constructor(element) {
         this.element = element;
-        this.time = parseFloat(element.querySelector('span.slide-time').innerHTML);
+        this.time = NaN;
         this.container = element.querySelector('div.slide-container');
         this.width = null;
     }
@@ -97,7 +102,7 @@ class Slide {
         element.style.transform = 'scale(' + scale + ')';
     }
 
-    updateScale(lecture) {
+    updateScale(stamp, lecture) {
         let rect = this.element.getBoundingClientRect();
         if (this.width !== rect.width) {
             this.width = rect.width;
@@ -105,6 +110,7 @@ class Slide {
             if (scale > 0) {
                 this.transform(this.container, scale);
                 if (lecture) {
+                    this.transform(stamp, scale);
                     this.transform(lecture, scale);
                 }
             }
@@ -131,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let slides = [];
     let index = 0;
+    let stamp;
     let lecture = document.querySelector('video.reader-lecture');
 
     for (let element of document.querySelectorAll('div.slide')) {
@@ -138,6 +145,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (slides.length > 0) {
+        let value = parseInt(page);
+
+        if (!isNaN(value) && value > 0 && value <= slides.length) {
+            index = value - 1;
+        }
+
         let h1 = document.querySelector('h1');
 
         let details = document.createElement('details');
@@ -179,13 +192,19 @@ document.addEventListener('DOMContentLoaded', function () {
             display.append(slide.element);
         }
 
-        let value = parseInt(page);
-
-        if (!isNaN(value) && value > 0 && value <= slides.length) {
-            index = value - 1;
+        let times = document.querySelector('pre.times');
+        if (times) {
+            times = times.innerHTML.trim().split(/\s+/);
+            for (let i = 0; i < slides.length && i < times.length; i++) {
+                slides[i].time = parseFloat(times[i]);
+            }
         }
 
         if (lecture) {
+            stamp = document.createElement('div');
+            stamp.setAttribute('class', 'stamp');
+            display.append(stamp);
+
             display.append(lecture);
 
             lecture.addEventListener('play', function () {
@@ -220,14 +239,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     } else {
                         if (lecture.currentTime >= time) {
+                            hide(slides[index].element);
                             if (index === slides.length - 1) {
                                 lecture.pause();
-                                updateTime(lecture, time);
+                                updateTime(lecture, 0);
+                                index = 0;
                             } else {
-                                hide(slides[index].element);
                                 index++;
-                                updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
                             }
+                            updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter);
                         }
                     }
                 }
@@ -258,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else {
                             hide(slides[index].element);
                             index = i;
-                            updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
+                            updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter);
                         }
                     }
                 }
@@ -311,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
                             } else {
                                 times.push(NaN);
-                                createOverlay(slides, display, times, timeline);
+                                createJSON(slides, times, timeline);
                             }
                         }
                         nextButton.click();
@@ -321,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             hide(recIndicator);
                             timeline.push(subtimes);
                             start = null;
-                            createOverlay(slides, display, times, timeline);
+                            createJSON(slides, times, timeline);
                         } else {
                             start = Date.now();
                             subtimes = [];
@@ -334,14 +354,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         hide(pauseButton);
-        updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
+        updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter);
 
         window.addEventListener('resize', function () {
-            updateScale(slides, index, lecture);
+            updateScale(slides, index, stamp, lecture);
         });
 
         details.addEventListener('toggle', function () {
-            updateScale(slides, index, lecture);
+            updateScale(slides, index, stamp, lecture);
         });
 
         playButton.addEventListener('click', function (event) {
@@ -379,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 hide(slides[index].element);
                 index--;
-                updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
+                updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter);
             }
         });
 
@@ -394,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 hide(slides[index].element);
                 index++;
-                updateReader(slides, index, lecture, playButton, prevButton, nextButton, counter);
+                updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter);
             }
         });
 

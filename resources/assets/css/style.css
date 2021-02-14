@@ -229,10 +229,6 @@ div.slide {
     box-shadow: 0 0 .125rem #666666;
 }
 
-span.slide-time {
-    display: none;
-}
-
 div.slide-container {
     display: flex;
     width: 704px;
@@ -267,6 +263,25 @@ div.slide-main pre > code {
     line-height: 1.5;
 }
 
+pre.times {
+    display: none;
+}
+
+div.stamp {
+    display: none;
+    width: 224px;
+    height: 224px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    transform-origin: 0 100% 0;
+    background-image: url("../icons/novideo.svg");
+    background-size: 128px 128px;
+    background-position: 3rem 4rem;
+    background-repeat: no-repeat;
+}
+
 video.reader-lecture {
     display: none;
     width: 224px;
@@ -275,21 +290,6 @@ video.reader-lecture {
     left: 0;
     z-index: 1;
     transform-origin: 0 100% 0;
-}
-
-pre.reader-overlay {
-    overflow-y: auto;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    margin-bottom: 0;
-    padding: 1rem;
-    font-family: "Oxygen Mono", monospace;
-    background-color: #000000;
-    color: #00ff00;
 }
 
 div.animation {
