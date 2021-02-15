@@ -126,12 +126,19 @@ document.addEventListener('DOMContentLoaded', function () {
         hljs.highlightBlock(code);
     }
 
-    let a = document.querySelector('header > a');
+    let as = document.querySelectorAll('header > a');
 
-    a.addEventListener('click', function (event) {
+    as[0].addEventListener('click', function (event) {
         event.preventDefault();
         for (let details of document.querySelectorAll('details')) {
             details.setAttribute('open', '');
+        }
+    });
+
+    as[1].addEventListener('click', function (event) {
+        event.preventDefault();
+        for (let details of document.querySelectorAll('details')) {
+            details.removeAttribute('open');
         }
     });
 

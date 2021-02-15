@@ -436,6 +436,10 @@ header, footer {
     font-weight: lighter;
     text-align: center;
 }
+header a {
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
 footer img {
     vertical-align: sub;
 }
