@@ -436,6 +436,9 @@ header, footer {
     font-weight: lighter;
     text-align: center;
 }
+header {
+    min-height: 1rem;
+}
 header a {
     margin-right: 1rem;
     margin-left: 1rem;

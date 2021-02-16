@@ -126,22 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
         hljs.highlightBlock(code);
     }
 
-    let as = document.querySelectorAll('header > a');
-
-    as[0].addEventListener('click', function (event) {
-        event.preventDefault();
-        for (let details of document.querySelectorAll('details')) {
-            details.setAttribute('open', '');
-        }
-    });
-
-    as[1].addEventListener('click', function (event) {
-        event.preventDefault();
-        for (let details of document.querySelectorAll('details')) {
-            details.removeAttribute('open');
-        }
-    });
-
     let slides = [];
     let index = 0;
     let stamp;
@@ -475,7 +459,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    let allDetails = document.querySelectorAll('details');
+
+    let as = document.querySelectorAll('header > a');
+
+    if (allDetails.length > 0) {
+        as[0].addEventListener('click', function (event) {
+            event.preventDefault();
+            for (let details of allDetails) {
+                details.setAttribute('open', '');
+            }
+        });
+        as[1].addEventListener('click', function (event) {
+            event.preventDefault();
+            for (let details of allDetails) {
+                details.removeAttribute('open');
+            }
+        });
+    } else {
+        hide(as[0]);
+        hide(as[1]);
+    }
+
     if (page || window.location.hash) {
-        a.click();
+        as[0].click();
     }
 });
