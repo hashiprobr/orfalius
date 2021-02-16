@@ -165,9 +165,10 @@ document.addEventListener('DOMContentLoaded', function () {
         h1.parentElement.insertBefore(details, h1.nextElementSibling);
 
         let summary = document.createElement('summary');
-        summary.innerHTML = 'Slides';
         if (lecture) {
-            summary.innerHTML += '/Vídeo';
+            summary.innerHTML = 'VideoSlides';
+        } else {
+            summary.innerHTML = 'Slides';
         }
         details.append(summary);
 
