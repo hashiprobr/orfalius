@@ -477,7 +477,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (allDetails.length > 0) {
         for (let details of allDetails) {
-            details.addEventListener('mousedown', function (event) {
+            details.firstElementChild.addEventListener('mousedown', function (event) {
                 event.preventDefault();
             });
         }
