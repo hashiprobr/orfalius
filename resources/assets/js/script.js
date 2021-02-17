@@ -464,6 +464,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let as = document.querySelectorAll('header > a');
 
     if (allDetails.length > 0) {
+        for (let details of allDetails) {
+            details.addEventListener('mousedown', function (event) {
+                event.preventDefault();
+            });
+        }
+
         as[0].addEventListener('click', function (event) {
             event.preventDefault();
             for (let details of allDetails) {

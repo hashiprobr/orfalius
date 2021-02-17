@@ -185,10 +185,6 @@ summary {
     font-weight: bold;
     cursor: pointer;
 }
-summary:focus {
-    color: #0000ff;
-    outline: none;
-}
 details.answer > summary {
     font-style: italic;
 }
@@ -458,10 +454,6 @@ header a {
 }
 footer img {
     vertical-align: sub;
-}
-
-mjx-container:focus {
-    outline: none;
 }
 
 .cp_embed_wrapper {
