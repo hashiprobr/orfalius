@@ -506,7 +506,7 @@ footer img {
     }
 
     h1 {
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.5rem;
         font-size: 1.75rem;
         font-weight: bold;
     }
@@ -524,7 +524,7 @@ footer img {
     hr,
     details.section,
     details.reader {
-        margin-top: 1.25rem;
+        margin-top: 1.5rem;
     }
 
     span.reader-counter,
