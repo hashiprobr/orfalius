@@ -183,6 +183,7 @@ details.reader{
 summary {
     margin-bottom: 1rem;
     font-weight: bold;
+    cursor: pointer;
 }
 summary:focus {
     outline: none;
