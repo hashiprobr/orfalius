@@ -213,6 +213,7 @@ span.reader-counter {
     font-size: 1rem;
     font-family: "Open Sans", sans-serif;
     font-weight: bold;
+    user-select: none;
 }
 
 div.reader-display {
@@ -323,6 +324,7 @@ span.animation-counter {
     font-family: "Open Sans", sans-serif;
     font-weight: bold;
     vertical-align: .25rem;
+    user-select: none;
 }
 
 div.item {
