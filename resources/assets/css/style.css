@@ -498,7 +498,7 @@ footer img {
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
     h2,
@@ -506,7 +506,7 @@ footer img {
     details.reader > summary,
     div.reader-controls,
     div.animation-controls {
-        font-size: 1.25rem;
+        font-size: 1rem;
     }
 
     span.reader-counter,
