@@ -488,6 +488,10 @@ footer img {
 
 
 @media screen and (max-width: 37rem) {
+    body {
+        text-align: left;
+    }
+
     main {
         padding-top: 1rem;
         padding-bottom: 1rem;
