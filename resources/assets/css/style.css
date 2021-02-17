@@ -506,7 +506,9 @@ footer img {
     }
 
     h1 {
+        margin-bottom: 1.25rem;
         font-size: 1.75rem;
+        font-weight: bold;
     }
 
     h2,
@@ -515,6 +517,14 @@ footer img {
     div.reader-controls,
     div.animation-controls {
         font-size: 1rem;
+        font-weight: 800;
+    }
+
+    h2,
+    hr,
+    details.section,
+    details.reader {
+        margin-top: 1.25rem;
     }
 
     span.reader-counter,
