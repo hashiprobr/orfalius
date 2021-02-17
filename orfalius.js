@@ -4,6 +4,7 @@ const fs = require('fs');
 const Handlebars = require('handlebars');
 const MarkdownIt = require('markdown-it');
 const MarkdownItMathJax = require('markdown-it-mathjax');
+const MarkdownItInclude = require('markdown-it-include');
 const container = require('markdown-it-container');
 const kbd = require('markdown-it-kbd');
 const color = require('markdown-it-color');
@@ -343,8 +344,17 @@ function orfalius(templatePath) {
             let templateContents = fs.readFileSync(templatePath);
             let template = Handlebars.compile(templateContents.toString());
 
+            let dirName = path.dirname(file.path);
+
+            let includeOptions = {
+                root: dirName,
+                includeRe: /\{\{(.+?)\}\}/,
+                bracesAreOptional: true,
+            };
+
             let md = MarkdownIt({ html: true }).
                 use(MarkdownItMathJax()).
+                use(MarkdownItInclude, includeOptions).
                 use(container, 'warning', warningOptions).
                 use(container, 'question', questionOptions).
                 use(container, 'answer', answerOptions).
@@ -375,7 +385,6 @@ function orfalius(templatePath) {
 
             let title = h1s[0].innerHTML;
 
-            let dirName = path.dirname(file.path);
             let name = path.basename(file.path).slice(0, -3);
 
             let prefix;
