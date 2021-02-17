@@ -186,6 +186,7 @@ summary {
     cursor: pointer;
 }
 summary:focus {
+    color: #0000ff;
     outline: none;
 }
 details.answer > summary {
