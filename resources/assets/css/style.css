@@ -490,6 +490,10 @@ footer img {
 @media screen and (max-width: 37rem) {
     body {
         text-align: left;
+        hyphens: none;
+        -webkit-hyphens: none;
+        -moz-hyphens: none;
+        -ms-hyphens: none;
     }
 
     main {
