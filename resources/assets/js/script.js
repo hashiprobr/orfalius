@@ -143,10 +143,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         let h1 = document.querySelector('h1');
+        let parent = h1.parentElement;
+        let reference = h1.nextElementSibling;
 
         let details = document.createElement('details');
         details.setAttribute('class', 'reader');
-        h1.parentElement.insertBefore(details, h1.nextElementSibling);
+
+        let hr = document.createElement('hr');
+
+        parent.insertBefore(details, reference);
+        parent.insertBefore(hr, reference);
 
         let summary = document.createElement('summary');
         if (lecture) {

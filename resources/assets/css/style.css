@@ -329,6 +329,7 @@ span.animation-counter {
 
 div.item {
     display: flex;
+    margin-bottom: 1rem;
 }
 div.item-marker {
     margin-right: 1rem;
@@ -338,6 +339,9 @@ div.item-marker {
 }
 div.item-content {
     flex-grow: 1;
+}
+div.item-content > *:last-child {
+    margin-bottom: 0;
 }
 
 pre {
