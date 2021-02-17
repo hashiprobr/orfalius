@@ -9,7 +9,7 @@ body {
     justify-content: center;
     align-items: stretch;
     height: 100%;
-    line-height: 1.5;
+    line-height: 1.35;
     text-align: justify;
     hyphens: auto;
     -webkit-hyphens: auto;
@@ -131,7 +131,6 @@ blockquote {
 
 blockquote.warning {
     padding: 1rem 0 .25rem;
-    line-height: normal;
     background-color: #fff2cc;
     background-image: url("../icons/warning.svg");
     background-size: 3rem 3rem;
@@ -213,7 +212,7 @@ span.reader-counter {
     margin-left: 1rem;
     font-size: 1rem;
     font-family: "Open Sans", sans-serif;
-    font-weight: lighter;
+    font-weight: bold;
 }
 
 div.reader-display {
@@ -272,7 +271,6 @@ div.slide-main table {
 }
 div.slide-main pre > code {
     font-size: .5em;
-    line-height: 1.5;
 }
 
 pre.times {
@@ -323,7 +321,7 @@ div.animation-controls {
 span.animation-counter {
     font-size: 1rem;
     font-family: "Open Sans", sans-serif;
-    font-weight: lighter;
+    font-weight: bold;
     vertical-align: .25rem;
 }
 
@@ -347,7 +345,7 @@ pre {
 
 code {
     display: inline !important;
-    padding: .25em .25em !important;
+    padding: 0 .25em !important;
     font-size: .75em;
     font-family: "Oxygen Mono", monospace;
     white-space: nowrap;
@@ -357,6 +355,7 @@ code {
 pre > code {
     display: block !important;
     padding: 1em !important;
+    line-height: 1.5;
     white-space: pre;
 }
 
@@ -372,7 +371,8 @@ code.terminal {
 
 kbd {
     border-radius: .25em;
-    padding: .25em .25em;
+    padding-right: .25em;
+    padding-left: .25em;
     font-size: .75em;
     font-family: "Oxygen Mono", monospace;
     color: #666666;
