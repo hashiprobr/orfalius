@@ -28,7 +28,8 @@ div.container {
 
 main {
     flex-grow: 1;
-    padding: 2rem 0 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     background-color: #ffffff;
     box-shadow: 0 0 .25rem #666666;
 }
@@ -56,6 +57,11 @@ h2 {
     font-size: 1.5rem;
     font-family: "Open Sans", sans-serif;
     font-weight: bold;
+}
+hr {
+    margin-top: 2rem;
+    border-width: 0;
+    border-bottom: .05rem solid #000000;
 }
 
 p {
@@ -130,6 +136,7 @@ blockquote.warning > * {
     margin-left: 5rem;
 }
 blockquote.warning > p:first-child {
+    font-style: italic;
     font-weight: bold;
 }
 blockquote.warning p,
@@ -401,14 +408,18 @@ em {
     font-style: italic;
 }
 
+strong {
+    font-weight: bold;
+}
+
 span.indicator {
     display: none;
     margin-right: 1rem;
     color: #ff0000;
 }
 
-strong {
-    font-weight: bold;
+span.md-colorify--red {
+    color: #ff0000;
 }
 
 figure.img {
@@ -477,7 +488,7 @@ mjx-container:focus {
 @media screen and (max-width: 37rem) {
     main {
         padding-top: 1rem;
-        padding-bottom: 0;
+        padding-bottom: 1rem;
     }
     main > * {
         margin-right: 1rem;

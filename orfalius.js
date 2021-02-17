@@ -6,6 +6,8 @@ const MarkdownIt = require('markdown-it');
 const MarkdownItMathJax = require('markdown-it-mathjax');
 const container = require('markdown-it-container');
 const kbd = require('markdown-it-kbd');
+const color = require('markdown-it-color');
+const { colorPlugin } = color;
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const path = require('path');
@@ -350,7 +352,8 @@ function orfalius(templatePath) {
                 use(container, 'item', itemOptions).
                 use(container, 'slide', slideOptions).
                 use(container, 'times', timesOptions).
-                use(kbd);
+                use(kbd).
+                use(colorPlugin);
 
             let htmlString = md.render(file.contents.toString());
             let document = (new JSDOM(htmlString)).window.document;
