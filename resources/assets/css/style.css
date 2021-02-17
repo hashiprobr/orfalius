@@ -388,6 +388,7 @@ a.button {
     margin-right: 1rem;
     margin-left: 1rem;
     color: #000000;
+    user-select: none;
 }
 a.button:hover {
     text-decoration: none;
