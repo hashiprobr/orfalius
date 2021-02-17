@@ -89,9 +89,9 @@ const itemOptions = {
         let tail = tokens[idx].info.trim();
         let title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
-            return `<div class="item">\n<span class="item-marker">${title}</span>\n`;
+            return `<div class="item">\n<div class="item-marker">\n${title}\n</div>\n<div class="item-content">\n`;
         } else {
-            return '</div>\n';
+            return '</div>\n</div>\n';
         }
     },
     marker: '|',

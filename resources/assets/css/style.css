@@ -328,16 +328,16 @@ span.animation-counter {
 }
 
 div.item {
-    position: relative;
-    margin-bottom: 1rem;
-    padding-left: 2em;
+    display: flex;
 }
-span.item-marker {
-    position: absolute;
-    top: 0;
-    left: 0;
+div.item-marker {
+    margin-right: 1rem;
+    margin-left: 1rem;
     font-family: "Oxygen Mono", monospace;
     font-weight: bold;
+}
+div.item-content {
+    flex-grow: 1;
 }
 
 pre {
