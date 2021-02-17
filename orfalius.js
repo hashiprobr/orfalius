@@ -230,10 +230,17 @@ function processParagraph(document, element, prefix, dirName, name) {
     let innerHTML = element.innerHTML;
 
     if (innerHTML.startsWith('^')) {
+        // SMALL
         let small = document.createElement('small');
         small.innerHTML = innerHTML.slice(1);
         element.innerHTML = small.outerHTML;
         removable.push(...processChildren(document, element.firstElementChild, prefix, dirName, name));
+
+    } else if (innerHTML.startsWith('!')) {
+        // ALERT
+        element.setAttribute('class', 'alert');
+        element.innerHTML = innerHTML.slice(1);
+        removable.push(...processChildren(document, element, prefix, dirName, name));
 
     } else if (innerHTML.startsWith(':')) {
         // LECTURE
@@ -319,6 +326,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         } else {
             // P
             if (innerHTML.startsWith('~^') ||
+                innerHTML.startsWith('~!') ||
                 innerHTML.startsWith('~:') ||
                 innerHTML.startsWith('~;') ||
                 innerHTML.startsWith('~@') ||
@@ -377,8 +385,18 @@ function orfalius(templatePath) {
 
             let first = body.firstElementChild;
 
+            while (first.tagName === 'P' && first.innerHTML.startsWith('!')) {
+                first = first.nextElementSibling;
+            }
+
             if (first.tagName !== 'H1') {
-                if (first.tagName !== 'P' || first.nextElementSibling.tagName !== 'H1') {
+                let second = first.nextElementSibling;
+
+                while (second.tagName === 'P' && second.innerHTML.startsWith('!')) {
+                    second = second.nextElementSibling;
+                }
+
+                if (first.tagName !== 'P' || second.tagName !== 'H1') {
                     throw new SyntaxError('Must start with H1 or P followed by H1!');
                 }
             }

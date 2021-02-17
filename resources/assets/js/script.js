@@ -424,6 +424,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    let alerts = document.querySelectorAll('p.alert');
+
+    if (alerts.length > 0) {
+        let container = document.querySelector('div.container');
+        let main = document.querySelector('main');
+
+        for (let alert of alerts) {
+            alert.remove();
+            container.insertBefore(alert, main);
+        }
+    }
+
     for (let animation of document.querySelectorAll('div.animation')) {
         let imgs = animation.querySelectorAll('img.frame');
         let index = 0;
