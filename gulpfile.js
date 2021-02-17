@@ -8,10 +8,12 @@ const orfalius = require('./orfalius');
 const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
 const IMAGES = ['src/**/img/**/*'];
 const IMAGES_PRIVATE = ['src_private/**/img/**/*'];
-const STATIC = ['src/**/*', '!src/**/*.md'];
-const STATIC_PRIVATE = ['src_private/**/*', '!src_private/**/*.md'];
+const STATIC = ['src/**/*', '!src/**/*.md', '!src/**/*.mds'];
+const STATIC_PRIVATE = ['src_private/**/*', '!src_private/**/*.md', '!src/**/*.mds'];
 const SOURCE = ['src/**/*.md'];
 const SOURCE_PRIVATE = ['src_private/**/*.md'];
+const SNIPPETS = ['src/**/*.mds'];
+const SNIPPETS_PRIVATE = ['src_private/**/*.mds'];
 const TEMPLATE = 'resources/template.html';
 
 
@@ -66,7 +68,7 @@ function watch() {
     gulp.watch(STATIC_PRIVATE, copyStaticPrivate);
     gulp.watch(SOURCE, compile);
     gulp.watch(SOURCE_PRIVATE, compilePrivate);
-    gulp.watch([TEMPLATE], gulp.parallel(compile, compilePrivate));
+    gulp.watch([SNIPPETS, SNIPPETS_PRIVATE, TEMPLATE], gulp.parallel(compile, compilePrivate));
 }
 
 
