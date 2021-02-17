@@ -5,16 +5,16 @@ const cache = require('gulp-cached');
 const orfalius = require('./orfalius');
 
 
-const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
-const IMAGES = ['src/**/img/**/*'];
-const IMAGES_PRIVATE = ['src_private/**/img/**/*'];
-const STATIC = ['src/**/*', '!src/**/*.md', '!src/**/*.mds'];
-const STATIC_PRIVATE = ['src_private/**/*', '!src_private/**/*.md', '!src/**/*.mds'];
-const SOURCE = ['src/**/*.md'];
-const SOURCE_PRIVATE = ['src_private/**/*.md'];
-const SNIPPETS = ['src/**/*.mds'];
-const SNIPPETS_PRIVATE = ['src_private/**/*.mds'];
 const TEMPLATE = 'resources/template.html';
+const SOURCE = 'src/**/*.md';
+const SOURCE_PRIVATE = 'src_private/**/*.md';
+const SNIPPETS = 'src/**/*.mds';
+const SNIPPETS_PRIVATE = 'src_private/**/*.mds';
+const IMAGES = 'src/**/img/**/*';
+const IMAGES_PRIVATE = 'src_private/**/img/**/*';
+const STATIC = ['src/**/*', '!' + SOURCE, '!' + SNIPPETS];
+const STATIC_PRIVATE = ['src_private/**/*', '!' + SOURCE_PRIVATE, '!' + SNIPPETS_PRIVATE];
+const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
 
 
 function parse(filename) {
@@ -22,15 +22,23 @@ function parse(filename) {
     return ignore.trim().split(/\s+/).map(word => '!src/' + word);
 }
 
+
 function clean() {
     return del(['site/*', 'site_private/*']);
 }
 
 
-function copyAssets() {
-    return gulp.src(ASSETS).
-        pipe(cache('copy')).
-        pipe(gulp.dest('site')).
+function compile() {
+    return gulp.src([SOURCE].concat(parse('.orfignore'))).
+        pipe(cache('compile')).
+        pipe(orfalius(TEMPLATE)).
+        pipe(gulp.dest('site'));
+}
+
+function compilePrivate() {
+    return gulp.src([SOURCE_PRIVATE]).
+        pipe(cache('compile')).
+        pipe(orfalius(TEMPLATE)).
         pipe(gulp.dest('site_private'));
 }
 
@@ -46,29 +54,28 @@ function copyStaticPrivate() {
         pipe(gulp.dest('site_private'));
 }
 
-function compile() {
-    return gulp.src(SOURCE.concat(parse('.orfignore'))).
-        pipe(cache('compile')).
-        pipe(orfalius(TEMPLATE)).
-        pipe(gulp.dest('site'));
-}
-
-function compilePrivate() {
-    return gulp.src(SOURCE_PRIVATE).
-        pipe(cache('compile')).
-        pipe(orfalius(TEMPLATE)).
+function copyAssets() {
+    return gulp.src(ASSETS).
+        pipe(cache('copy')).
+        pipe(gulp.dest('site')).
         pipe(gulp.dest('site_private'));
 }
 
+
 function watch() {
-    gulp.watch(ASSETS, copyAssets);
-    gulp.watch(IMAGES, compile);
-    gulp.watch(IMAGES_PRIVATE, compilePrivate);
+    gulp.watch([
+        TEMPLATE,
+        SOURCE,
+        SNIPPETS,
+        IMAGES], compile);
+    gulp.watch([
+        TEMPLATE,
+        SOURCE_PRIVATE,
+        SNIPPETS_PRIVATE,
+        IMAGES_PRIVATE], compilePrivate);
     gulp.watch(STATIC, copyStatic);
     gulp.watch(STATIC_PRIVATE, copyStaticPrivate);
-    gulp.watch(SOURCE, compile);
-    gulp.watch(SOURCE_PRIVATE, compilePrivate);
-    gulp.watch([SNIPPETS, SNIPPETS_PRIVATE, TEMPLATE], gulp.parallel(compile, compilePrivate));
+    gulp.watch(ASSETS, copyAssets);
 }
 
 
@@ -76,10 +83,10 @@ gulp.task('clean', clean);
 
 gulp.task('default', gulp.series(
     gulp.parallel(
-        copyAssets,
+        compile,
+        compilePrivate,
         copyStatic,
         copyStaticPrivate,
-        compile,
-        compilePrivate),
+        copyAssets),
     watch
 ));
