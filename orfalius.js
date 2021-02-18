@@ -157,13 +157,13 @@ function processImage(element, prefix) {
     element.setAttribute('src', src);
 }
 
-function processChildren(document, element, prefix, dirName, name) {
+function processChildren(document, element, dirname, prefix) {
     let removable = [];
     if (element.children) {
         for (let child of element.children) {
             switch (child.tagName) {
                 case 'P':
-                    removable.push(...processParagraph(document, child, prefix, dirName, name));
+                    removable.push(...processParagraph(document, child, dirname, prefix));
                     break;
                 case 'TABLE':
                     let figure = document.createElement('figure');
@@ -174,13 +174,13 @@ function processChildren(document, element, prefix, dirName, name) {
                 case 'UL':
                 case 'OL':
                     for (let grandChild of child.children) {
-                        removable.push(...processParagraph(document, grandChild, prefix, dirName, name));
+                        removable.push(...processParagraph(document, grandChild, dirname, prefix));
                     }
                     break;
                 case 'BLOCKQUOTE':
                 case 'DETAILS':
                 case 'DIV':
-                    removable.push(...processChildren(document, child, prefix, dirName, name));
+                    removable.push(...processChildren(document, child, dirname, prefix));
                     break;
                 case 'PRE':
                     if (child.classList.contains('times')) {
@@ -224,7 +224,7 @@ function processChildren(document, element, prefix, dirName, name) {
 }
 
 
-function processParagraph(document, element, prefix, dirName, name) {
+function processParagraph(document, element, dirname, prefix) {
     let removable = [];
 
     let innerHTML = element.innerHTML;
@@ -234,17 +234,17 @@ function processParagraph(document, element, prefix, dirName, name) {
         let small = document.createElement('small');
         small.innerHTML = innerHTML.slice(1);
         element.innerHTML = small.outerHTML;
-        removable.push(...processChildren(document, element.firstElementChild, prefix, dirName, name));
+        removable.push(...processChildren(document, element.firstElementChild, dirname, prefix));
 
     } else if (innerHTML.startsWith('!')) {
         // ALERT
         element.setAttribute('class', 'alert');
         element.innerHTML = innerHTML.slice(1);
-        removable.push(...processChildren(document, element, prefix, dirName, name));
+        removable.push(...processChildren(document, element, dirname, prefix));
 
     } else if (innerHTML.startsWith(':')) {
         // LECTURE
-        let src = `${name}.${innerHTML.trim().slice(1)}`;
+        let src = innerHTML.trim().slice(1);
         let lecture = document.querySelector('video.reader-lecture');
         if (lecture) {
             removable.push(element);
@@ -262,7 +262,7 @@ function processParagraph(document, element, prefix, dirName, name) {
         let tail = innerHTML.trim().slice(1);
         if (tail) {
             let folder = 'img/' + tail;
-            let fileNames = fs.readdirSync(`${dirName}/${folder}`);
+            let fileNames = fs.readdirSync(`${dirname}/${folder}`);
             fileNames.sort();
             let imgs = [];
             for (let [i, fileName] of fileNames.entries()) {
@@ -334,7 +334,7 @@ function processParagraph(document, element, prefix, dirName, name) {
                 innerHTML.startsWith('~&amp;')) {
                 element.innerHTML = innerHTML.slice(1);
             }
-            removable.push(...processChildren(document, element, prefix, dirName, name));
+            removable.push(...processChildren(document, element, dirname, prefix));
         }
     }
 
@@ -352,10 +352,10 @@ function orfalius(templatePath) {
             let templateContents = fs.readFileSync(templatePath);
             let template = Handlebars.compile(templateContents.toString());
 
-            let dirName = path.dirname(file.path);
+            let dirname = path.dirname(file.path);
 
             let includeOptions = {
-                root: dirName,
+                root: dirname,
                 includeRe: /\{\{(.+?)\}\}/,
                 bracesAreOptional: true,
             };
@@ -403,17 +403,15 @@ function orfalius(templatePath) {
 
             let title = h1s[0].innerHTML;
 
-            let name = path.basename(file.path).slice(0, -3);
-
             let prefix;
-            if (path.basename(dirName) === 'error') {
+            if (path.basename(dirname) === 'error') {
                 prefix = '/';
             } else {
                 let paths = path.relative('.', file.path).split(path.sep);
                 prefix = '../'.repeat(paths.length - 2);
             }
 
-            for (let element of processChildren(document, body, prefix, dirName, name)) {
+            for (let element of processChildren(document, body, prefix, dirname)) {
                 element.remove();
             }
 
