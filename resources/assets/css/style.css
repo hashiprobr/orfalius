@@ -96,12 +96,12 @@ li {
 }
 
 figure.table {
-    display: flex;
-    justify-content: center;
     overflow-x: auto;
     margin-bottom: 1rem;
 }
 table {
+    margin-right: auto;
+    margin-left: auto;
     border: .05rem solid #efefef;
     font-size: .75em;
     font-family: "Open Sans", sans-serif;
@@ -443,12 +443,12 @@ img {
 }
 
 figure.video {
-    display: flex;
-    justify-content: center;
     margin-bottom: 1rem;
 }
 video {
     max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 header, footer {
