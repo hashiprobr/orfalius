@@ -161,6 +161,7 @@ function processChildren(document, element, dirname, prefix) {
     let removable = [];
     if (element.children) {
         for (let child of element.children) {
+            let innerHTML;
             switch (child.tagName) {
                 case 'P':
                     removable.push(...processParagraph(document, child, dirname, prefix));
@@ -170,6 +171,14 @@ function processChildren(document, element, dirname, prefix) {
                     replace(child, figure);
                     figure.setAttribute('class', 'table');
                     figure.append(child);
+                    let th = child.firstElementChild.firstElementChild.firstElementChild;
+                    innerHTML = th.innerHTML;
+                    if (innerHTML === 'x') {
+                        child.setAttribute('class', 'cross');
+                        th.innerHTML = '';
+                    } else if (innerHTML === '^x') {
+                        th.innerHTML = innerHTML.slice(1);
+                    }
                 case 'TR':
                 case 'UL':
                 case 'OL':
@@ -196,7 +205,7 @@ function processChildren(document, element, dirname, prefix) {
                     break;
                 case 'CODE':
                     let className = 'terminal nohighlight';
-                    let innerHTML = child.innerHTML;
+                    innerHTML = child.innerHTML;
                     if (innerHTML.startsWith('&gt;')) {
                         child.innerHTML = innerHTML = innerHTML.slice(4);
                     } else {

@@ -124,6 +124,10 @@ th {
     font-weight: bold;
     text-align: left;
 }
+table.cross td:first-child {
+    font-weight: bold;
+    text-align: right;
+}
 
 blockquote {
     margin-bottom: 1rem;
