@@ -192,7 +192,7 @@ function processChildren(document, element, dirname, prefix) {
                     removable.push(...processChildren(document, child, dirname, prefix));
                     break;
                 case 'PRE':
-                    if (child.classList.includes('times')) {
+                    if (child.classList.contains('times')) {
                         let grandChild = child.firstElementChild;
                         child.removeChild(grandChild);
                         child.innerHTML = `\n${grandChild.innerHTML}\n`;
