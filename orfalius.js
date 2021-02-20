@@ -263,7 +263,7 @@ function processParagraph(document, element, dirname, prefix) {
             replace(element, lecture);
         }
         let source = document.createElement('source');
-        source.setAttribute('src', src);
+        source.setAttribute('src', 'vid/' + src);
         lecture.append(source);
 
     } else if (innerHTML.startsWith(';')) {
