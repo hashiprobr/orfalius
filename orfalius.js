@@ -304,7 +304,11 @@ function processParagraph(document, element, dirname, prefix) {
         // VIDEO
         let words = innerHTML.trim().slice(1).split('%');
         let video = document.createElement('video');
-        video.setAttribute('src', 'vid/' + words[0]);
+        let src = words[0];
+        if (!src.href.startsWith('http')) {
+            src = 'vid/' + src;
+        }
+        video.setAttribute('src', src);
         if (words.length > 1) {
             video.setAttribute('poster', 'vid/' + words[1]);
         }
