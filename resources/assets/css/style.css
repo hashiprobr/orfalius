@@ -238,11 +238,14 @@ div.slide {
     font-weight: lighter;
     line-height: 1.125;
     text-align: left;
-    hyphens: none;
-    -webkit-hyphens: none;
-    -moz-hyphens: none;
-    -ms-hyphens: none;
+    hyphens: manual;
+    -webkit-hyphens: manual;
+    -moz-hyphens: manual;
+    -ms-hyphens: manual;
     box-shadow: 0 0 .125rem #666666;
+}
+div.slide code {
+    font-size: 1em;
 }
 
 div.slide-container {
@@ -434,10 +437,6 @@ span.indicator {
     color: #ff0000;
 }
 
-span.md-colorify--red {
-    color: #ff0000;
-}
-
 figure.img {
     margin-bottom: 1rem;
     text-align: center;
@@ -501,10 +500,10 @@ footer img {
 @media screen and (max-width: 37rem) {
     body {
         text-align: left;
-        hyphens: none;
-        -webkit-hyphens: none;
-        -moz-hyphens: none;
-        -ms-hyphens: none;
+        hyphens: manual;
+        -webkit-hyphens: manual;
+        -moz-hyphens: manual;
+        -ms-hyphens: manual;
     }
 
     main {
