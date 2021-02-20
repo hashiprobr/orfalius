@@ -60,6 +60,7 @@ h2 {
 }
 hr {
     margin-top: 2rem;
+    margin-bottom: 2rem;
     border-width: 0;
     border-bottom: .05rem solid #000000;
 }
@@ -535,6 +536,9 @@ footer img {
     details.section,
     details.reader {
         margin-top: 1.5rem;
+    }
+    hr {
+        margin-bottom: 1.5rem;
     }
 
     span.reader-counter,
