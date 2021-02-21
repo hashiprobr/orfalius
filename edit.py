@@ -8,9 +8,24 @@ INPUT_NAME = 'edit.json'
 
 SOURCE_NAME = 'edit.txt'
 
+PARTS_NAME = 'parts'
+
 CONCAT_NAME = 'concat.txt'
 
 OUTPUT_NAME = 'concat.mp4'
+
+
+class PreProcessor:
+    def __init__(self):
+        self.index = 0
+
+    def write(self, file, inname, inpoint, outpoint):
+        if inpoint < outpoint:
+            outname = os.path.join(PARTS_NAME, '{}_{}.mp4'.format(inname[:inname.rfind('.')].replace(' ', '_'), self.index))
+            subprocess.run(['ffmpeg', '-i', inname, '-ss', str(inpoint), '-t', str(outpoint - inpoint), outname])
+            file.write('file {}\n'.format(outname))
+            self.index += 1
+        return outpoint - inpoint
 
 
 def main():
@@ -27,12 +42,10 @@ def main():
 
         filenames = []
         for filename in sorted(os.listdir()):
-            if filename not in [INPUT_NAME, SOURCE_NAME, CONCAT_NAME, OUTPUT_NAME]:
-                if ' ' in filename:
-                    src = filename
-                    filename = filename.replace(' ', '_')
-                    os.rename(src, filename)
+            if filename not in [INPUT_NAME, SOURCE_NAME, PARTS_NAME, CONCAT_NAME, OUTPUT_NAME]:
                 filenames.append(filename)
+
+        pp = PreProcessor()
 
         with open(INPUT_NAME) as file:
             data = json.load(file)
@@ -43,13 +56,24 @@ def main():
                 file.write('{}\n'.format(time))
             file.write('//////////////////////////////////////////\n')
 
+        if not os.path.exists(PARTS_NAME):
+            os.mkdir(PARTS_NAME)
+
         with open(CONCAT_NAME, 'w') as file:
-            start = 0
+            shift = 0
             for filename, subtimes in zip(filenames, data['timeline']):
-                if subtimes:
-                    file.write('file {}\n'.format(filename))
-                    file.write('outpoint {}\n'.format(subtimes[-1] - start))
-                    start = subtimes[-1]
+                    total = 0
+                    inpoint = 0
+                    outpoint = 0
+                    for time in subtimes:
+                        if time > 0:
+                            outpoint = (time - shift) + (inpoint - total)
+                        else:
+                            total += pp.write(file, filename, inpoint, outpoint)
+                            inpoint = outpoint - time
+                            outpoint = inpoint
+                    total += pp.write(file, filename, inpoint, outpoint)
+                    shift += total
 
         subprocess.run(['ffmpeg', '-f', 'concat', '-i', CONCAT_NAME, '-filter:v', 'crop=iw-{}:ih:{}:0,scale=384:trunc((384/iw)*ih/2)*2'.format(leftcrop + rightcrop, leftcrop), OUTPUT_NAME])
 

@@ -306,12 +306,28 @@ document.addEventListener('DOMContentLoaded', function () {
             document.addEventListener('keydown', function (event) {
                 switch (event.key) {
                     case 'ArrowLeft':
+                        if (start) {
+                            let now = Date.now();
+                            subtimes.push((start - now) / 1000);
+                            start = now;
+                        }
                         let length = times.length;
                         if (length > 0) {
-                            if (!start && isNaN(times[length - 1])) {
-                                times.pop();
-                            } else {
-                                break;
+                            let time = times.pop();
+                            if (!isNaN(time)) {
+                                let i = length - 2;
+                                while (i > -1) {
+                                    time = times[i];
+                                    if (!isNaN(time)) {
+                                        break;
+                                    }
+                                    i--;
+                                }
+                                if (i === -1) {
+                                    shift = 0;
+                                } else {
+                                    shift = time;
+                                }
                             }
                         }
                         prevButton.click();
