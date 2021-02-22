@@ -306,7 +306,6 @@ video.reader-lecture {
     width: 224px;
     position: absolute;
     bottom: .5px;
-    left: .5px;
     z-index: 1;
     transform-origin: 0 100% 0;
 }
