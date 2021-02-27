@@ -110,13 +110,13 @@ table {
 }
 thead,
 tbody > tr:nth-child(even) {
-    background-color: #efefef;
+    background-color: #ffffff;
 }
 thead {
     border-bottom: .05rem solid #000000;
 }
 tbody > tr:nth-child(odd) {
-    background-color: #ffffff;
+    background-color: #efefef;
 }
 th, td {
     padding: .5em 1em;
@@ -128,6 +128,9 @@ th {
 table.cross td:first-child {
     font-weight: bold;
     text-align: right;
+}
+td > *:last-child {
+    margin-bottom: 0;
 }
 
 blockquote {
@@ -278,8 +281,14 @@ div.slide-main > * {
 div.slide-main table {
     font-size: .5em;
 }
-div.slide-main pre > code {
+div.slide-main pre {
     font-size: .5em;
+}
+div.slide-main code {
+    font-size: 1em;
+}
+div.slide-main table pre {
+    font-size: 1em;
 }
 
 pre.times {
@@ -373,8 +382,13 @@ pre > code {
 }
 
 table code {
+    padding: 0 !important;
     font-size: 1em;
     background-color: transparent !important;
+}
+
+table pre > code {
+    padding-right: 1em !important;
 }
 
 code.terminal {

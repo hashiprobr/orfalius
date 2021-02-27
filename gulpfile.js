@@ -3,6 +3,7 @@ const del = require('del');
 const gulp = require('gulp');
 const cache = require('gulp-cached');
 const orfalius = require('./orfalius');
+const browserSync = require('browser-sync').create();
 
 
 const TEMPLATE = 'resources/template.html';
@@ -67,15 +68,26 @@ function watch() {
         TEMPLATE,
         SOURCE,
         SNIPPETS,
-        IMAGES], compile);
+        IMAGES], compile).on('change', browserSync.reload);
     gulp.watch([
         TEMPLATE,
         SOURCE_PRIVATE,
         SNIPPETS_PRIVATE,
         IMAGES_PRIVATE], compilePrivate);
-    gulp.watch(STATIC, copyStatic);
+    gulp.watch(STATIC, copyStatic).on('change', browserSync.reload);
     gulp.watch(STATIC_PRIVATE, copyStaticPrivate);
-    gulp.watch(ASSETS, copyAssets);
+    gulp.watch(ASSETS, copyAssets).on('change', browserSync.reload);
+}
+
+function serve() {
+    browserSync.init({
+        server: {
+            baseDir: './site',
+        },
+        open: false,
+        reloadDelay: 1,
+    });
+    watch();
 }
 
 
@@ -88,5 +100,5 @@ gulp.task('default', gulp.series(
         copyStatic,
         copyStaticPrivate,
         copyAssets),
-    watch
+    serve
 ));

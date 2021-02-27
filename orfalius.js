@@ -5,6 +5,7 @@ const Handlebars = require('handlebars');
 const MarkdownIt = require('markdown-it');
 const MarkdownItMathJax = require('markdown-it-mathjax');
 const MarkdownItInclude = require('markdown-it-include');
+const MarkdownItTable = require('markdown-it-multimd-table');
 const container = require('markdown-it-container');
 const kbd = require('markdown-it-kbd');
 const color = require('markdown-it-color');
@@ -151,7 +152,7 @@ function processImage(element, prefix) {
     }
     if (prefix === '/') {
         src = '/' + src;
-    } else {
+    } else if (!src.startsWith('..')) {
         src = 'img/' + src;
     }
     element.setAttribute('src', src);
@@ -373,9 +374,16 @@ function orfalius(templatePath) {
                 bracesAreOptional: true,
             };
 
+            let tableOptions = {
+                multiline:  true,
+                rowspan:    true,
+                headerless: true,
+            };
+
             let md = MarkdownIt({ html: true }).
                 use(MarkdownItMathJax()).
                 use(MarkdownItInclude, includeOptions).
+                use(MarkdownItTable, tableOptions).
                 use(container, 'warning', warningOptions).
                 use(container, 'question', questionOptions).
                 use(container, 'answer', answerOptions).
