@@ -150,10 +150,11 @@ function processImage(element, prefix) {
         element.setAttribute('style', `max-height: ${src.slice(match.index + 3)}em;`);
         src = src.slice(0, match.index);
     }
-    if (prefix === '/') {
-        src = '/' + src;
-    } else if (!src.startsWith('..')) {
+    if (!src.startsWith('..')) {
         src = 'img/' + src;
+        if (prefix === '/') {
+            src = '/' + src;
+        }
     }
     element.setAttribute('src', src);
 }
@@ -375,8 +376,8 @@ function orfalius(templatePath) {
             };
 
             let tableOptions = {
-                multiline:  true,
-                rowspan:    true,
+                multiline: true,
+                rowspan: true,
                 headerless: true,
             };
 
