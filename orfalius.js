@@ -433,7 +433,7 @@ function orfalius(templatePath) {
                 prefix = '../'.repeat(paths.length - 2);
             }
 
-            for (let element of processChildren(document, body, prefix, dirname)) {
+            for (let element of processChildren(document, body, dirname, prefix)) {
                 element.remove();
             }
 
