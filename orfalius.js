@@ -307,7 +307,7 @@ function processParagraph(document, element, dirname, prefix) {
         let words = innerHTML.trim().slice(1).split('%');
         let video = document.createElement('video');
         let src = words[0];
-        if (!src.href.startsWith('http')) {
+        if (!src.startsWith('http')) {
             src = 'vid/' + src;
         }
         video.setAttribute('src', src);
