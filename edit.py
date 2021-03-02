@@ -17,10 +17,13 @@ OUTPUT_NAME = 'concat.mp4'
 
 class PreProcessor:
     def __init__(self):
-        self.index = 0
+        self.last = None
 
     def write(self, file, inname, inpoint, outpoint):
         if inpoint < outpoint:
+            if self.last != inname:
+                self.last = inname
+                self.index = 0
             outname = os.path.join(PARTS_NAME, '{}_{}.mp4'.format(inname[:inname.rfind('.')].replace(' ', '_'), self.index))
             subprocess.run(['ffmpeg', '-i', inname, '-ss', str(inpoint), '-t', str(outpoint - inpoint), outname])
             file.write('file {}\n'.format(outname))
