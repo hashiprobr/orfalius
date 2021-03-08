@@ -66,6 +66,22 @@ const answerOptions = {
     marker: ':',
 };
 
+const fileOptions = {
+    validate: function (params) {
+        return params.trim();
+    },
+    render: function (tokens, idx) {
+        let tail = tokens[idx].info.trim();
+        let title = tail.split(/\s+/).join(' ');
+        if (tokens[idx].nesting === 1) {
+            return `<details class="file">\n<summary>${title}</summary>\n`;
+        } else {
+            return '</details>\n';
+        }
+    },
+    marker: '´',
+};
+
 const sectionOptions = {
     validate: function (params) {
         return params.trim();
@@ -340,7 +356,8 @@ function processParagraph(document, element, dirname, prefix) {
 
         } else {
             // P
-            if (innerHTML.startsWith('~^') ||
+            if (innerHTML.startsWith('~~') ||
+                innerHTML.startsWith('~^') ||
                 innerHTML.startsWith('~!') ||
                 innerHTML.startsWith('~:') ||
                 innerHTML.startsWith('~;') ||
@@ -388,6 +405,7 @@ function orfalius(templatePath) {
                 use(container, 'warning', warningOptions).
                 use(container, 'question', questionOptions).
                 use(container, 'answer', answerOptions).
+                use(container, 'file', fileOptions).
                 use(container, 'section', sectionOptions).
                 use(container, 'item', itemOptions).
                 use(container, 'slide', slideOptions).

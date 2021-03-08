@@ -199,8 +199,20 @@ summary {
     font-weight: bold;
     cursor: pointer;
 }
-details.answer > summary {
+details.answer > summary,
+details.file > summary {
     font-style: italic;
+}
+details.file > summary {
+    font-weight: normal;
+    margin-bottom: 0;
+}
+details.file > summary::marker {
+    content: "⊞ ";
+    font-style: normal;
+}
+details.file[open] > summary::marker {
+    content: "⊟ ";
 }
 details.section > summary,
 details.reader > summary {
