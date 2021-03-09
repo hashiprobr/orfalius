@@ -1,3 +1,5 @@
+const DELTA = 0.000001;
+
 const SLIDE_WIDTH = 704;
 const SLIDE_HEIGHT = 396;
 
@@ -107,7 +109,7 @@ class Slide {
         if (this.width !== rect.width) {
             this.width = rect.width;
             let scale = Math.min(rect.width / SLIDE_WIDTH, rect.height / SLIDE_HEIGHT);
-            if (scale > 0) {
+            if (scale > DELTA) {
                 this.transform(this.container, scale);
                 if (lecture) {
                     this.transform(stamp, scale);
@@ -218,34 +220,38 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             lecture.addEventListener('timeupdate', function () {
-                if (!lecture.seeking) {
-                    let time = slides[index].time;
-                    if (isNaN(time)) {
-                        lecture.pause();
-                        let i = index - 1;
-                        while (i > -1) {
-                            time = slides[i].time;
-                            if (!isNaN(time)) {
-                                break;
+                if (lecture.hasAttribute('automatic')) {
+                    lecture.removeAttribute('automatic');
+                } else {
+                    if (!lecture.seeking) {
+                        let time = slides[index].time;
+                        if (isNaN(time)) {
+                            lecture.pause();
+                            let i = index - 1;
+                            while (i > -1) {
+                                time = slides[i].time;
+                                if (!isNaN(time)) {
+                                    break;
+                                }
+                                i--;
                             }
-                            i--;
-                        }
-                        if (i === -1) {
-                            updateTime(lecture, 0);
-                        } else {
-                            updateTime(lecture, time);
-                        }
-                    } else {
-                        if (lecture.currentTime >= time) {
-                            hide(slides[index].element);
-                            if (index === slides.length - 1) {
-                                lecture.pause();
+                            if (i === -1) {
                                 updateTime(lecture, 0);
-                                index = 0;
                             } else {
-                                index++;
+                                updateTime(lecture, time);
                             }
-                            updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter);
+                        } else {
+                            if (lecture.currentTime > time - DELTA) {
+                                hide(slides[index].element);
+                                if (index === slides.length - 1) {
+                                    lecture.pause();
+                                    updateTime(lecture, 0);
+                                    index = 0;
+                                } else {
+                                    index++;
+                                }
+                                updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter);
+                            }
                         }
                     }
                 }
@@ -262,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             let time = slides[i].time;
                             if (!isNaN(time)) {
                                 last = time;
-                                if (time > lecture.currentTime) {
+                                if (time > lecture.currentTime + DELTA) {
                                     break;
                                 }
                             }
