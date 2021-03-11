@@ -86,6 +86,9 @@ ul {
 ul ul {
     list-style-type: circle;
 }
+ul ul ul {
+    list-style-type: square;
+}
 ol {
     list-style-type: decimal;
 }
