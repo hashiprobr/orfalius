@@ -85,7 +85,7 @@ function serve() {
             baseDir: './site',
         },
         open: false,
-        reloadDelay: 1,
+        reloadDelay: 10,
     });
     watch();
 }

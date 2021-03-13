@@ -224,8 +224,8 @@ function processChildren(document, element, dirname, prefix) {
                 case 'CODE':
                     let className = 'terminal nohighlight';
                     innerHTML = child.innerHTML;
-                    if (innerHTML.startsWith('&gt;')) {
-                        child.innerHTML = innerHTML = innerHTML.slice(4);
+                    if (innerHTML.startsWith('~')) {
+                        child.innerHTML = innerHTML = innerHTML.slice(1);
                     } else {
                         let index = innerHTML.search(/\s/);
                         if (index > 0) {
