@@ -207,6 +207,9 @@ function processChildren(document, element, dirname, prefix) {
                 case 'BLOCKQUOTE':
                 case 'DETAILS':
                 case 'DIV':
+                case 'EM':
+                case 'STRONG':
+                case 'SPAN':
                     removable.push(...processChildren(document, child, dirname, prefix));
                     break;
                 case 'PRE':
