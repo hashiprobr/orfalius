@@ -401,7 +401,7 @@ function orfalius(templatePath) {
                 headerless: true,
             };
 
-            let md = MarkdownIt({ html: true }).
+            let md = MarkdownIt({ html: true, typographer: true }).
                 use(MarkdownItMathJax()).
                 use(MarkdownItInclude, includeOptions).
                 use(MarkdownItTable, tableOptions).
