@@ -259,20 +259,20 @@ function processParagraph(document, element, dirname, prefix) {
 
     let innerHTML = element.innerHTML;
 
-    if (innerHTML.startsWith('^')) {
+    if (innerHTML.startsWith('^') && !innerHTML.startsWith('^^')) {
         // SMALL
         let small = document.createElement('small');
         small.innerHTML = innerHTML.slice(1);
         element.innerHTML = small.outerHTML;
         removable.push(...processChildren(document, element.firstElementChild, dirname, prefix));
 
-    } else if (innerHTML.startsWith('!')) {
+    } else if (innerHTML.startsWith('!') && !innerHTML.startsWith('!!')) {
         // ALERT
         element.setAttribute('class', 'alert');
         element.innerHTML = innerHTML.slice(1);
         removable.push(...processChildren(document, element, dirname, prefix));
 
-    } else if (innerHTML.startsWith(':')) {
+    } else if (innerHTML.startsWith(':') && !innerHTML.startsWith('::')) {
         // LECTURE
         let src = innerHTML.trim().slice(1);
         let lecture = document.querySelector('video.reader-lecture');
@@ -287,7 +287,7 @@ function processParagraph(document, element, dirname, prefix) {
         source.setAttribute('src', 'vid/' + src);
         lecture.append(source);
 
-    } else if (innerHTML.startsWith(';')) {
+    } else if (innerHTML.startsWith(';') && !innerHTML.startsWith(';;')) {
         // ANIMATION
         let tail = innerHTML.trim().slice(1);
         if (tail) {
@@ -313,7 +313,7 @@ function processParagraph(document, element, dirname, prefix) {
             }
         }
 
-    } else if (innerHTML.startsWith('@')) {
+    } else if (innerHTML.startsWith('@') && !innerHTML.startsWith('@@')) {
         // ANCHOR
         let id = innerHTML.slice(1);
         let a = document.createElement('a');
@@ -321,7 +321,7 @@ function processParagraph(document, element, dirname, prefix) {
         a.setAttribute('id', id);
         replace(element, a);
 
-    } else if (innerHTML.startsWith('%')) {
+    } else if (innerHTML.startsWith('%') && !innerHTML.startsWith('%%')) {
         // VIDEO
         let words = innerHTML.trim().slice(1).split('%');
         let video = document.createElement('video');
@@ -337,7 +337,7 @@ function processParagraph(document, element, dirname, prefix) {
         let figure = wrapFigure(document, video, 'video');
         replace(element, figure);
 
-    } else if (innerHTML.startsWith('&amp;')) {
+    } else if (innerHTML.startsWith('&amp;') && !innerHTML.startsWith('&amp;&amp;')) {
         // CODEPEN
         let words = innerHTML.trim().slice(1).split('&amp;');
         element.setAttribute('class', 'codepen');
