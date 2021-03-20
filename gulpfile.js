@@ -15,7 +15,7 @@ const IMAGES = 'src/**/img/**/*';
 const IMAGES_PRIVATE = 'src_private/**/img/**/*';
 const STATIC = ['src/**/*', '!' + SOURCE, '!' + SNIPPETS];
 const STATIC_PRIVATE = ['src_private/**/*', '!' + SOURCE_PRIVATE, '!' + SNIPPETS_PRIVATE];
-const ASSETS = ['resources/**/css/*', 'resources/**/icons/*', 'resources/**/js/*'];
+const ASSETS = ['resources/**/css/*', 'resources/**/fonts/*', 'resources/**/icons/*', 'resources/**/js/*'];
 
 
 function parse(filename) {
