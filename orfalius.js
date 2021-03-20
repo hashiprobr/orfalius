@@ -114,6 +114,20 @@ const itemOptions = {
     marker: '|',
 };
 
+const timesOptions = {
+    validate: function (params) {
+        return true;
+    },
+    render: function (tokens, idx) {
+        if (tokens[idx].nesting === 1) {
+            return '<pre class="times">\n';
+        } else {
+            return '</pre>\n';
+        }
+    },
+    marker: '///////',
+};
+
 const slideOptions = {
     validate: function (params) {
         return true;
@@ -128,20 +142,6 @@ const slideOptions = {
         }
     },
     marker: '++++++++++++++',
-};
-
-const timesOptions = {
-    validate: function (params) {
-        return true;
-    },
-    render: function (tokens, idx) {
-        if (tokens[idx].nesting === 1) {
-            return '<pre class="times">\n';
-        } else {
-            return '</pre>\n';
-        }
-    },
-    marker: '//////////////',
 };
 
 
@@ -411,8 +411,8 @@ function orfalius(templatePath) {
                 use(container, 'file', fileOptions).
                 use(container, 'section', sectionOptions).
                 use(container, 'item', itemOptions).
-                use(container, 'slide', slideOptions).
                 use(container, 'times', timesOptions).
+                use(container, 'slide', slideOptions).
                 use(kbd).
                 use(colorPlugin);
 
