@@ -13,8 +13,8 @@ const SNIPPETS = 'src/**/*.mds';
 const SNIPPETS_PRIVATE = 'src_private/**/*.mds';
 const IMAGES = 'src/**/img/**/*';
 const IMAGES_PRIVATE = 'src_private/**/img/**/*';
-const STATIC = ['src/**/*', '!' + SOURCE, '!' + SNIPPETS];
-const STATIC_PRIVATE = ['src_private/**/*', '!' + SOURCE_PRIVATE, '!' + SNIPPETS_PRIVATE];
+const STATIC = ['src/**/*', '!src/**/vid/**/*', '!' + SOURCE, '!' + SNIPPETS];
+const STATIC_PRIVATE = ['src_private/**/*', '!src_private/**/vid/**/*', '!' + SOURCE_PRIVATE, '!' + SNIPPETS_PRIVATE];
 const ASSETS = ['resources/**/css/*', 'resources/**/fonts/*', 'resources/**/icons/*', 'resources/**/js/*'];
 
 
@@ -85,7 +85,7 @@ function serve() {
             baseDir: './site',
         },
         open: false,
-        reloadDelay: 10,
+        reloadDelay: 1000,
     });
     watch();
 }

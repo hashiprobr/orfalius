@@ -350,7 +350,7 @@ function processParagraph(document, element, dirname, prefix) {
     } else {
         let child = element.firstElementChild;
 
-        if (element.children.length === 1 && child.tagName === 'IMG') {
+        if (element.tagName !== 'TD' && element.children.length === 1 && child.tagName === 'IMG') {
             // IMAGE
             element.removeChild(child);
             let figure = wrapFigure(document, child, 'img');

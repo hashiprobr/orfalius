@@ -134,6 +134,9 @@ th {
     font-weight: bold;
     text-align: left;
 }
+td {
+    vertical-align: top;
+}
 table.cross th:first-child,
 table.cross td:first-child {
     border-right: .05rem solid #000000;
