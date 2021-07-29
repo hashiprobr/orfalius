@@ -1,4 +1,4 @@
-import through from'through2';
+import through from 'through2';
 import PluginError from 'plugin-error';
 import fs from 'fs';
 import Handlebars from 'handlebars';
@@ -17,12 +17,12 @@ const PLUGIN_NAME = 'orfalius';
 
 
 const warningOptions = {
-    validate: function (params) {
+    validate: function () {
         return true;
     },
     render: function (tokens, idx) {
-        let tail = tokens[idx].info.trim();
-        let title = tail ? tail.split(/\s+/).join(' ') : 'Aviso';
+        const tail = tokens[idx].info.trim();
+        const title = tail ? tail.split(/\s+/).join(' ') : 'Aviso';
         if (tokens[idx].nesting === 1) {
             return `<blockquote class="warning">\n<p>${title}</p>\n`;
         } else {
@@ -33,12 +33,12 @@ const warningOptions = {
 };
 
 const questionOptions = {
-    validate: function (params) {
+    validate: function () {
         return true;
     },
     render: function (tokens, idx) {
-        let tail = tokens[idx].info.trim();
-        let title = tail ? tail.split(/\s+/).join(' ') : 'Pergunta';
+        const tail = tokens[idx].info.trim();
+        const title = tail ? tail.split(/\s+/).join(' ') : 'Pergunta';
         if (tokens[idx].nesting === 1) {
             return `<blockquote class="question">\n<p>${title}</p>\n`;
         } else {
@@ -49,12 +49,12 @@ const questionOptions = {
 };
 
 const answerOptions = {
-    validate: function (params) {
+    validate: function () {
         return true;
     },
     render: function (tokens, idx) {
-        let tail = tokens[idx].info.trim();
-        let title = tail ? tail.split(/\s+/).join(' ') : 'Resposta';
+        const tail = tokens[idx].info.trim();
+        const title = tail ? tail.split(/\s+/).join(' ') : 'Resposta';
         if (tokens[idx].nesting === 1) {
             return `<details class="answer">\n<summary>${title}</summary>\n`;
         } else {
@@ -69,8 +69,8 @@ const fileOptions = {
         return params.trim();
     },
     render: function (tokens, idx) {
-        let tail = tokens[idx].info.trim();
-        let title = tail.split(/\s+/).join(' ');
+        const tail = tokens[idx].info.trim();
+        const title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
             return `<details class="file">\n<summary>${title}</summary>\n`;
         } else {
@@ -85,8 +85,8 @@ const sectionOptions = {
         return params.trim();
     },
     render: function (tokens, idx) {
-        let tail = tokens[idx].info.trim();
-        let title = tail.split(/\s+/).join(' ');
+        const tail = tokens[idx].info.trim();
+        const title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
             return `<details class="section">\n<summary>${title}</summary>\n`;
         } else {
@@ -101,8 +101,8 @@ const itemOptions = {
         return params.trim();
     },
     render: function (tokens, idx) {
-        let tail = tokens[idx].info.trim();
-        let title = tail.split(/\s+/).join(' ');
+        const tail = tokens[idx].info.trim();
+        const title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
             return `<div class="item">\n<div class="item-marker">\n${title}\n</div>\n<div class="item-content">\n`;
         } else {
@@ -113,7 +113,7 @@ const itemOptions = {
 };
 
 const timesOptions = {
-    validate: function (params) {
+    validate: function () {
         return true;
     },
     render: function (tokens, idx) {
@@ -127,12 +127,12 @@ const timesOptions = {
 };
 
 const slideOptions = {
-    validate: function (params) {
+    validate: function () {
         return true;
     },
     render: function (tokens, idx) {
-        let tail = tokens[idx].info.trim();
-        let title = tail.split(/\s+/).join(' ');
+        const tail = tokens[idx].info.trim();
+        const title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
             return `<div class="slide">\n<div class="slide-container">\n<div class="slide-header">\n${title}\n</div>\n<div class="slide-main">\n`;
         } else {
@@ -144,13 +144,13 @@ const slideOptions = {
 
 
 function replace(reference, element) {
-    let parent = reference.parentElement;
+    const parent = reference.parentElement;
     parent.insertBefore(element, reference);
     parent.removeChild(reference);
 }
 
 function wrapFigure(document, element, className) {
-    let figure = document.createElement('figure');
+    const figure = document.createElement('figure');
     figure.setAttribute('class', className);
     figure.append(element);
     return figure;
@@ -158,36 +158,36 @@ function wrapFigure(document, element, className) {
 
 function processImage(element, prefix) {
     let src = element.src;
-    let re = /(?<!%7C)(\%7C\%7C)*(\%7C)(?!%7C)/g;
-    let match = re.exec(src);
+    const re = /(?<!%7C)(\%7C\%7C)*(\%7C)(?!%7C)/g;
+    const match = re.exec(src);
     if (match && !re.exec(src)) {
         element.setAttribute('style', `max-height: ${src.slice(match.index + 3)}em;`);
         src = src.slice(0, match.index);
     }
     if (!src.startsWith('..')) {
-        src = 'img/' + src;
+        src = `img/${src}`;
         if (prefix === '/') {
-            src = '/' + src;
+            src = `/${src}`;
         }
     }
     element.setAttribute('src', src);
 }
 
 function processChildren(document, element, dirname, prefix) {
-    let removable = [];
+    const removable = [];
     if (element.children) {
-        for (let child of element.children) {
+        for (const child of element.children) {
             let innerHTML;
             switch (child.tagName) {
                 case 'P':
                     removable.push(...processParagraph(document, child, dirname, prefix));
                     break;
                 case 'TABLE':
-                    let figure = document.createElement('figure');
+                    const figure = document.createElement('figure');
                     replace(child, figure);
                     figure.setAttribute('class', 'table');
                     figure.append(child);
-                    let th = child.firstElementChild.firstElementChild.firstElementChild;
+                    const th = child.firstElementChild.firstElementChild.firstElementChild;
                     innerHTML = th.innerHTML;
                     if (innerHTML === 'x') {
                         child.setAttribute('class', 'cross');
@@ -198,7 +198,7 @@ function processChildren(document, element, dirname, prefix) {
                 case 'TR':
                 case 'UL':
                 case 'OL':
-                    for (let grandChild of child.children) {
+                    for (const grandChild of child.children) {
                         removable.push(...processParagraph(document, grandChild, dirname, prefix));
                     }
                     break;
@@ -212,11 +212,11 @@ function processChildren(document, element, dirname, prefix) {
                     break;
                 case 'PRE':
                     if (child.classList.contains('times')) {
-                        let grandChild = child.firstElementChild;
+                        const grandChild = child.firstElementChild;
                         child.removeChild(grandChild);
                         child.innerHTML = `\n${grandChild.innerHTML}\n`;
                     } else {
-                        let code = child.querySelector('code');
+                        const code = child.querySelector('code');
                         if (!code.hasAttribute('class')) {
                             code.setAttribute('class', 'terminal nohighlight');
                         }
@@ -228,9 +228,9 @@ function processChildren(document, element, dirname, prefix) {
                     if (innerHTML.startsWith('~')) {
                         child.innerHTML = innerHTML = innerHTML.slice(1);
                     } else {
-                        let index = innerHTML.search(/\s/);
+                        const index = innerHTML.search(/\s/);
                         if (index > 0) {
-                            className = 'language-' + innerHTML.slice(0, index);
+                            className = `language-${innerHTML.slice(0, index)}`;
                             child.innerHTML = innerHTML.slice(index + 1);
                         }
                     }
@@ -253,13 +253,13 @@ function processChildren(document, element, dirname, prefix) {
 
 
 function processParagraph(document, element, dirname, prefix) {
-    let removable = [];
+    const removable = [];
 
-    let innerHTML = element.innerHTML;
+    const innerHTML = element.innerHTML;
 
     if (innerHTML.startsWith('^') && !innerHTML.startsWith('^^')) {
         // SMALL
-        let small = document.createElement('small');
+        const small = document.createElement('small');
         small.innerHTML = innerHTML.slice(1);
         element.innerHTML = small.outerHTML;
         removable.push(...processChildren(document, element.firstElementChild, dirname, prefix));
@@ -272,7 +272,7 @@ function processParagraph(document, element, dirname, prefix) {
 
     } else if (innerHTML.startsWith(':') && !innerHTML.startsWith('::')) {
         // LECTURE
-        let src = innerHTML.trim().slice(1);
+        const src = innerHTML.trim().slice(1);
         let lecture = document.querySelector('video.reader-lecture');
         if (lecture) {
             removable.push(element);
@@ -281,29 +281,29 @@ function processParagraph(document, element, dirname, prefix) {
             lecture.setAttribute('class', 'reader-lecture');
             replace(element, lecture);
         }
-        let source = document.createElement('source');
-        source.setAttribute('src', 'vid/' + src);
+        const source = document.createElement('source');
+        source.setAttribute('src', `vid/${src}`);
         lecture.append(source);
 
     } else if (innerHTML.startsWith(';') && !innerHTML.startsWith(';;')) {
         // ANIMATION
-        let tail = innerHTML.trim().slice(1);
+        const tail = innerHTML.trim().slice(1);
         if (tail) {
-            let folder = 'img/' + tail;
-            let fileNames = fs.readdirSync(`${dirname}/${folder}`);
+            const folder = `img/${tail}`;
+            const fileNames = fs.readdirSync(`${dirname}/${folder}`);
             fileNames.sort();
-            let imgs = [];
-            for (let [i, fileName] of fileNames.entries()) {
-                let img = document.createElement('img');
+            const imgs = [];
+            for (const [i, fileName] of fileNames.entries()) {
+                const img = document.createElement('img');
                 img.setAttribute('class', 'frame');
                 img.setAttribute('src', `${tail}/${encodeURI(fileName.replace(/\|/g, '||'))}`);
                 img.setAttribute('alt', i + 1);
                 imgs.push(img);
             }
             if (imgs.length > 0) {
-                let animation = document.createElement('div');
+                const animation = document.createElement('div');
                 animation.setAttribute('class', 'animation');
-                for (let img of imgs) {
+                for (const img of imgs) {
                     animation.append(img);
                     processImage(img, prefix);
                 }
@@ -313,31 +313,31 @@ function processParagraph(document, element, dirname, prefix) {
 
     } else if (innerHTML.startsWith('@') && !innerHTML.startsWith('@@')) {
         // ANCHOR
-        let id = innerHTML.slice(1);
-        let a = document.createElement('a');
+        const id = innerHTML.slice(1);
+        const a = document.createElement('a');
         a.setAttribute('class', 'anchor');
         a.setAttribute('id', id);
         replace(element, a);
 
     } else if (innerHTML.startsWith('%') && !innerHTML.startsWith('%%')) {
         // VIDEO
-        let words = innerHTML.trim().slice(1).split('%');
-        let video = document.createElement('video');
+        const words = innerHTML.trim().slice(1).split('%');
+        const video = document.createElement('video');
         let src = words[0];
         if (!src.startsWith('http')) {
-            src = 'vid/' + src;
+            src = `vid/${src}`;
         }
         video.setAttribute('src', src);
         if (words.length > 1) {
-            video.setAttribute('poster', 'vid/' + words[1]);
+            video.setAttribute('poster', `vid/${words[1]}`);
         }
         video.setAttribute('controls', '');
-        let figure = wrapFigure(document, video, 'video');
+        const figure = wrapFigure(document, video, 'video');
         replace(element, figure);
 
     } else if (innerHTML.startsWith('&amp;') && !innerHTML.startsWith('&amp;&amp;')) {
         // CODEPEN
-        let words = innerHTML.trim().slice(1).split('&amp;');
+        const words = innerHTML.trim().slice(1).split('&amp;');
         element.setAttribute('class', 'codepen');
         element.setAttribute('data-theme-id', 'dark');
         element.setAttribute('data-user', words[0]);
@@ -346,12 +346,12 @@ function processParagraph(document, element, dirname, prefix) {
         element.innerHTML = '';
 
     } else {
-        let child = element.firstElementChild;
+        const child = element.firstElementChild;
 
         if (element.tagName !== 'TD' && element.children.length === 1 && child.tagName === 'IMG') {
             // IMAGE
             element.removeChild(child);
-            let figure = wrapFigure(document, child, 'img');
+            const figure = wrapFigure(document, child, 'img');
             replace(element, figure);
             processImage(child, prefix);
 
@@ -375,50 +375,50 @@ function processParagraph(document, element, dirname, prefix) {
 }
 
 
-function orfalius(templatePath) {
+export default function (templatePath) {
     return through.obj(function (file, encoding, callback) {
         if (file.isStream()) {
             this.emit('error', new PluginError(PLUGIN_NAME, 'Streams not supported!'));
         }
 
         if (file.isBuffer()) {
-            let templateContents = fs.readFileSync(templatePath);
-            let template = Handlebars.compile(templateContents.toString());
+            const templateContents = fs.readFileSync(templatePath);
+            const template = Handlebars.compile(templateContents.toString());
 
-            let dirname = path.dirname(file.path);
+            const dirname = path.dirname(file.path);
 
-            let includeOptions = {
+            const includeOptions = {
                 root: dirname,
                 includeRe: /\{\{(.+?)\}\}/,
                 bracesAreOptional: true,
             };
 
-            let tableOptions = {
+            const tableOptions = {
                 multiline: true,
                 rowspan: true,
                 headerless: true,
             };
 
-            let md = MarkdownIt({ html: true, typographer: true }).
-                use(MarkdownItMathJax()).
-                use(MarkdownItInclude, includeOptions).
-                use(MarkdownItTable, tableOptions).
-                use(container, 'warning', warningOptions).
-                use(container, 'question', questionOptions).
-                use(container, 'answer', answerOptions).
-                use(container, 'file', fileOptions).
-                use(container, 'section', sectionOptions).
-                use(container, 'item', itemOptions).
-                use(container, 'times', timesOptions).
-                use(container, 'slide', slideOptions).
-                use(kbd).
-                use(colorPlugin);
+            const md = MarkdownIt({ html: true, typographer: true })
+                .use(MarkdownItMathJax())
+                .use(MarkdownItInclude, includeOptions)
+                .use(MarkdownItTable, tableOptions)
+                .use(container, 'warning', warningOptions)
+                .use(container, 'question', questionOptions)
+                .use(container, 'answer', answerOptions)
+                .use(container, 'file', fileOptions)
+                .use(container, 'section', sectionOptions)
+                .use(container, 'item', itemOptions)
+                .use(container, 'times', timesOptions)
+                .use(container, 'slide', slideOptions)
+                .use(kbd)
+                .use(colorPlugin);
 
-            let htmlString = md.render(file.contents.toString());
-            let document = (new JSDOM(htmlString)).window.document;
-            let body = document.querySelector('body');
+            const htmlString = md.render(file.contents.toString());
+            const document = (new JSDOM(htmlString)).window.document;
+            const body = document.querySelector('body');
 
-            let h1s = body.querySelectorAll('h1');
+            const h1s = body.querySelectorAll('h1');
 
             if (h1s.length !== 1) {
                 throw new SyntaxError('Must have exactly one H1!');
@@ -442,35 +442,32 @@ function orfalius(templatePath) {
                 }
             }
 
-            let title = h1s[0].innerHTML;
+            const title = h1s[0].innerHTML;
 
             let prefix;
             if (path.basename(dirname) === 'error') {
                 prefix = '/';
             } else {
-                let paths = path.relative('.', file.path).split(path.sep);
+                const paths = path.relative('.', file.path).split(path.sep);
                 prefix = '../'.repeat(paths.length - 2);
             }
 
-            for (let element of processChildren(document, body, dirname, prefix)) {
+            for (const element of processChildren(document, body, dirname, prefix)) {
                 element.remove();
             }
 
-            let contents = body.innerHTML;
+            const contents = body.innerHTML;
 
-            let fileString = template({
+            const fileString = template({
                 title: title,
                 prefix: prefix,
                 contents: contents,
             });
 
             file.contents = Buffer.from(fileString);
-            file.path = file.path.slice(0, -2) + 'html';
+            file.path = `${file.path.slice(0, -2)}html`;
         }
 
         callback(null, file);
     });
 }
-
-
-export default orfalius;
