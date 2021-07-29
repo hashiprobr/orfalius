@@ -1,18 +1,16 @@
-const through = require('through2');
-const PluginError = require('plugin-error');
-const fs = require('fs');
-const Handlebars = require('handlebars');
-const MarkdownIt = require('markdown-it');
-const MarkdownItMathJax = require('markdown-it-mathjax');
-const MarkdownItInclude = require('markdown-it-include');
-const MarkdownItTable = require('markdown-it-multimd-table');
-const container = require('markdown-it-container');
-const kbd = require('markdown-it-kbd');
-const color = require('markdown-it-color');
-const { colorPlugin } = color;
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-const path = require('path');
+import through from'through2';
+import PluginError from 'plugin-error';
+import fs from 'fs';
+import Handlebars from 'handlebars';
+import MarkdownIt from 'markdown-it';
+import MarkdownItMathJax from 'markdown-it-mathjax';
+import MarkdownItInclude from 'markdown-it-include';
+import MarkdownItTable from 'markdown-it-multimd-table';
+import container from 'markdown-it-container';
+import kbd from 'markdown-it-kbd';
+import { colorPlugin } from 'markdown-it-color';
+import { JSDOM } from 'jsdom';
+import path from 'path';
 
 
 const PLUGIN_NAME = 'orfalius';
@@ -475,4 +473,4 @@ function orfalius(templatePath) {
 }
 
 
-module.exports = orfalius;
+export default orfalius;
