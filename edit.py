@@ -10,9 +10,9 @@ SOURCE_NAME = 'edit.txt'
 
 PARTS_NAME = 'parts'
 
-CONCAT_NAME = 'concat.txt'
+CONCAT_NAME = 'index.txt'
 
-OUTPUT_NAME = 'concat.mp4'
+OUTPUT_NAME = 'index.mp4'
 
 
 class PreProcessor:
@@ -54,10 +54,10 @@ def main():
             data = json.load(file)
 
         with open(SOURCE_NAME, 'w') as file:
-            file.write('//////////////////////////////////////////\n')
+            file.write(f'////////////////// {OUTPUT_NAME}\n')
             for time in data['times']:
                 file.write('{}\n'.format(time))
-            file.write('//////////////////////////////////////////\n')
+            file.write('//////////////////\n')
 
         if not os.path.exists(PARTS_NAME):
             os.mkdir(PARTS_NAME)
@@ -65,18 +65,18 @@ def main():
         with open(CONCAT_NAME, 'w') as file:
             shift = 0
             for filename, subtimes in zip(filenames, data['timeline']):
-                    total = 0
-                    inpoint = 0
-                    outpoint = 0
-                    for time in subtimes:
-                        if time > 0:
-                            outpoint = (time - shift) + (inpoint - total)
-                        else:
-                            total += pp.write(file, filename, inpoint, outpoint)
-                            inpoint = outpoint - time
-                            outpoint = inpoint
-                    total += pp.write(file, filename, inpoint, outpoint)
-                    shift += total
+                total = 0
+                inpoint = 0
+                outpoint = 0
+                for time in subtimes:
+                    if time > 0:
+                        outpoint = (time - shift) + (inpoint - total)
+                    else:
+                        total += pp.write(file, filename, inpoint, outpoint)
+                        inpoint = outpoint - time
+                        outpoint = inpoint
+                total += pp.write(file, filename, inpoint, outpoint)
+                shift += total
 
         subprocess.run(['ffmpeg', '-f', 'concat', '-i', CONCAT_NAME, '-filter:v', 'crop=iw-{}:ih:{}:0,scale=384:trunc((384/iw)*ih/2)*2'.format(leftcrop + rightcrop, leftcrop), OUTPUT_NAME])
 

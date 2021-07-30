@@ -8,6 +8,10 @@ function hide(element) {
     element.style.display = 'none';
 }
 
+function show(element, display) {
+    element.style.display = display;
+}
+
 function disable(button) {
     button.classList.add('disabled');
 }
@@ -17,30 +21,24 @@ function enable(button) {
 }
 
 function createButton(controls, symbol) {
-    let button = document.createElement('a');
+    const button = document.createElement('a');
     button.setAttribute('class', 'button');
-    button.href = '';
+    button.setAttribute('href', '');
     button.innerHTML = symbol;
     controls.append(button);
     return button;
 }
 
-function createJSON(slides, times, timeline) {
-    if (timeline.length > 0 && times.length === slides.length) {
-        let data = {
-            'times': times,
-            'timeline': timeline,
-        };
-        data = encodeURI(JSON.stringify(data, null, 4));
-        let a = document.createElement('a');
-        a.setAttribute('href', 'data:application/json,' + data);
-        a.setAttribute('download', 'edit.json');
-        a.click();
-    }
-}
-
-function updateScale(slides, index, stamp, lecture) {
-    slides[index].updateScale(stamp, lecture);
+function createJSON(times, timeline) {
+    let data = {
+        'times': times,
+        'timeline': timeline,
+    };
+    data = encodeURI(JSON.stringify(data, null, 4));
+    const a = document.createElement('a');
+    a.setAttribute('href', `data:application/json,${data}`);
+    a.setAttribute('download', 'edit.json');
+    a.click();
 }
 
 function updateTime(lecture, time) {
@@ -65,12 +63,16 @@ function updateTimeFromSlides(slides, index, lecture) {
     }
 }
 
+function updateScale(slides, index, stamp, lecture) {
+    slides[index].updateScale(stamp, lecture);
+}
+
 function updateReader(slides, index, stamp, lecture, playButton, prevButton, nextButton, counter) {
-    slides[index].element.style.display = 'block';
+    show(slides[index].element, 'block');
     updateScale(slides, index, stamp, lecture);
     if (isNaN(slides[index].time)) {
         if (lecture) {
-            stamp.style.display = 'block';
+            show(stamp, 'block');
             lecture.pause();
         }
         disable(playButton);
@@ -94,7 +96,7 @@ function updateReader(slides, index, stamp, lecture, playButton, prevButton, nex
 }
 
 function updateAnimation(imgs, index, leftButton, rightButton, counter) {
-    imgs[index].style.display = 'inline';
+    show(imgs[index], 'inline');
     if (index === 0) {
         disable(leftButton);
     } else {
@@ -122,10 +124,10 @@ class Slide {
     }
 
     updateScale(stamp, lecture) {
-        let rect = this.element.getBoundingClientRect();
+        const rect = this.element.getBoundingClientRect();
         if (this.width !== rect.width) {
             this.width = rect.width;
-            let scale = Math.min(rect.width / SLIDE_WIDTH, rect.height / SLIDE_HEIGHT);
+            const scale = Math.min(rect.width / SLIDE_WIDTH, rect.height / SLIDE_HEIGHT);
             if (scale > DELTA) {
                 this.transform(this.container, scale);
                 if (lecture) {
@@ -139,41 +141,41 @@ class Slide {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    let page = (new URLSearchParams(window.location.search)).get('slide');
+    const page = (new URLSearchParams(window.location.search)).get('slide');
 
-    for (let code of document.querySelectorAll('code')) {
+    for (const code of document.querySelectorAll('code')) {
         hljs.highlightBlock(code);
     }
 
-    let slides = [];
+    const slides = [];
     let index = 0;
     let stamp;
-    let lecture = document.querySelector('video.reader-lecture');
+    const lecture = document.querySelector('video.reader-lecture');
 
-    for (let element of document.querySelectorAll('div.slide')) {
+    for (const element of document.querySelectorAll('div.slide')) {
         slides.push(new Slide(element));
     }
 
     if (slides.length > 0) {
-        let value = parseInt(page);
+        const value = parseInt(page);
 
         if (!isNaN(value) && value > 0 && value <= slides.length) {
             index = value - 1;
         }
 
-        let h1 = document.querySelector('h1');
-        let parent = h1.parentElement;
-        let reference = h1.nextElementSibling;
+        const h1 = document.querySelector('h1');
+        const parent = h1.parentElement;
+        const reference = h1.nextElementSibling;
 
-        let details = document.createElement('details');
+        const details = document.createElement('details');
         details.setAttribute('class', 'reader');
 
-        let hr = document.createElement('hr');
+        const hr = document.createElement('hr');
 
         parent.insertBefore(details, reference);
         parent.insertBefore(hr, reference);
 
-        let summary = document.createElement('summary');
+        const summary = document.createElement('summary');
         if (lecture) {
             summary.innerHTML = 'VideoSlides';
         } else {
@@ -181,30 +183,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         details.append(summary);
 
-        let controls = document.createElement('div');
+        const controls = document.createElement('div');
         controls.setAttribute('class', 'reader-controls');
         details.append(controls);
 
-        let recIndicator = document.createElement('span');
+        const recIndicator = document.createElement('span');
         recIndicator.setAttribute('class', 'indicator');
         recIndicator.innerHTML = '⏺';
         controls.append(recIndicator);
 
-        let prevButton = createButton(controls, '⏮');
-        let playButton = createButton(controls, '▶');
-        let pauseButton = createButton(controls, '⏸');
-        let nextButton = createButton(controls, '⏭');
-        let fullButton = createButton(controls, '⛶');
+        const prevButton = createButton(controls, '⏮');
+        const playButton = createButton(controls, '▶');
+        const pauseButton = createButton(controls, '⏸');
+        const nextButton = createButton(controls, '⏭');
+        const fullButton = createButton(controls, '⛶');
 
-        let counter = document.createElement('span');
+        const counter = document.createElement('span');
         counter.setAttribute('class', 'reader-counter');
         controls.append(counter);
 
-        let display = document.createElement('div');
+        const display = document.createElement('div');
         display.setAttribute('class', 'reader-display');
         details.append(display);
 
-        for (let slide of slides) {
+        for (const slide of slides) {
             slide.element.remove();
             display.append(slide.element);
         }
@@ -228,14 +230,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             lecture.addEventListener('play', function () {
                 hide(playButton);
-                pauseButton.style.display = 'inline';
-                lecture.style.display = 'block';
+                show(pauseButton, 'inline');
+                show(lecture, 'block');
             });
 
             lecture.addEventListener('pause', function () {
                 hide(lecture);
                 hide(pauseButton);
-                playButton.style.display = 'inline';
+                show(playButton, 'inline');
             });
 
             lecture.addEventListener('timeupdate', function () {
@@ -280,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         let i = 0;
                         let last = 0;
                         while (i < slides.length) {
-                            let time = slides[i].time;
+                            const time = slides[i].time;
                             if (!isNaN(time)) {
                                 last = time;
                                 if (time > lecture.currentTime + DELTA) {
@@ -318,69 +320,101 @@ document.addEventListener('DOMContentLoaded', function () {
             hide(playButton);
 
             let shift = 0;
-            let times = [];
+            const times = [];
             let start = null;
 
             let subtimes;
-            let timeline = [];
+            const timeline = [];
 
             document.addEventListener('keydown', function (event) {
                 switch (event.key) {
                     case 'ArrowLeft':
                         if (start) {
-                            let now = Date.now();
+                            const now = Date.now();
                             subtimes.push((start - now) / 1000);
                             start = now;
-                        }
-                        let length = times.length;
-                        if (length > 0) {
-                            let time = times.pop();
-                            if (!isNaN(time)) {
-                                let i = length - 2;
-                                while (i > -1) {
-                                    time = times[i];
-                                    if (!isNaN(time)) {
-                                        break;
+                        } else {
+                            if (times.length > 0) {
+                                let time = times.pop();
+                                if (!isNaN(time)) {
+                                    let i;
+                                    i = times.length - 2;
+                                    while (i > -1) {
+                                        time = times[i];
+                                        if (!isNaN(time)) {
+                                            break;
+                                        }
+                                        i--;
                                     }
-                                    i--;
+                                    if (i === -1) {
+                                        shift = 0;
+                                    } else {
+                                        shift = time;
+                                    }
+                                    i = timeline.length - 1;
+                                    while (timeline[i].length === 0) {
+                                        i--;
+                                    }
+                                    timeline[i].pop();
                                 }
-                                if (i === -1) {
-                                    shift = 0;
-                                } else {
-                                    shift = time;
+                                if (times.length < slides.length) {
+                                    counter.style.color = '#000000';
                                 }
                             }
+                            prevButton.click();
                         }
-                        prevButton.click();
                         break;
                     case 'ArrowRight':
                         if (times.length < slides.length) {
                             if (start) {
-                                let now = Date.now();
+                                const now = Date.now();
                                 shift += (now - start) / 1000;
                                 times.push(shift);
                                 start = now;
                                 subtimes.push(shift);
-                                if (times.length === slides.length) {
-                                    counter.style.color = '#ff0000';
-                                }
                             } else {
                                 times.push(NaN);
-                                createJSON(slides, times, timeline);
+                            }
+                            if (times.length === slides.length) {
+                                counter.style.color = '#ff0000';
+                            }
+                        }
+                        if (times.length === slides.length) {
+                            if (confirm('Create JSON?')) {
+                                if (start) {
+                                    hide(recIndicator);
+                                    timeline.push(subtimes);
+                                    start = null;
+                                }
+                                createJSON(times, timeline);
                             }
                         }
                         nextButton.click();
                         break;
                     case 'R':
                         if (start) {
+                            let create = false;
+                            if (times.length >= slides.length - 1) {
+                                const now = Date.now();
+                                create = confirm('Create JSON?');
+                                if (create && times.length < slides.length) {
+                                    shift += (now - start) / 1000;
+                                    times.push(shift);
+                                    start = now;
+                                    subtimes.push(shift);
+                                    counter.style.color = '#ff0000';
+                                }
+                            }
                             hide(recIndicator);
                             timeline.push(subtimes);
                             start = null;
-                            createJSON(slides, times, timeline);
+                            if (create) {
+                                createJSON(times, timeline);
+                            }
                         } else {
                             start = Date.now();
                             subtimes = [];
-                            recIndicator.style.display = 'inline';
+                            show(recIndicator, 'inline');
                         }
                         break;
                     default:
@@ -430,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (index < slides.length - 1) {
                 hide(slides[index].element);
                 if (lecture) {
-                    let time = slides[index].time;
+                    const time = slides[index].time;
                     if (!isNaN(time)) {
                         updateTime(lecture, time);
                     }
@@ -454,31 +488,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    let alerts = document.querySelectorAll('p.alert');
+    const alerts = document.querySelectorAll('p.alert');
 
     if (alerts.length > 0) {
-        let container = document.querySelector('div.container');
-        let main = document.querySelector('main');
+        const container = document.querySelector('div.container');
+        const main = document.querySelector('main');
 
-        for (let alert of alerts) {
+        for (const alert of alerts) {
             alert.remove();
             container.insertBefore(alert, main);
         }
     }
 
-    for (let animation of document.querySelectorAll('div.animation')) {
-        let imgs = animation.querySelectorAll('img.frame');
+    for (const animation of document.querySelectorAll('div.animation')) {
+        const imgs = animation.querySelectorAll('img.frame');
         let index = 0;
 
-        let controls = document.createElement('div');
+        const controls = document.createElement('div');
         controls.setAttribute('class', 'animation-controls');
         animation.append(controls);
 
-        let leftButton = createButton(controls, '🡄');
-        let counter = document.createElement('span');
+        const leftButton = createButton(controls, '🡄');
+        const counter = document.createElement('span');
         counter.setAttribute('class', 'animation-counter');
         controls.append(counter);
-        let rightButton = createButton(controls, '🡆');
+        const rightButton = createButton(controls, '🡆');
 
         updateAnimation(imgs, index, leftButton, rightButton, counter);
 
@@ -501,12 +535,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    let allDetails = document.querySelectorAll('details');
+    const allDetails = document.querySelectorAll('details');
 
-    let as = document.querySelectorAll('header > a');
+    const as = document.querySelectorAll('header > a');
 
     if (allDetails.length > 0) {
-        for (let details of allDetails) {
+        for (const details of allDetails) {
             details.firstElementChild.addEventListener('mousedown', function (event) {
                 event.preventDefault();
             });
@@ -514,13 +548,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         as[0].addEventListener('click', function (event) {
             event.preventDefault();
-            for (let details of allDetails) {
+            for (const details of allDetails) {
                 details.setAttribute('open', '');
             }
         });
         as[1].addEventListener('click', function (event) {
             event.preventDefault();
-            for (let details of allDetails) {
+            for (const details of allDetails) {
                 details.removeAttribute('open');
             }
         });

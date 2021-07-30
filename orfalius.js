@@ -1,6 +1,7 @@
+import fs from 'fs';
 import through from 'through2';
 import PluginError from 'plugin-error';
-import fs from 'fs';
+import path from 'path';
 import Handlebars from 'handlebars';
 import MarkdownIt from 'markdown-it';
 import MarkdownItMathJax from 'markdown-it-mathjax';
@@ -10,7 +11,6 @@ import container from 'markdown-it-container';
 import kbd from 'markdown-it-kbd';
 import { colorPlugin } from 'markdown-it-color';
 import { JSDOM } from 'jsdom';
-import path from 'path';
 
 
 const PLUGIN_NAME = 'orfalius';
@@ -113,17 +113,19 @@ const itemOptions = {
 };
 
 const timesOptions = {
-    validate: function () {
-        return true;
+    validate: function (params) {
+        return params.trim();
     },
     render: function (tokens, idx) {
+        const tail = tokens[idx].info.trim();
+        const title = tail.split(/\s+/).join(' ');
         if (tokens[idx].nesting === 1) {
-            return '<pre class="times">\n';
+            return `<video class="reader-lecture" src="vid/${title}"></video>\n<pre class="times">\n`;
         } else {
             return '</pre>\n';
         }
     },
-    marker: '///////',
+    marker: '//////',
 };
 
 const slideOptions = {
@@ -146,7 +148,7 @@ const slideOptions = {
 function replace(reference, element) {
     const parent = reference.parentElement;
     parent.insertBefore(element, reference);
-    parent.removeChild(reference);
+    reference.remove();
 }
 
 function wrapFigure(document, element, className) {
@@ -175,77 +177,75 @@ function processImage(element, prefix) {
 
 function processChildren(document, element, dirname, prefix) {
     const removable = [];
-    if (element.children) {
-        for (const child of element.children) {
-            let innerHTML;
-            switch (child.tagName) {
-                case 'P':
-                    removable.push(...processParagraph(document, child, dirname, prefix));
-                    break;
-                case 'TABLE':
-                    const figure = document.createElement('figure');
-                    replace(child, figure);
-                    figure.setAttribute('class', 'table');
-                    figure.append(child);
-                    const th = child.firstElementChild.firstElementChild.firstElementChild;
-                    innerHTML = th.innerHTML;
-                    if (innerHTML === 'x') {
-                        child.setAttribute('class', 'cross');
-                        th.innerHTML = '';
-                    } else if (innerHTML === '^x') {
-                        th.innerHTML = innerHTML.slice(1);
+    for (const child of element.children) {
+        let innerHTML;
+        switch (child.tagName) {
+            case 'P':
+                removable.push(...processParagraph(document, child, dirname, prefix));
+                break;
+            case 'TABLE':
+                const figure = document.createElement('figure');
+                replace(child, figure);
+                figure.setAttribute('class', 'table');
+                figure.append(child);
+                const th = child.firstElementChild.firstElementChild.firstElementChild;
+                innerHTML = th.innerHTML;
+                if (innerHTML === 'x') {
+                    child.setAttribute('class', 'cross');
+                    th.innerHTML = '';
+                } else if (innerHTML === '^x') {
+                    th.innerHTML = innerHTML.slice(1);
+                }
+            case 'TR':
+            case 'UL':
+            case 'OL':
+                for (const grandChild of child.children) {
+                    removable.push(...processParagraph(document, grandChild, dirname, prefix));
+                }
+                break;
+            case 'BLOCKQUOTE':
+            case 'DETAILS':
+            case 'DIV':
+            case 'EM':
+            case 'STRONG':
+            case 'SPAN':
+                removable.push(...processChildren(document, child, dirname, prefix));
+                break;
+            case 'PRE':
+                if (child.classList.contains('times')) {
+                    const grandChild = child.firstElementChild;
+                    grandChild.remove();
+                    child.innerHTML = `\n${grandChild.innerHTML}\n`;
+                } else {
+                    const code = child.querySelector('code');
+                    if (!code.hasAttribute('class')) {
+                        code.setAttribute('class', 'terminal nohighlight');
                     }
-                case 'TR':
-                case 'UL':
-                case 'OL':
-                    for (const grandChild of child.children) {
-                        removable.push(...processParagraph(document, grandChild, dirname, prefix));
+                }
+                break;
+            case 'CODE':
+                let className = 'terminal nohighlight';
+                innerHTML = child.innerHTML;
+                if (innerHTML.startsWith('~')) {
+                    child.innerHTML = innerHTML = innerHTML.slice(1);
+                } else {
+                    const index = innerHTML.search(/\s/);
+                    if (index > 0) {
+                        className = `language-${innerHTML.slice(0, index)}`;
+                        child.innerHTML = innerHTML.slice(index + 1);
                     }
-                    break;
-                case 'BLOCKQUOTE':
-                case 'DETAILS':
-                case 'DIV':
-                case 'EM':
-                case 'STRONG':
-                case 'SPAN':
-                    removable.push(...processChildren(document, child, dirname, prefix));
-                    break;
-                case 'PRE':
-                    if (child.classList.contains('times')) {
-                        const grandChild = child.firstElementChild;
-                        child.removeChild(grandChild);
-                        child.innerHTML = `\n${grandChild.innerHTML}\n`;
-                    } else {
-                        const code = child.querySelector('code');
-                        if (!code.hasAttribute('class')) {
-                            code.setAttribute('class', 'terminal nohighlight');
-                        }
-                    }
-                    break;
-                case 'CODE':
-                    let className = 'terminal nohighlight';
-                    innerHTML = child.innerHTML;
-                    if (innerHTML.startsWith('~')) {
-                        child.innerHTML = innerHTML = innerHTML.slice(1);
-                    } else {
-                        const index = innerHTML.search(/\s/);
-                        if (index > 0) {
-                            className = `language-${innerHTML.slice(0, index)}`;
-                            child.innerHTML = innerHTML.slice(index + 1);
-                        }
-                    }
-                    child.setAttribute('class', className);
-                    break;
-                case 'A':
-                    if (child.href.startsWith('http')) {
-                        child.setAttribute('target', '_blank');
-                    }
-                    break;
-                case 'IMG':
-                    processImage(child, prefix);
-                    break;
-                default:
-            }
+                }
+                child.setAttribute('class', className);
+                break;
+            case 'A':
+                if (child.href.startsWith('http')) {
+                    child.setAttribute('target', '_blank');
+                }
+                break;
+            case 'IMG':
+                processImage(child, prefix);
+                break;
+            default:
         }
     }
     return removable;
@@ -257,12 +257,13 @@ function processParagraph(document, element, dirname, prefix) {
 
     const innerHTML = element.innerHTML;
 
-    if (innerHTML.startsWith('^') && !innerHTML.startsWith('^^')) {
-        // SMALL
-        const small = document.createElement('small');
-        small.innerHTML = innerHTML.slice(1);
-        element.innerHTML = small.outerHTML;
-        removable.push(...processChildren(document, element.firstElementChild, dirname, prefix));
+    if (innerHTML.startsWith('@') && !innerHTML.startsWith('@@')) {
+        // ANCHOR
+        const id = innerHTML.slice(1);
+        const a = document.createElement('a');
+        a.setAttribute('class', 'anchor');
+        a.setAttribute('id', id);
+        replace(element, a);
 
     } else if (innerHTML.startsWith('!') && !innerHTML.startsWith('!!')) {
         // ALERT
@@ -270,25 +271,16 @@ function processParagraph(document, element, dirname, prefix) {
         element.innerHTML = innerHTML.slice(1);
         removable.push(...processChildren(document, element, dirname, prefix));
 
-    } else if (innerHTML.startsWith(':') && !innerHTML.startsWith('::')) {
-        // LECTURE
-        const src = innerHTML.trim().slice(1);
-        let lecture = document.querySelector('video.reader-lecture');
-        if (lecture) {
-            removable.push(element);
-        } else {
-            lecture = document.createElement('video');
-            lecture.setAttribute('class', 'reader-lecture');
-            replace(element, lecture);
-        }
-        const source = document.createElement('source');
-        source.setAttribute('src', `vid/${src}`);
-        lecture.append(source);
+    } else if (innerHTML.startsWith('^') && !innerHTML.startsWith('^^')) {
+        // SMALL
+        element.setAttribute('class', 'small');
+        element.innerHTML = innerHTML.slice(1);
+        removable.push(...processChildren(document, element, dirname, prefix));
 
-    } else if (innerHTML.startsWith(';') && !innerHTML.startsWith(';;')) {
+    } else if (innerHTML.startsWith(':') && !innerHTML.startsWith('::')) {
         // ANIMATION
-        const tail = innerHTML.trim().slice(1);
-        if (tail) {
+        const tail = innerHTML.slice(1).trim();
+        if (tail > 0) {
             const folder = `img/${tail}`;
             const fileNames = fs.readdirSync(`${dirname}/${folder}`);
             fileNames.sort();
@@ -311,14 +303,6 @@ function processParagraph(document, element, dirname, prefix) {
             }
         }
 
-    } else if (innerHTML.startsWith('@') && !innerHTML.startsWith('@@')) {
-        // ANCHOR
-        const id = innerHTML.slice(1);
-        const a = document.createElement('a');
-        a.setAttribute('class', 'anchor');
-        a.setAttribute('id', id);
-        replace(element, a);
-
     } else if (innerHTML.startsWith('%') && !innerHTML.startsWith('%%')) {
         // VIDEO
         const words = innerHTML.trim().slice(1).split('%');
@@ -337,7 +321,7 @@ function processParagraph(document, element, dirname, prefix) {
 
     } else if (innerHTML.startsWith('&amp;') && !innerHTML.startsWith('&amp;&amp;')) {
         // CODEPEN
-        const words = innerHTML.trim().slice(1).split('&amp;');
+        const words = innerHTML.trim().slice(5).split('&amp;');
         element.setAttribute('class', 'codepen');
         element.setAttribute('data-theme-id', 'dark');
         element.setAttribute('data-user', words[0]);
@@ -350,19 +334,17 @@ function processParagraph(document, element, dirname, prefix) {
 
         if (element.tagName !== 'TD' && element.children.length === 1 && child.tagName === 'IMG') {
             // IMAGE
-            element.removeChild(child);
+            child.remove();
             const figure = wrapFigure(document, child, 'img');
             replace(element, figure);
             processImage(child, prefix);
 
         } else {
             // P
-            if (innerHTML.startsWith('~~') ||
-                innerHTML.startsWith('~^') ||
+            if (innerHTML.startsWith('~@') ||
                 innerHTML.startsWith('~!') ||
+                innerHTML.startsWith('~^') ||
                 innerHTML.startsWith('~:') ||
-                innerHTML.startsWith('~;') ||
-                innerHTML.startsWith('~@') ||
                 innerHTML.startsWith('~%') ||
                 innerHTML.startsWith('~&amp;')) {
                 element.innerHTML = innerHTML.slice(1);
@@ -382,10 +364,10 @@ export default function (templatePath) {
         }
 
         if (file.isBuffer()) {
+            const dirname = path.dirname(file.path);
+
             const templateContents = fs.readFileSync(templatePath);
             const template = Handlebars.compile(templateContents.toString());
-
-            const dirname = path.dirname(file.path);
 
             const includeOptions = {
                 root: dirname,
