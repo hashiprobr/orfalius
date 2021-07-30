@@ -341,12 +341,7 @@ function processParagraph(document, element, dirname, prefix) {
 
         } else {
             // P
-            if (innerHTML.startsWith('~@') ||
-                innerHTML.startsWith('~!') ||
-                innerHTML.startsWith('~^') ||
-                innerHTML.startsWith('~:') ||
-                innerHTML.startsWith('~%') ||
-                innerHTML.startsWith('~&amp;')) {
+            if (innerHTML.startsWith('~')) {
                 element.innerHTML = innerHTML.slice(1);
             }
             removable.push(...processChildren(document, element, dirname, prefix));

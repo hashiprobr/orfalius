@@ -409,6 +409,11 @@ pre > code {
     white-space: pre;
 }
 
+mark {
+    display: block;
+    background-color: #fff2cc;
+}
+
 table code {
     padding: 0 !important;
     font-size: 1em;

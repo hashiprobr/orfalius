@@ -144,7 +144,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const page = (new URLSearchParams(window.location.search)).get('slide');
 
     for (const code of document.querySelectorAll('code')) {
-        hljs.highlightBlock(code);
+        hljs.highlightElement(code);
+    }
+
+    for (const code of document.querySelectorAll('pre > code')) {
+        const lines = code.innerHTML.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].endsWith('***')) {
+                lines[i] = `<mark>${lines[i].slice(0, -3).trimEnd()}</mark>`;
+            } else if (i < lines.length - 1) {
+                lines[i] = `${lines[i]}\n`;
+            }
+        }
+        code.innerHTML = lines.join('');
     }
 
     const slides = [];
