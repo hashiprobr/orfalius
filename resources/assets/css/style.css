@@ -32,6 +32,35 @@ div.container {
     margin-left: auto;
 }
 
+header, footer {
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    font-size: .75rem;
+    font-family: "Open Sans", "Symbola", sans-serif;
+    font-weight: lighter;
+    text-align: center;
+}
+header {
+    min-height: 1rem;
+}
+header a {
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
+footer img {
+    vertical-align: sub;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+p.alert {
+    padding: 1rem;
+    text-align: center;
+    background-color: #ffcccc;
+    box-shadow: 0 0 .25rem #666666;
+}
+
 main {
     flex-grow: 1;
     padding-top: 3rem;
@@ -71,17 +100,6 @@ hr {
     border-bottom: .05rem solid #000000;
 }
 
-p {
-    margin-bottom: 1rem;
-}
-
-p.alert {
-    padding: 1rem;
-    text-align: center;
-    background-color: #ffcccc;
-    box-shadow: 0 0 .25rem #666666;
-}
-
 ul, ol {
     margin-bottom: 1rem;
     padding-left: 2rem;
@@ -101,6 +119,9 @@ ol {
 ol ol {
     list-style-type: lower-alpha;
 }
+ol ol ol {
+    list-style-type: lower-roman;
+}
 li {
     margin-bottom: 1rem;
 }
@@ -113,7 +134,7 @@ table {
     margin-right: auto;
     margin-left: auto;
     border: .05rem solid #efefef;
-    font-size: .75em;
+    font-size: .75rem;
     font-family: "Open Sans", "Symbola", sans-serif;
     font-weight: lighter;
 }
@@ -128,11 +149,12 @@ tbody > tr:nth-child(odd) {
     background-color: #efefef;
 }
 th, td {
-    padding: .5em 1em;
+    padding: .5rem 1rem;
 }
 th {
     font-weight: bold;
     text-align: left;
+    vertical-align: bottom;
 }
 td {
     vertical-align: top;
@@ -195,19 +217,16 @@ blockquote.question > p:first-child {
 details {
     margin-bottom: 1rem;
 }
-
 details.answer {
     border-top: .05rem solid #ccccff;
     padding-top: 1rem;
 }
-
-details.section {
+details.section,
+details.reader {
     margin-top: 2rem;
 }
-
 details.reader{
     position: relative;
-    margin-top: 2rem;
 }
 
 summary {
@@ -274,10 +293,8 @@ div.slide {
     -webkit-hyphens: manual;
     -moz-hyphens: manual;
     -ms-hyphens: manual;
-    box-shadow: 0 0 .125rem #666666;
-}
-div.slide code {
-    font-size: 1em;
+    color: #000040;
+    box-shadow: 0 0 .125rem #000040;
 }
 
 div.slide-container {
@@ -292,7 +309,7 @@ div.slide-header {
     height: 284px;
     padding: 4rem 1rem 3rem 2rem;
     font-size: .5em;
-    color: #666666;
+    color: #00004080;
 }
 
 div.slide-main {
@@ -306,17 +323,23 @@ div.slide-main > * {
     margin-right: 2rem;
     margin-left: 2rem;
 }
-div.slide-main table {
-    font-size: .5em;
-}
-div.slide-main pre {
-    font-size: .5em;
-}
+div.slide-main kbd,
 div.slide-main code {
+    padding: 0 .25em;
     font-size: 1em;
 }
-div.slide-main table pre {
-    font-size: 1em;
+div.slide-main kbd {
+    border-radius: .25em;
+}
+div.slide-main pre code {
+    padding: 1rem;
+    font-size: .75rem;
+}
+div.slide-main table pre > code {
+    padding-right: 1rem;
+}
+div.slide-main .small {
+    font-size: .75em;
 }
 
 pre.times {
@@ -395,8 +418,8 @@ pre {
 
 code {
     display: inline !important;
-    padding: 0 .25em !important;
-    font-size: .75em;
+    padding: 0 .25rem !important;
+    font-size: .75rem;
     font-family: "Oxygen Mono", "Symbola", monospace;
     white-space: nowrap;
     background-color: #efefef !important;
@@ -404,24 +427,19 @@ code {
 
 pre > code {
     display: block !important;
-    padding: 1em !important;
+    min-width: min-content;
+    padding: 1rem !important;
     line-height: 1.5;
     white-space: pre;
 }
 
-mark {
-    display: block;
-    background-color: #fff2cc;
-}
-
 table code {
     padding: 0 !important;
-    font-size: 1em;
     background-color: transparent !important;
 }
 
 table pre > code {
-    padding-right: 1em !important;
+    padding-right: 1rem !important;
 }
 
 code.terminal {
@@ -429,11 +447,15 @@ code.terminal {
     color: #00ff00;
 }
 
+mark {
+    display: block;
+    background-color: #fff2cc;
+}
+
 kbd {
-    border-radius: .25em;
-    padding-right: .25em;
-    padding-left: .25em;
-    font-size: .75em;
+    border-radius: .25rem;
+    padding: 0 .25rem;
+    font-size: .75rem;
     font-family: "Oxygen Mono", "Symbola", monospace;
     color: #666666;
     box-shadow: 0 0 .125rem #666666;
@@ -467,7 +489,7 @@ a.button.disabled {
 }
 
 .small {
-    font-size: .75em;
+    font-size: .75rem;
 }
 
 em {
@@ -499,25 +521,6 @@ video {
     max-width: 100%;
     margin-right: auto;
     margin-left: auto;
-}
-
-header, footer {
-    padding-top: .25rem;
-    padding-bottom: .25rem;
-    font-size: .75rem;
-    font-family: "Open Sans", "Symbola", sans-serif;
-    font-weight: lighter;
-    text-align: center;
-}
-header {
-    min-height: 1rem;
-}
-header a {
-    margin-right: 1rem;
-    margin-left: 1rem;
-}
-footer img {
-    vertical-align: sub;
 }
 
 .cp_embed_wrapper {

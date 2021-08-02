@@ -387,11 +387,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             } else {
                                 times.push(NaN);
                             }
-                            if (times.length === slides.length) {
+                            if (timeline.length > 0 && times.length === slides.length) {
                                 counter.style.color = '#ff0000';
                             }
                         }
-                        if (times.length === slides.length) {
+                        if (timeline.length > 0 && times.length === slides.length) {
                             if (confirm('Create JSON?')) {
                                 if (start) {
                                     hide(recIndicator);

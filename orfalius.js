@@ -7,7 +7,7 @@ import MarkdownIt from 'markdown-it';
 import MarkdownItMathJax from 'markdown-it-mathjax';
 import MarkdownItInclude from 'markdown-it-include';
 import MarkdownItTable from 'markdown-it-multimd-table';
-import container from 'markdown-it-container';
+import container from './container.js';
 import kbd from 'markdown-it-kbd';
 import { colorPlugin } from 'markdown-it-color';
 import { JSDOM } from 'jsdom';
@@ -303,9 +303,9 @@ function processParagraph(document, element, dirname, prefix) {
             }
         }
 
-    } else if (innerHTML.startsWith('%') && !innerHTML.startsWith('%%')) {
+    } else if (innerHTML.startsWith(';') && !innerHTML.startsWith(';;')) {
         // VIDEO
-        const words = innerHTML.trim().slice(1).split('%');
+        const words = innerHTML.trim().slice(1).split(';');
         const video = document.createElement('video');
         let src = words[0];
         if (!src.startsWith('http')) {
@@ -377,6 +377,7 @@ export default function (templatePath) {
             };
 
             const md = MarkdownIt({ html: true, typographer: true })
+                .disable(['code', 'blockquote'])
                 .use(MarkdownItMathJax())
                 .use(MarkdownItInclude, includeOptions)
                 .use(MarkdownItTable, tableOptions)
