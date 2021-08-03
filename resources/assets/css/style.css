@@ -6,6 +6,7 @@
 
 html {
     height: 100%;
+    overflow-y: scroll;
     font-size: 16px;
     font-family: "Lora", "Symbola", serif;
 }
@@ -264,10 +265,12 @@ div.reader-controls {
 }
 
 span.reader-counter {
-    margin-left: 1rem;
+    display: inline-block;
+    width: 4rem;
     font-size: 1rem;
     font-family: "Open Sans", "Symbola", sans-serif;
     font-weight: bold;
+    text-align: center;
     user-select: none;
 }
 
@@ -387,9 +390,12 @@ div.animation-controls {
 }
 
 span.animation-counter {
+    display: inline-block;
+    width: 4rem;
     font-size: 1rem;
     font-family: "Open Sans", "Symbola", sans-serif;
     font-weight: bold;
+    text-align: center;
     vertical-align: .25rem;
     user-select: none;
 }
@@ -592,10 +598,10 @@ video {
 
     span.reader-counter,
     span.animation-counter {
+        width: 3rem;
         font-size: .75rem;
     }
 
-    span.reader-counter,
     a.button {
         margin-left: .75rem;
     }
