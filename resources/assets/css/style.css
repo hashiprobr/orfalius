@@ -408,7 +408,6 @@ div.item-marker {
     margin-right: 1rem;
     margin-left: 1rem;
     font-family: "Oxygen Mono", "Symbola", monospace;
-    font-weight: bold;
 }
 div.item-content {
     flex-grow: 1;
