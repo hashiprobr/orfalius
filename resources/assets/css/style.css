@@ -127,6 +127,14 @@ li {
     margin-bottom: 1rem;
 }
 
+table ul, table ol {
+    margin-bottom: 0;
+    padding-left: 1rem;
+}
+table li {
+    margin-bottom: 0;
+}
+
 figure.table {
     overflow-x: auto;
     margin-bottom: 1rem;
