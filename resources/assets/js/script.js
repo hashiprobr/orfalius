@@ -150,8 +150,14 @@ document.addEventListener('DOMContentLoaded', function () {
     for (const code of document.querySelectorAll('pre > code')) {
         const lines = code.innerHTML.split('\n');
         for (let i = 0; i < lines.length; i++) {
-            if (lines[i].endsWith('***')) {
+            if (lines[i].endsWith('***</span>')) {
+                lines[i] = `<mark>${lines[i].slice(0, -10).trimEnd()}</span></mark>`;
+            } else if (lines[i].endsWith('***')) {
                 lines[i] = `<mark>${lines[i].slice(0, -3).trimEnd()}</mark>`;
+            } else if (lines[i].endsWith('~</span>')) {
+                lines[i] = `${lines[i].slice(0, -8)}</span>\n`;
+            } else if (lines[i].endsWith('~')) {
+                lines[i] = `${lines[i].slice(0, -1)}\n`;
             } else if (i < lines.length - 1) {
                 lines[i] = `${lines[i]}\n`;
             }
@@ -164,7 +170,35 @@ document.addEventListener('DOMContentLoaded', function () {
     let stamp;
     const lecture = document.querySelector('video.reader-lecture');
 
+    const main = document.querySelector('main');
+
+    let slideTitle = '';
+
     for (const element of document.querySelectorAll('div.slide')) {
+        const header = element.querySelector('div.slide-header');
+        if (header.innerHTML.trim() === '=') {
+            header.innerHTML = slideTitle;
+        } else {
+            slideTitle = header.innerHTML;
+        }
+        const displays = [];
+        const frames = element.querySelectorAll('.frame');
+        for (const frame of frames) {
+            displays.push(frame.style.display);
+            frame.style.display = 'none';
+        }
+        for (let i = 0; i < frames.length; i++) {
+            const clone = document.createElement('div');
+            clone.setAttribute('class', 'slide');
+            clone.innerHTML = element.innerHTML;
+            main.insertBefore(clone, element);
+            slides.push(new Slide(clone));
+            frames[i].style.display = displays[i];
+            if (i > 0) {
+                frames[i - 1].classList.remove('md-colorify--red');
+            }
+            frames[i].classList.add('md-colorify--red');
+        }
         slides.push(new Slide(element));
     }
 
@@ -504,7 +538,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (alerts.length > 0) {
         const container = document.querySelector('div.container');
-        const main = document.querySelector('main');
 
         for (const alert of alerts) {
             alert.remove();

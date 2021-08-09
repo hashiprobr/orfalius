@@ -80,6 +80,22 @@ const fileOptions = {
     marker: '´',
 };
 
+const checkOptions = {
+    validate: function () {
+        return true;
+    },
+    render: function (tokens, idx) {
+        const tail = tokens[idx].info.trim();
+        const title = tail ? tail.split(/\s+/).join(' ') : 'clique aqui para continuar';
+        if (tokens[idx].nesting === 1) {
+            return `<details class="check">\n<summary>${title}</summary>\n`;
+        } else {
+            return '</details>\n';
+        }
+    },
+    marker: ',',
+};
+
 const sectionOptions = {
     validate: function (params) {
         return params.trim();
@@ -142,6 +158,20 @@ const slideOptions = {
         }
     },
     marker: '++++++++++++++',
+};
+
+const handoutOptions = {
+    validate: function () {
+        return true;
+    },
+    render: function (tokens, idx) {
+        if (tokens[idx].nesting === 1) {
+            return '<div class="handout">\n';
+        } else {
+            return '</div>\n';
+        }
+    },
+    marker: '^',
 };
 
 
@@ -271,11 +301,27 @@ function processParagraph(document, element, dirname, prefix) {
         element.innerHTML = innerHTML.slice(1);
         removable.push(...processChildren(document, element, dirname, prefix));
 
+    } else if (innerHTML.startsWith('+') && !innerHTML.startsWith('++')) {
+        // FRAME
+        const parent = element.parentElement;
+        if (parent.tagName === 'LI' && element.previousElementSibling === null && element.nextElementSibling === null) {
+            parent.classList.add('frame');
+        } else {
+            element.classList.add('frame');
+        }
+        element.innerHTML = innerHTML.slice(1);
+        removable.push(...processParagraph(document, element, dirname, prefix));
+
     } else if (innerHTML.startsWith('^') && !innerHTML.startsWith('^^')) {
         // SMALL
-        element.setAttribute('class', 'small');
+        const parent = element.parentElement;
+        if (parent.tagName === 'LI' && element.previousElementSibling === null && element.nextElementSibling === null) {
+            parent.classList.add('small');
+        } else {
+            element.classList.add('small');
+        }
         element.innerHTML = innerHTML.slice(1);
-        removable.push(...processChildren(document, element, dirname, prefix));
+        removable.push(...processParagraph(document, element, dirname, prefix));
 
     } else if (innerHTML.startsWith(':') && !innerHTML.startsWith('::')) {
         // ANIMATION
@@ -385,10 +431,12 @@ export default function (templatePath) {
                 .use(container, 'question', questionOptions)
                 .use(container, 'answer', answerOptions)
                 .use(container, 'file', fileOptions)
+                .use(container, 'check', checkOptions)
                 .use(container, 'section', sectionOptions)
                 .use(container, 'item', itemOptions)
                 .use(container, 'times', timesOptions)
                 .use(container, 'slide', slideOptions)
+                .use(container, 'handout', handoutOptions)
                 .use(kbd)
                 .use(colorPlugin);
 

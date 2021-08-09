@@ -258,6 +258,22 @@ details.file > summary::marker {
 details.file[open] > summary::marker {
     content: "⊟ ";
 }
+details.check > summary {
+    font-size: .75rem;
+    font-family: "Open Sans", "Symbola", sans-serif;
+    font-weight: lighter;
+    text-align: center;
+    color: #0000ff;
+}
+details.check > summary:hover {
+    text-decoration: underline;
+}
+details.check > summary::marker {
+    content: "";
+}
+details.check[open] > summary {
+    display: none;
+}
 details.section > summary,
 details.reader > summary {
     font-size: 1.5rem;
@@ -351,6 +367,14 @@ div.slide-main table pre > code {
 }
 div.slide-main .small {
     font-size: .75em;
+}
+
+div.handout {
+    padding: 1rem;
+    font-size: 1rem;
+    font-family: "Lora", "Symbola", serif;
+    color: #000000;
+    box-shadow: 0 0 .25rem #666666;
 }
 
 pre.times {
