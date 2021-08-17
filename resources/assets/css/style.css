@@ -235,8 +235,11 @@ details.section,
 details.reader {
     margin-top: 2rem;
 }
-details.reader{
+details.reader {
     position: relative;
+}
+details.check {
+    margin-top: 2rem;
 }
 
 summary {
