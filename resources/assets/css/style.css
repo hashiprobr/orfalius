@@ -221,6 +221,9 @@ blockquote.warning table ol {
 blockquote.warning table li {
     margin-bottom: 0;
 }
+blockquote.warning td > *:last-child {
+    margin-bottom: 0;
+}
 
 blockquote.question {
     border: .05rem solid #ccccff;
