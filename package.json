@@ -21,7 +21,7 @@
     "gulp-cached": "^1.1.1",
     "handlebars": "^4.7.6",
     "jsdom": "^16.6.0",
-    "markdown-it": "^12.1.0",
+    "markdown-it": "^12.3.2",
     "markdown-it-color": "^2.1.1",
     "markdown-it-include": "^2.0.0",
     "markdown-it-kbd": "^2.2.2",
