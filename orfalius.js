@@ -468,7 +468,16 @@ export default function (templatePath) {
                 }
             }
 
-            const title = h1s[0].innerHTML;
+            let copyright;
+            let title = h1s[0].innerHTML;
+            const index = title.indexOf('[C]');
+            if (index !== -1) {
+                copyright = title.slice(index + 3);
+                title = title.slice(0, index);
+            } else {
+                copyright = 'Marcelo Hashimoto';
+            }
+            h1s[0].innerHTML = title.trim();
 
             let prefix;
             if (path.basename(dirname) === 'error') {
@@ -488,6 +497,7 @@ export default function (templatePath) {
                 title: title,
                 prefix: prefix,
                 contents: contents,
+                copyright: copyright,
             });
 
             file.contents = Buffer.from(fileString);
