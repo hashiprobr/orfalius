@@ -326,7 +326,7 @@ function processParagraph(document, element, dirname, prefix) {
     } else if (innerHTML.startsWith(':') && !innerHTML.startsWith('::')) {
         // ANIMATION
         const tail = innerHTML.slice(1).trim();
-        if (tail > 0) {
+        if (tail) {
             const folder = `img/${tail}`;
             const fileNames = fs.readdirSync(`${dirname}/${folder}`);
             fileNames.sort();
@@ -447,7 +447,7 @@ export default function (templatePath) {
             const h1s = body.querySelectorAll('h1');
 
             if (h1s.length !== 1) {
-                throw new SyntaxError('Must have exactly one H1!');
+                throw new SyntaxError(`${file.path}: must have exactly one H1`);
             }
 
             let first = body.firstElementChild;
@@ -464,7 +464,7 @@ export default function (templatePath) {
                 }
 
                 if (first.tagName !== 'P' || second.tagName !== 'H1') {
-                    throw new SyntaxError('Must start with H1 or P followed by H1!');
+                    throw new SyntaxError(`${file.path}: must start with H1 or P followed by H1`);
                 }
             }
 
