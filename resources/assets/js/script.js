@@ -154,6 +154,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 lines[i] = `<mark>${lines[i].slice(0, -10).trimEnd()}</span></mark>`;
             } else if (lines[i].endsWith('***')) {
                 lines[i] = `<mark>${lines[i].slice(0, -3).trimEnd()}</mark>`;
+            } else if (lines[i].endsWith('!!!</span>')) {
+                lines[i] = `<mark class="error">${lines[i].slice(0, -10).trimEnd()}</span></mark>`;
+            } else if (lines[i].endsWith('!!!')) {
+                lines[i] = `<mark class="error">${lines[i].slice(0, -3).trimEnd()}</mark>`;
             } else if (lines[i].endsWith('~</span>')) {
                 lines[i] = `${lines[i].slice(0, -8)}</span>\n`;
             } else if (lines[i].endsWith('~')) {
@@ -530,6 +534,48 @@ document.addEventListener('DOMContentLoaded', function () {
                 display.mozRequestFullScreen();
             } else if (display.msRequestFullscreen) {
                 display.msRequestFullscreen();
+            }
+        });
+
+        document.addEventListener('mousedown', function (event) {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
+                event.preventDefault();
+                switch (event.button) {
+                    case 0:
+                        nextButton.click();
+                        break;
+                    case 2:
+                        prevButton.click();
+                        break;
+                    default:
+                }
+            }
+        });
+
+        document.addEventListener('touchstart', function (event) {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
+                event.preventDefault();
+                let x = 0;
+                for (const touch of event.touches) {
+                    x += touch.clientX;
+                }
+                if (x / event.touches.length < window.screen.width / 2) {
+                    prevButton.click();
+                } else {
+                    nextButton.click();
+                }
+            }
+        });
+
+        document.addEventListener('contextmenu', function (event) {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
+                event.preventDefault();
+            }
+        });
+
+        document.addEventListener('touchend', function (event) {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
+                event.preventDefault();
             }
         });
     }

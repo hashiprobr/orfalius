@@ -1,5 +1,5 @@
 import fs from 'fs';
-import del from 'del';
+import { deleteSync } from 'del';
 import gulp from 'gulp';
 import cache from 'gulp-cached';
 import BrowserSync from 'browser-sync';
@@ -27,8 +27,9 @@ function parse(filename) {
 }
 
 
-function clean() {
-    return del(['site/*', 'site_private/*']);
+function clean(done) {
+    deleteSync(['site/*', 'site_private/*']);
+    done();
 }
 
 
