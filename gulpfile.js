@@ -48,19 +48,19 @@ function compilePrivate() {
 }
 
 function copyStatic() {
-    return gulp.src(STATIC.concat(parse('.staignore')))
+    return gulp.src(STATIC.concat(parse('.staignore')), { encoding: false })
         .pipe(cache('copy'))
         .pipe(gulp.dest('site'));
 }
 
 function copyStaticPrivate() {
-    return gulp.src(STATIC_PRIVATE)
+    return gulp.src(STATIC_PRIVATE, { encoding: false })
         .pipe(cache('copy'))
         .pipe(gulp.dest('site_private'));
 }
 
 function copyAssets() {
-    return gulp.src(ASSETS)
+    return gulp.src(ASSETS, { encoding: false })
         .pipe(cache('copy'))
         .pipe(gulp.dest('site'))
         .pipe(gulp.dest('site_private'));

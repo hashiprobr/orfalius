@@ -441,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                         nextButton.click();
                         break;
-                    case 'R':
+                    case 'F9':
                         if (start) {
                             let create = false;
                             if (times.length >= slides.length - 1) {
@@ -461,7 +461,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (create) {
                                 createJSON(times, timeline);
                             }
-                        } else {
+                        }
+                        break;
+                    case 'F8':
+                        if (!start) {
                             start = Date.now();
                             subtimes = [];
                             show(recIndicator, 'inline');
@@ -539,15 +542,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.addEventListener('mousedown', function (event) {
             if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
-                event.preventDefault();
-                switch (event.button) {
-                    case 0:
-                        nextButton.click();
-                        break;
-                    case 2:
-                        prevButton.click();
-                        break;
-                    default:
+                if (!event.ctrlKey) {
+                    event.preventDefault();
+                    switch (event.button) {
+                        case 0:
+                            nextButton.click();
+                            break;
+                        case 2:
+                            prevButton.click();
+                            break;
+                        default:
+                    }
                 }
             }
         });
