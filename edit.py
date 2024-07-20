@@ -65,16 +65,21 @@ def main():
         with open(CONCAT_NAME, 'w') as file:
             shift = 0
             for filename, subtimes in zip(filenames, data['timeline']):
+                last = 0
                 total = 0
                 inpoint = 0
                 outpoint = 0
                 for time in subtimes:
-                    if time > 0:
-                        outpoint = (time - shift) + (inpoint - total)
+                    if time < 0:
+                        if last > 0:
+                            total += pp.write(file, filename, inpoint, outpoint)
+                            inpoint = outpoint
+                        inpoint -= time
                     else:
-                        total += pp.write(file, filename, inpoint, outpoint)
-                        inpoint = outpoint - time
-                        outpoint = inpoint
+                        if last < 0:
+                            outpoint = inpoint
+                        outpoint += time
+                    last = time
                 total += pp.write(file, filename, inpoint, outpoint)
                 shift += total
 

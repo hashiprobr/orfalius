@@ -237,6 +237,11 @@ document.addEventListener('DOMContentLoaded', function () {
         controls.setAttribute('class', 'reader-controls');
         details.append(controls);
 
+        const refIndicator = document.createElement('span');
+        refIndicator.setAttribute('class', 'indicator');
+        refIndicator.innerHTML = '⟳';
+        controls.append(refIndicator);
+
         const recIndicator = document.createElement('span');
         recIndicator.setAttribute('class', 'indicator');
         recIndicator.innerHTML = '⏺';
@@ -369,32 +374,33 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             hide(playButton);
 
-            let shift = 0;
-            const times = [];
-            let start = null;
+            let shift = 0;    // final timestamp when the current slide starts
+            const times = []; // final timestamps when each slide before the current ends, NaN if there is no video in the slide
+            let start = null; // real timestamp when the current slide started being recorded
 
-            let subtimes;
-            const timeline = [];
+            let subtimes;        // negatime elapsed times to ignore, positive elapsed times to consider
+            const timeline = []; // one subtimes array per recording
 
             document.addEventListener('keydown', function (event) {
                 switch (event.key) {
                     case 'ArrowLeft':
                         if (start) {
+                            show(refIndicator, 'inline');
                             const now = Date.now();
-                            subtimes.push((start - now) / 1000);
+                            const elapsed = (now - start) / 1000;
+                            subtimes.push(-elapsed);
                             start = now;
+                            setTimeout(() => hide(refIndicator), 500);
                         } else {
                             if (times.length > 0) {
                                 let time = times.pop();
                                 if (!isNaN(time)) {
                                     let i;
-                                    i = times.length - 2;
-                                    while (i > -1) {
+                                    for (i = times.length - 1; i > -1; i--) {
                                         time = times[i];
                                         if (!isNaN(time)) {
                                             break;
                                         }
-                                        i--;
                                     }
                                     if (i === -1) {
                                         shift = 0;
@@ -402,12 +408,23 @@ document.addEventListener('DOMContentLoaded', function () {
                                         shift = time;
                                     }
                                     i = timeline.length - 1;
-                                    while (timeline[i].length === 0) {
-                                        i--;
+                                    while (true) {
+                                        let j;
+                                        for (j = timeline[i].length - 1; j > -1; j--) {
+                                            if (timeline[i][j] > 0) {
+                                                break;
+                                            }
+                                        }
+                                        if (j === -1) {
+                                            timeline[i].length = 0;
+                                            i--;
+                                        } else {
+                                            timeline[i].length = j;
+                                            break;
+                                        }
                                     }
-                                    timeline[i].pop();
                                 }
-                                if (times.length < slides.length) {
+                                if (timeline.length > 0 && times.length < slides.length) {
                                     counter.style.color = '#000000';
                                 }
                             }
@@ -418,25 +435,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (times.length < slides.length) {
                             if (start) {
                                 const now = Date.now();
-                                shift += (now - start) / 1000;
+                                const elapsed = (now - start) / 1000;
+                                shift += elapsed;
                                 times.push(shift);
+                                subtimes.push(elapsed);
                                 start = now;
-                                subtimes.push(shift);
                             } else {
                                 times.push(NaN);
                             }
                             if (timeline.length > 0 && times.length === slides.length) {
                                 counter.style.color = '#ff0000';
-                            }
-                        }
-                        if (timeline.length > 0 && times.length === slides.length) {
-                            if (confirm('Create JSON?')) {
-                                if (start) {
-                                    hide(recIndicator);
-                                    timeline.push(subtimes);
-                                    start = null;
-                                }
-                                createJSON(times, timeline);
                             }
                         }
                         nextButton.click();
@@ -445,15 +453,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (start) {
                             let create = false;
                             if (times.length >= slides.length - 1) {
-                                const now = Date.now();
-                                create = confirm('Create JSON?');
-                                if (create && times.length < slides.length) {
-                                    shift += (now - start) / 1000;
+                                if (times.length < slides.length) {
+                                    const now = Date.now();
+                                    const elapsed = (now - start) / 1000;
+                                    shift += elapsed;
                                     times.push(shift);
+                                    subtimes.push(elapsed);
                                     start = now;
-                                    subtimes.push(shift);
                                     counter.style.color = '#ff0000';
                                 }
+                                create = confirm('Create JSON?');
                             }
                             hide(recIndicator);
                             timeline.push(subtimes);
