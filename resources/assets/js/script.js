@@ -374,10 +374,10 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             hide(playButton);
 
-            let shift = 0;    // final timestamp when the current slide starts
-            const times = []; // final timestamps when each slide before the current ends, NaN if there is no video in the slide
-            let start = null; // real timestamp when the current slide started being recorded
+            let shift = 0;       // final timestamp when the current slide starts
+            const times = [];    // final timestamps when each slide before the current ends, NaN if there is no video in the slide
 
+            let start = null;    // real timestamp when the current slide started being recorded
             let subtimes;        // negatime elapsed times to ignore, positive elapsed times to consider
             const timeline = []; // one subtimes array per recording
 
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         }
                                     }
                                 }
-                                if (timeline.length > 0 && times.length < slides.length) {
+                                if (timeline.length > 0 && times.length === slides.length - 1) {
                                     counter.style.color = '#000000';
                                 }
                             }
@@ -436,14 +436,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (start) {
                                 const now = Date.now();
                                 const elapsed = (now - start) / 1000;
-                                shift += elapsed;
-                                times.push(shift);
                                 subtimes.push(elapsed);
                                 start = now;
+                                shift += elapsed;
+                                times.push(shift);
                             } else {
                                 times.push(NaN);
                             }
-                            if (timeline.length > 0 && times.length === slides.length) {
+                            if ((start || timeline.length > 0) && times.length === slides.length) {
                                 counter.style.color = '#ff0000';
                             }
                         }
@@ -456,10 +456,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 if (times.length < slides.length) {
                                     const now = Date.now();
                                     const elapsed = (now - start) / 1000;
-                                    shift += elapsed;
-                                    times.push(shift);
                                     subtimes.push(elapsed);
                                     start = now;
+                                    shift += elapsed;
+                                    times.push(shift);
                                     counter.style.color = '#ff0000';
                                 }
                                 create = confirm('Create JSON?');
