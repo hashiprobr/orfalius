@@ -445,6 +445,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             if ((start || timeline.length > 0) && times.length === slides.length) {
                                 counter.style.color = '#ff0000';
+                                if (!start && confirm('Create JSON?')) {
+                                    createJSON(times, timeline);
+                                }
                             }
                         }
                         nextButton.click();
