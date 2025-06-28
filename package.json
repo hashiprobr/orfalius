@@ -17,22 +17,22 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "del": "^7.1.0",
+    "del": "^8.0.0",
     "gulp-cached": "^1.1.1",
     "handlebars": "^4.7.8",
-    "jsdom": "^24.1.0",
+    "jsdom": "^26.1.0",
     "markdown-it": "^14.1.0",
     "markdown-it-color": "^2.1.1",
     "markdown-it-include": "^2.0.0",
-    "markdown-it-kbd": "^2.2.2",
+    "markdown-it-kbd": "^3.0.0",
     "markdown-it-mathjax": "^2.0.0",
     "markdown-it-multimd-table": "^4.2.3",
     "plugin-error": "^2.0.1",
     "undertaker": "^2.0.0"
   },
   "devDependencies": {
-    "browser-sync": "^3.0.2",
+    "browser-sync": "^3.0.4",
     "eslint": "^8.57.0",
-    "gulp": "^5.0.0"
+    "gulp": "^5.0.1"
   }
 }
