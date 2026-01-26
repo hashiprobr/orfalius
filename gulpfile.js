@@ -82,6 +82,7 @@ function serve() {
         },
         open: false,
         reloadDelay: 1000,
+        ghostMode: false,
     });
     watch();
 }
