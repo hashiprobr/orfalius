@@ -645,9 +645,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const allDetails = document.querySelectorAll('details');
 
+    const allMore = document.querySelectorAll('div.more');
+
     const as = document.querySelectorAll('header > a');
 
-    if (allDetails.length > 0) {
+    if (allDetails.length > 0 || allMore.length > 0) {
         for (const details of allDetails) {
             details.firstElementChild.addEventListener('mousedown', function (event) {
                 event.preventDefault();
@@ -659,11 +661,23 @@ document.addEventListener('DOMContentLoaded', function () {
             for (const details of allDetails) {
                 details.setAttribute('open', '');
             }
+            for (const more of allMore) {
+                const children = more.parentElement.children;
+                for (let i = 1; i < children.length; i++) {
+                    children[i].style.display = 'block';
+                }
+            }
         });
         as[1].addEventListener('click', function (event) {
             event.preventDefault();
             for (const details of allDetails) {
                 details.removeAttribute('open');
+            }
+            for (const more of allMore) {
+                const children = more.parentElement.children;
+                for (let i = 1; i < children.length; i++) {
+                    children[i].style.display = 'none';
+                }
             }
         });
     } else {
@@ -671,7 +685,47 @@ document.addEventListener('DOMContentLoaded', function () {
         hide(as[1]);
     }
 
+    for (const more of allMore) {
+        const parent = more.parentElement;
+
+        more.addEventListener('mouseover', function () {
+            parent.style.backgroundColor = '#efefef';
+        });
+        more.addEventListener('mouseleave', function () {
+            parent.style.backgroundColor = 'transparent';
+        });
+
+        more.addEventListener('click', function () {
+            const children = parent.children;
+
+            for (let i = 1; i < children.length; i++) {
+                const child = children[i];
+
+                if (child.style.display === 'none') {
+                    child.style.display = 'block';
+                } else {
+                    child.style.display = 'none';
+                }
+            }
+        });
+    }
+
     if (page || window.location.hash) {
-        as[0].click();
+        for (const details of allDetails) {
+            details.setAttribute('open', '');
+        }
+        for (const more of allMore) {
+            const children = more.parentElement.children;
+            for (let i = 1; i < children.length; i++) {
+                children[i].style.display = 'block';
+            }
+        }
+    } else {
+        for (const more of allMore) {
+            const children = more.parentElement.children;
+            for (let i = 1; i < children.length; i++) {
+                children[i].style.display = 'none';
+            }
+        }
     }
 });

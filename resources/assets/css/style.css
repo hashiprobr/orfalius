@@ -420,6 +420,17 @@ div.handout {
     box-shadow: 0 0 .25rem #666666;
 }
 
+div.quote {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #efefef;
+    border-left: 1px solid #efefef;
+    padding-left: 1rem;
+}
+
+div.more {
+    cursor: pointer;
+}
+
 pre.times {
     display: none;
 }

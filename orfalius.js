@@ -206,6 +206,34 @@ const handoutOptions = {
     marker: '^',
 };
 
+const quoteOptions = {
+    validate: function () {
+        return true;
+    },
+    render: function (tokens, idx) {
+        if (tokens[idx].nesting === 1) {
+            return '<div class="quote">\n';
+        } else {
+            return '</div>\n';
+        }
+    },
+    marker: '"',
+};
+
+const moreOptions = {
+    validate: function () {
+        return true;
+    },
+    render: function (tokens, idx) {
+        if (tokens[idx].nesting === 1) {
+            return '<div class="more">\n';
+        } else {
+            return '</div>\n';
+        }
+    },
+    marker: '+?',
+
+};
 
 function replace(reference, element) {
     const parent = reference.parentElement;
@@ -471,6 +499,8 @@ export default function (templatePath) {
                 .use(container, 'times', timesOptions)
                 .use(container, 'slide', slideOptions)
                 .use(container, 'handout', handoutOptions)
+                .use(container, 'quote', quoteOptions)
+                .use(container, 'more', moreOptions)
                 .use(kbd)
                 .use(colorPlugin);
 
